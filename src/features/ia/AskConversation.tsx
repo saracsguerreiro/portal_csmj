@@ -68,7 +68,7 @@ function Rating() {
 
 type Turn = { q: string; state: "working" | "done" | "error"; step: number; answer?: Answer };
 
-export function AskConversation({ initial, compact }: { initial?: string; compact?: boolean }) {
+export function AskConversation({ initial, compact, greeting, docked }: { initial?: string; compact?: boolean; greeting?: string; docked?: boolean }) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState("");
   const started = useRef(false);
@@ -100,6 +100,7 @@ export function AskConversation({ initial, compact }: { initial?: string; compac
 
   return (
     <div className="flex flex-col gap-6">
+      {greeting && <p className="self-start rounded-[20px] rounded-bl-md bg-surface-2 px-4 py-2.5 text-ui text-ink">{greeting}</p>}
       {turns.length === 0 && (
         <div>
           <p className="mb-2 text-label font-semibold text-subtle">{a.examples}</p>
@@ -145,7 +146,7 @@ export function AskConversation({ initial, compact }: { initial?: string; compac
         </section>
       ))}
       <div ref={end} />
-      <form className="sticky bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-4" onSubmit={(e) => { e.preventDefault(); void askQ(text); }}>
+      <form className={docked ? "sticky bottom-0 bg-surface pb-1 pt-2" : "sticky bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-4"} onSubmit={(e) => { e.preventDefault(); void askQ(text); }}>
         <div className="today-box !items-end !rounded-[24px] !py-2" style={{ boxShadow: "var(--ds-shadow-md)" }}>
           <label htmlFor="ia-pergunta" className="sr-only">{a.label}</label>
           <textarea
@@ -155,7 +156,7 @@ export function AskConversation({ initial, compact }: { initial?: string; compac
           />
           <button type="submit" className="btn btn-pri !h-11 !w-11 !p-0 md:!h-10 md:!w-10" aria-label={a.submit} disabled={!text.trim()}><ArrowUp size={18} aria-hidden /></button>
         </div>
-        <p id="ia-dica" className="mt-1 hidden text-caption text-subtle md:block">{a.hint}</p>
+        <p id="ia-dica" className={`mt-1 text-caption text-subtle ${docked ? "hidden" : "hidden md:block"}`}>{a.hint}</p>
       </form>
     </div>
   );

@@ -28,7 +28,7 @@ export function ShellClient({ data, children, footer, skipLabel }: { data: Shell
             <OfflineBanner />
             <TopBand searchRef={searchRef} />
             <main id="conteudo" tabIndex={-1} className={`flex-1 outline-none ${home ? "" : "panel"}`}>{children}</main>
-            <div className="panel">{footer}</div>
+            <div>{footer}</div>
           </div>
         </div>
         <BottomBar />

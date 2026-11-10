@@ -10,6 +10,7 @@ import { services } from "@/data/services";
 import { requestView, effectiveDecider } from "./api-servicos";
 import { allShortcuts, defaultShortcutIds } from "@/data/shortcuts";
 import { tasks } from "@/data/tasks";
+import { eventPhotoOf } from "@/data/photos";
 import { units } from "@/data/units";
 import type { MenuSection } from "@/data/types";
 import { dateLong, dayOfMonth, monthLong, monthShort, normalise, relative, timeOf, weekday } from "./format";
@@ -81,8 +82,8 @@ export async function getHighlights(s: Session) {
 export async function getAgenda(s: Session) {
   await wait(LATENCY.rest);
   if (s.failing) throw new Error("falha simulada");
-  return events.filter((e) => inScope(e, s.unit.id) && e.startsAt >= "2026-11-10").sort((a, b) => a.startsAt.localeCompare(b.startsAt)).slice(0, 3).map((e) => ({
-    ...e, day: dayOfMonth(e.startsAt), month: monthShort(e.startsAt), time: timeOf(e.startsAt), scopeLabel: scopeLabel(e), scopeKind: scopeKind(e),
+  return events.filter((e) => inScope(e, s.unit.id) && e.startsAt >= "2026-11-10").sort((a, b) => a.startsAt.localeCompare(b.startsAt)).slice(0, 4).map((e) => ({
+    ...e, day: dayOfMonth(e.startsAt), month: monthShort(e.startsAt), time: timeOf(e.startsAt), scopeLabel: scopeLabel(e), scopeKind: scopeKind(e), photo: eventPhotoOf(e.id), weekday: weekday(e.startsAt), summary: e.description[0] ?? "",
   }));
 }
 

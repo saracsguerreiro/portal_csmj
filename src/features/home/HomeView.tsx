@@ -7,6 +7,7 @@ import { entity } from "@/config/entity";
 import { ButtonLink, Skeleton, useToast } from "@/design-system";
 import { AgendaBlock, DocumentsBlock, NeedsYouBlock, PeopleBlock, QuickAccessBlock } from "@/features/home/blocks";
 import { postAction } from "@/features/shell/client-api";
+import { NoticeBanner } from "@/features/shell/NoticeBanner";
 import { t } from "@/i18n";
 import { getDaySeal, getHomeNews, getSinceLastVisit, getWeek } from "@/lib/api";
 import { useLoad, useSession } from "@/lib/client";
@@ -28,7 +29,7 @@ function PanelHead({ title, href, label, id }: { title: string; href?: string; l
   return (
     <div className="flex items-start justify-between gap-4">
       <h2 id={id} className="panel-title">{title}</h2>
-      {href && <Link href={href} className="icbtn flex-none" aria-label={label} title={label}><ArrowUpRight size={20} aria-hidden /></Link>}
+      {href && <Link href={href} className="sq-arrow" aria-label={label} title={label}><ArrowUpRight size={22} strokeWidth={1.75} aria-hidden /></Link>}
     </div>
   );
 }
@@ -179,11 +180,11 @@ export function HomeView() {
   return (
     <div className="grid grid-cols-1 gap-[var(--gap)] xl:grid-cols-12">
       <Hero s={s} items={items} />
-      <section aria-label={h.needs.title} className="panel p-6 md:p-10 xl:col-span-5"><NeedsYouBlock session={s} /></section>
+      <section aria-label={h.needs.title} className="panel p-6 md:p-10 xl:col-span-5"><NoticeBanner compact panel /><NeedsYouBlock session={s} /></section>
       <section aria-label={h.quick.title} className="panel p-6 md:p-10 xl:col-span-5"><QuickAccessBlock session={s} /></section>
       <Shelf s={s} items={items} />
-      <div className="panel p-6 md:p-10 xl:col-span-5"><AgendaBlock session={s} /></div>
-      <div className="panel p-6 md:p-10 xl:col-span-7"><DocumentsBlock session={s} /></div>
+      <div className="panel p-6 md:p-10 xl:col-span-7"><AgendaBlock session={s} /></div>
+      <div className="panel p-6 md:p-10 xl:col-span-5"><DocumentsBlock session={s} /></div>
       <div className="panel p-6 md:p-10 xl:col-span-12"><PeopleBlock session={s} /></div>
     </div>
   );

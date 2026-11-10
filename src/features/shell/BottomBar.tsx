@@ -1,6 +1,7 @@
 "use client";
 
-import { FileText, House, LayoutGrid, LogOut, Menu, Search, User, Bell, CircleHelp, LayoutDashboard, Globe } from "lucide-react";
+import { FileText, House, LayoutGrid, LogOut, Maximize2, Menu, MessageCircle, Search, User, Bell, CircleHelp, LayoutDashboard, Globe, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sheet } from "@/design-system";
@@ -46,12 +47,37 @@ export function SearchOverlay() {
   );
 }
 
+/** Chat flutuante: um botão no canto que abre uma janela de conversa com a intranet. */
 export function AskOverlay() {
-  const { overlay, close, askQuery } = useShell();
+  const { overlay, close, open, askQuery } = useShell();
+  const isOpen = overlay === "ask";
+  const panel = useRef<HTMLDivElement>(null);
+  const fab = useRef<HTMLButtonElement>(null);
+  const was = useRef(false);
+  useEffect(() => {
+    if (isOpen) requestAnimationFrame(() => panel.current?.querySelector<HTMLElement>("textarea")?.focus());
+    else if (was.current) fab.current?.focus();
+    was.current = isOpen;
+  }, [isOpen]);
   return (
-    <Sheet open={overlay === "ask"} onClose={close} title={t.ask.title} status={<Link className="link-quiet" href={`/perguntar?q=${encodeURIComponent(askQuery)}`} onClick={close}>{t.ask.openPage}</Link>}>
-      {overlay === "ask" && <AskConversation key={askQuery} initial={askQuery || undefined} compact />}
-    </Sheet>
+    <>
+      {isOpen && (
+        <div ref={panel} role="dialog" aria-labelledby="chat-title" className="chat-panel" onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } }}>
+          <header className="flex items-center justify-between gap-3 bg-[var(--ds-color-brand-700)] px-4 py-3 text-white">
+            <div className="flex items-center gap-2.5"><MessageCircle size={20} aria-hidden /><h2 id="chat-title" className="text-ui font-semibold !text-white">{t.ask.chatTitle}</h2></div>
+            <div className="flex items-center gap-1">
+              <Link href={`/perguntar${askQuery ? `?q=${encodeURIComponent(askQuery)}` : ""}`} onClick={close} className="grid h-9 w-9 place-items-center hover:bg-white/15" aria-label={t.ask.openPage} title={t.ask.openPage}><Maximize2 size={16} aria-hidden /></Link>
+              <button type="button" className="grid h-9 w-9 place-items-center hover:bg-white/15" aria-label={t.common.close} onClick={close}><X size={18} aria-hidden /></button>
+            </div>
+          </header>
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-4"><AskConversation key={askQuery} initial={askQuery || undefined} compact docked greeting={t.ask.greeting} /></div>
+        </div>
+      )}
+      <button ref={fab} type="button" className="chat-fab" aria-label={isOpen ? t.common.close : t.ask.greeting} aria-expanded={isOpen} onClick={() => (isOpen ? close() : open("ask"))}>
+        {isOpen ? <X size={24} aria-hidden /> : <MessageCircle size={24} aria-hidden />}
+        {!isOpen && <span className="chat-fab-label">{t.ask.greeting}</span>}
+      </button>
+    </>
   );
 }
 

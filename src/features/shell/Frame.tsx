@@ -2,7 +2,7 @@
 
 import { Bell, CircleHelp, FileText, House, LayoutDashboard, LayoutGrid, LogOut, MessageCircleQuestion, Minus, Newspaper, Plus, Search, User, Users, Vote, X, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { entity } from "@/config/entity";
 import { prototypeToday } from "@/data/calendar";
@@ -17,7 +17,6 @@ import { useShell } from "./ShellContext";
 
 const a = t.shell;
 const sectionIcon: Record<string, LucideIcon> = { comunicacao: Newspaper, servicos: LayoutGrid, documentos: FileText, pessoas: Users, participar: Vote };
-const sideText = `${entity.name} · ${a.portalName}`;
 
 export function isSectionActive(id: string, href: string, pathname: string) {
   if (id === "pessoas") return pathname.startsWith("/pessoas") || pathname.startsWith("/instituicao");
@@ -50,25 +49,18 @@ function Accordion({ id, label, openId, setOpenId, children }: { id: string; lab
 
 /** Conteúdo do menu aberto: a área escolhida em letra grande e as outras em secções que abrem. */
 function MenuBody({ active, onClose, closeButton }: { active: MenuSection; onClose: () => void; closeButton?: boolean }) {
-  const { data, open, unread } = useShell();
+  const { data } = useShell();
   const pathname = usePathname();
   const [openId, setOpenId] = useState<string | null>(null);
   useEffect(() => setOpenId(null), [active.id]);
   return (
     <>
-      <div className="flex w-[72px] flex-none flex-col items-center border-r border-line bg-surface py-6">
-        {closeButton && <button type="button" className="grid h-12 w-12 place-items-center hover:bg-surface-2" aria-label={t.common.close} onClick={onClose} autoFocus><X size={28} strokeWidth={1.25} aria-hidden /></button>}
-        <div className="flex flex-1 items-center py-6"><p className="vtext">{sideText}</p></div>
-        <div className="flex flex-col items-center gap-3">
-          <button type="button" className="icbtn relative" aria-label={unread ? a.notificationsUnread(unread) : a.notifications} onClick={() => open("notifications")}>
-            <Bell size={20} aria-hidden />{unread > 0 && <span className="count absolute -right-0.5 -top-0.5" aria-hidden>{unread > 9 ? "9+" : unread}</span>}
-          </button>
-          <span className="text-label font-semibold text-ink" title={a.language}>PT</span>
-        </div>
-      </div>
       <div className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-surface">
         <div className="px-8 pb-10 pt-9">
-          <p className="eyebrow" id="menu-area">{active.label}</p>
+          <div className="flex items-start justify-between gap-4">
+            <p className="eyebrow" id="menu-area">{active.label}</p>
+            {closeButton && <button type="button" className="-mr-3 -mt-3 grid h-12 w-12 place-items-center hover:bg-surface-2" aria-label={t.common.close} onClick={onClose} autoFocus><X size={26} strokeWidth={1.25} aria-hidden /></button>}
+          </div>
           <ul className="mt-5 flex flex-col gap-1" aria-labelledby="menu-area">
             {active.items.map((i) => <li key={i.id}><Link href={i.href} className="sm-big" aria-current={pathname === i.href ? "page" : undefined} onClick={onClose}>{i.label}</Link></li>)}
           </ul>
@@ -187,26 +179,17 @@ export function SideRail() {
 /** Faixa de topo: pesquisar ou perguntar à esquerda, aviso por confirmar e a data à direita. */
 export function TopBand({ searchRef }: { searchRef?: React.RefObject<HTMLInputElement | null> }) {
   const { data } = useShell();
-  const router = useRouter();
-  const [mode, setMode] = useState<"search" | "ask">("search");
+  const home = usePathname() === "/";
   const iso = `${prototypeToday}T12:00:00+01:00`;
   const day = weekday(iso);
   const date = `${day.charAt(0).toUpperCase()}${day.slice(1)}, ${dateLong(iso)}`;
   return (
-    <div className="panel flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 md:min-h-[72px] md:flex-nowrap md:px-8">
-      <div className="flex min-w-0 flex-1 items-center gap-4 max-md:hidden">
-        <div className="seg seg-sm flex-none max-xl:hidden" role="radiogroup" aria-label={t.home.modeLegend}>
-          {(["search", "ask"] as const).map((m) => (
-            <label key={m}><input type="radio" name="band-mode" checked={mode === m} onChange={() => setMode(m)} />{m === "search" ? <Search size={14} aria-hidden /> : <MessageCircleQuestion size={14} aria-hidden />}{m === "search" ? t.home.modeSearch : t.home.modeAsk}</label>
-          ))}
-        </div>
-        <div className="search-plain min-w-[180px] max-w-[560px] flex-1">
-          <SearchCombobox key={mode} variant="bar" placeholder={mode === "ask" ? t.home.askPlaceholder : a.searchPlaceholder} label={mode === "ask" ? t.home.askPlaceholder : a.searchLabel} inputRef={searchRef}
-            suggest={mode === "search"} onSubmit={mode === "ask" ? (q) => router.push(`/perguntar?q=${encodeURIComponent(q)}`) : undefined} />
-        </div>
+    <div className={`panel flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 md:min-h-[72px] md:flex-nowrap md:px-8 ${home ? "max-md:hidden" : ""}`}>
+      <div className="search-plain min-w-0 max-w-[640px] flex-1 max-md:hidden">
+        <SearchCombobox variant="bar" placeholder={a.searchOnly} label={a.searchLabel} inputRef={searchRef} shortcutHint={<kbd className="kbd">/</kbd>} />
       </div>
-      <NoticeBanner compact />
-      <p className="flex-none text-ui font-medium text-ink max-md:hidden" title={data.unit.label}>{date}</p>
+      {!home && <NoticeBanner compact />}
+      <p className="ml-auto flex-none text-ui font-medium text-ink max-md:hidden" title={data.unit.label}>{date}</p>
     </div>
   );
 }

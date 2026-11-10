@@ -29,3 +29,7 @@ const list: Record<string, { alt: string; source: string }> = {
 
 export const photoOf = (id: string) => (list[id] ? { src: asset(`/photos/${id}.jpg`), alt: list[id].alt } : null);
 export const photoLibrary = Object.keys(list).map((id) => ({ id, src: asset(`/photos/${id}.jpg`), alt: list[id].alt }));
+
+/** Fotografia de cada evento (reaproveita a biblioteca de exemplo). */
+const eventPhotos: Record<string, string> = { e1: "n5", e2: "d3", e3: "n18", e4: "n4", e5: "n12", e6: "n15", e7: "n2", e8: "n7" };
+export const eventPhotoOf = (id: string) => photoOf(eventPhotos[id] ?? "n12");

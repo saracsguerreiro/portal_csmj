@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Cake, CloudOff, FileSpreadsheet, FileText, MapPin, MonitorPlay, Shuffle, UserPlus } from "lucide-react";
 import Link from "next/link";
-import { Avatar, DateMark, ScopeTag, Skeleton, StatusBadge } from "@/design-system";
+import { DateMark, ScopeTag, Skeleton, StatusBadge } from "@/design-system";
 import { t } from "@/i18n";
 import { getAgenda, getHighlights, getNewDocuments, getPeopleBlock, getShortcuts, getTasks } from "@/lib/api";
 import type { Session } from "@/lib/session";
@@ -18,7 +18,7 @@ function BlockTitle({ title, href, link }: { title: string; href: string; link: 
   return (
     <div className="mb-4 flex items-start justify-between gap-4">
       <h2 className="panel-title">{title}</h2>
-      <Link href={href} className="icbtn flex-none" aria-label={link} title={link}><ArrowUpRight size={20} aria-hidden /></Link>
+      <Link href={href} className="sq-arrow" aria-label={link} title={link}><ArrowUpRight size={22} strokeWidth={1.75} aria-hidden /></Link>
     </div>
   );
 }
@@ -100,29 +100,51 @@ export function AgendaBlock({ session }: { session: Session }) {
     return <section aria-label={h.agenda.title}><h2 className="panel-title mb-4">{h.agenda.title}</h2><BlockError /></section>;
   }
   if (items.length === 0) return null;
+  const [main, ...rest] = items;
+  const MainIcon = modeIcon[main.mode];
   return (
     <section aria-label={h.agenda.title}>
       <BlockTitle title={h.agenda.title} href="/comunicacao/eventos" link={h.agenda.seeAll} />
-      <ul className="divide-y divide-[var(--ds-border-default)]">
-        {items.map((e) => {
-          const Icon = modeIcon[e.mode];
-          return (
-            <li key={e.id}>
-              <Link href={`/comunicacao/eventos/${e.slug}`} className="row-link flex items-center gap-4 py-3">
-                <DateMark day={e.day} month={e.month} />
-                <span className="min-w-0">
-                  <span className="row-title block font-semibold text-ink">{e.title}</span>
-                  <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-caption text-subtle">
-                    <span>{e.time}</span>
-                    <span className="scope"><Icon size={14} aria-hidden />{h.agenda[e.mode]}{e.place ? ` · ${e.place}` : ""}</span>
-                    <ScopeTag kind={e.scopeKind}>{e.scopeLabel}</ScopeTag>
-                  </span>
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr]">
+        <article>
+          <Link href={`/comunicacao/eventos/${main.slug}`} className="group relative block overflow-hidden bg-surface-2">
+            {main.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={main.photo.src} alt={main.photo.alt} className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />}
+            <span className="absolute left-0 top-0 flex flex-col items-center bg-[var(--ds-color-brand-700)] px-4 py-2.5 text-white">
+              <span className="text-[30px] font-semibold leading-8 tabular-nums">{main.day}</span>
+              <span className="text-label font-semibold uppercase tracking-[0.06em]">{main.month}</span>
+            </span>
+          </Link>
+          <p className="mt-4 text-label font-semibold uppercase tracking-[0.06em] text-brand">{h.agenda.next}</p>
+          <h3 className="mt-1 text-[20px] font-semibold leading-7 tracking-[-0.01em]"><Link href={`/comunicacao/eventos/${main.slug}`} className="hover:underline">{main.title}</Link></h3>
+          <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-ui text-subtle">
+            <span className="capitalize">{main.weekday}</span><span>{main.time}</span>
+            <span className="scope"><MainIcon size={14} aria-hidden />{h.agenda[main.mode]}{main.place ? ` · ${main.place}` : ""}</span>
+          </p>
+          {main.summary && <p className="mt-2 line-clamp-2 text-ui text-copy">{main.summary}</p>}
+        </article>
+        {rest.length > 0 && (
+          <ul className="flex flex-col divide-y divide-[var(--ds-border-default)] self-start border-t border-[var(--ds-border-default)] lg:border-t-0">
+            {rest.map((e) => {
+              const Icon = modeIcon[e.mode];
+              return (
+                <li key={e.id}>
+                  <Link href={`/comunicacao/eventos/${e.slug}`} className="row-link flex items-start gap-4 py-4 first:pt-4 lg:first:pt-0">
+                    <DateMark day={e.day} month={e.month} />
+                    <span className="min-w-0">
+                      <span className="row-title block font-semibold text-ink">{e.title}</span>
+                      <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-caption text-subtle">
+                        <span>{e.time}</span>
+                        <span className="scope"><Icon size={14} aria-hidden />{h.agenda[e.mode]}</span>
+                        <ScopeTag kind={e.scopeKind}>{e.scopeLabel}</ScopeTag>
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }
@@ -168,29 +190,42 @@ export function PeopleBlock({ session }: { session: Session }) {
   return (
     <section aria-label={h.people.title}>
       <BlockTitle title={h.people.title} href="/pessoas/novos-colegas" link={h.people.seeAll} />
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-8 lg:grid-cols-[1fr_1.35fr] lg:gap-10">
         {birthdays.length > 0 && (
-          <div>
-            <h3 className="mb-2 flex items-center gap-2 text-label font-semibold"><Cake size={16} aria-hidden className="text-subtle" />{h.people.birthdays} ({birthdays.length})</h3>
-            <ul className="flex flex-wrap gap-x-6 gap-y-3">
+          <div className="bday-box">
+            <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink"><Cake size={22} aria-hidden className="text-[var(--ds-accent-gold-strong,#9a7410)]" />{h.people.birthdays}<span className="text-subtle">· {birthdays.length}</span></h3>
+            <ul className="mt-4 flex flex-col gap-2">
               {birthdays.map((p) => (
-                <li key={p.id}><Link href={`/pessoas/${p.slug}`} className="row-link flex items-center gap-2">
-                  <Avatar initials={p.initials} />
-                  <span><span className="row-title block font-medium text-ink">{p.name}</span><span className="text-caption text-subtle">{p.isToday ? h.people.today : p.label} · {p.unit}</span></span>
-                </Link></li>
+                <li key={p.id}>
+                  <Link href={`/pessoas/${p.slug}`} className={`bday-row group ${p.isToday ? "is-today" : ""}`}>
+                    <span className="bday-date" aria-hidden><span className="text-[22px] font-semibold leading-6 tabular-nums">{p.label.split(" ")[0]}</span><span className="text-[11px] font-semibold uppercase tracking-[0.06em]">{p.label.split(" de ")[1]?.slice(0, 3)}</span></span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold text-ink group-hover:underline">{p.name}</span>
+                      <span className="block text-caption text-subtle">{p.isToday ? h.people.todayBday : p.label} · {p.unit}</span>
+                    </span>
+                    {p.isToday && <span className="bday-badge">{h.people.today}</span>}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>
         )}
         {newcomers.length > 0 && (
           <div>
-            <h3 className="mb-2 flex items-center gap-2 text-label font-semibold"><UserPlus size={16} aria-hidden className="text-subtle" />{h.people.newcomers} ({newcomers.length})</h3>
-            <ul className="flex flex-wrap gap-x-6 gap-y-3">
+            <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink"><UserPlus size={22} aria-hidden className="text-brand" />{h.people.newcomers}<span className="text-subtle">· {newcomers.length}</span></h3>
+            <ul className="mt-4 grid grid-cols-1 gap-1 sm:grid-cols-3">
               {newcomers.map((p) => (
-                <li key={p.id}><Link href={`/pessoas/${p.slug}`} className="row-link flex items-center gap-2">
-                  <Avatar initials={p.initials} />
-                  <span><span className="row-title block font-medium text-ink">{p.name}</span><span className="text-caption text-subtle">{p.role} · {p.unit}</span></span>
-                </Link></li>
+                <li key={p.id}>
+                  <Link href={`/pessoas/${p.slug}`} className="newbie group">
+                    <span className="newbie-portrait" aria-hidden><span>{p.initials}</span></span>
+                    <span className="flex flex-col gap-0.5 p-4">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-brand">{h.people.welcome}</span>
+                      <span className="font-semibold text-ink group-hover:underline">{p.name}</span>
+                      <span className="text-caption text-subtle">{p.role}</span>
+                      <span className="text-caption text-subtle">{p.unit}</span>
+                    </span>
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>

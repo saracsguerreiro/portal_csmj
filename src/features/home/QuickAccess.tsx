@@ -35,20 +35,21 @@ export function QuickAccess({ all, pinned }: { all: Shortcut[]; pinned: string[]
         <h2 className="panel-title">{q.title}</h2>
         {editing ? <Button size="sm" variant="sec" onClick={finish}>{q.save}</Button> : <Button size="sm" variant="gh" onClick={() => setEditing(true)}>{q.edit}</Button>}
       </div>
-      <ul className="quick-grid grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-2">
+      <ul className="quick-grid grid grid-cols-2 sm:grid-cols-4">
         {shown.map((s) => (
           <li key={s.id}>
             {editing ? (
               <button type="button" className="quick-tile w-full text-left" aria-label={q.unpin(s.label)} onClick={() => setIds((x) => x.filter((v) => v !== s.id))}>
-                <span className="quick-ico"><PinOff size={22} aria-hidden /></span><span className="text-[16px] font-semibold leading-5">{s.label}</span>
+                <span className="quick-ico"><PinOff size={22} aria-hidden /></span><span className="quick-label">{s.label}</span>
               </button>
             ) : (
               <Link href={s.href} className="quick-tile group">
-                <span className="flex items-start justify-between">
-                  <span className="quick-ico"><NamedIcon name={s.icon} size={26} /></span>
-                  <ArrowUpRight size={20} aria-hidden className="opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
+                <span className="quick-fill" aria-hidden />
+                <span className="relative flex items-start justify-between">
+                  <span className="quick-ico"><NamedIcon name={s.icon} size={28} /></span>
+                  <span className="quick-arrow" aria-hidden><ArrowUpRight size={20} /></span>
                 </span>
-                <span className="text-[16px] font-semibold leading-5">{s.label}</span>
+                <span className="quick-label relative">{s.label}</span>
               </Link>
             )}
           </li>

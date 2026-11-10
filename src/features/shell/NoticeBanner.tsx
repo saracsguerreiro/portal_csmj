@@ -24,7 +24,7 @@ function NoticeBody({ notice }: { notice: NoticeView }) {
   );
 }
 
-export function NoticeBanner({ compact }: { compact?: boolean } = {}) {
+export function NoticeBanner({ compact, panel }: { compact?: boolean; panel?: boolean } = {}) {
   const { data } = useShell();
   const router = useRouter();
   const { show } = useToast();
@@ -83,10 +83,10 @@ export function NoticeBanner({ compact }: { compact?: boolean } = {}) {
 
   if (compact) {
     return (
-      <section aria-label={b.region} className="flex min-w-0 max-w-[460px] items-center gap-3 border-l-[3px] border-[var(--ds-brand-background-default)] bg-[var(--ds-toned-background)] py-1.5 pl-3 pr-1.5 max-md:w-full">
+      <section aria-label={b.region} className={`flex min-w-0 items-center gap-3 border-l-[3px] ${panel ? "mb-6 w-full" : "max-w-[460px]"}`} style={{ borderColor: "var(--ds-color-brand-700)", background: "var(--ds-toned-background)", padding: panel ? "12px 12px 12px 16px" : "6px 6px 6px 12px" }}>
         <Megaphone size={18} aria-hidden className="flex-none text-brand" />
         {list.length > 1 && <span className="count flex-none" aria-label={`${list.length} avisos por confirmar`}>{list.length}</span>}
-        <p className="min-w-0 flex-1 truncate text-ui font-medium text-ink md:max-2xl:sr-only 2xl:max-w-[280px]" title={label}>
+        <p className={`min-w-0 flex-1 text-ui font-medium text-ink ${panel ? "" : "truncate md:max-2xl:sr-only 2xl:max-w-[280px]"}`} title={label}>
           <span style={openNotice ? undefined : { viewTransitionName: titleName }}>{label}</span>
           
         </p>
