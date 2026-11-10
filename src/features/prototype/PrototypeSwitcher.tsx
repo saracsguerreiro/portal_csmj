@@ -32,9 +32,9 @@ export function PrototypeSwitcher() {
   };
 
   return (
-    <div ref={ref} className="fixed left-2 z-[60] bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-3 md:left-3" onKeyDown={(e) => { if (e.key === "Escape" && open) { e.stopPropagation(); setOpen(false); } }}>
+    <div ref={ref} className="fixed right-2 flex flex-col items-end z-[60] bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-3 md:right-3" onKeyDown={(e) => { if (e.key === "Escape" && open) { e.stopPropagation(); setOpen(false); } }}>
       {open && (
-        <div className="menu mb-2 flex w-[300px] flex-col gap-3 !p-4">
+        <div className="menu mb-2 ml-auto flex w-[300px] flex-col gap-3 !p-4">
           <p className="text-label font-semibold text-ink">{p.title}</p>
           <div className="flex flex-col gap-1">
             <span className="field-label">{p.area}</span>
