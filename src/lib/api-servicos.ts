@@ -1,4 +1,3 @@
-import "server-only";
 import { prototypeToday } from "@/data/calendar";
 import { holidays } from "@/data/calendar";
 import { people } from "@/data/people";

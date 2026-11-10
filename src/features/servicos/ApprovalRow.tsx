@@ -24,8 +24,7 @@ export function ApprovalRow({ r, decided }: { r: RequestView; decided?: boolean 
     setMode("gone");
     try {
       await postService({ action: "decision", id: r.id, verdict: "approve" });
-      show({ message: a.approved, onUndo: async () => { await postService({ action: "decision.undo", id: r.id }).catch(() => {}); router.refresh(); setMode("idle"); } });
-      router.refresh();
+      show({ message: a.approved, onUndo: async () => { await postService({ action: "decision.undo", id: r.id }).catch(() => {}); setMode("idle"); } });
     } catch (e) {
       setMode("idle");
       show({ message: (e as Error).message });
@@ -38,7 +37,7 @@ export function ApprovalRow({ r, decided }: { r: RequestView; decided?: boolean 
         <div className="flex min-w-0 flex-1 gap-3">
           <Avatar initials={r.requester.initials} />
           <div className="min-w-0">
-            <Link href={`/servicos/aprovacoes/${r.id}`} className="row-link"><span className="row-title font-semibold text-ink">{r.service.name}</span></Link>
+            <Link href={`/servicos/aprovacoes/decidir?id=${r.id}`} className="row-link"><span className="row-title font-semibold text-ink">{r.service.name}</span></Link>
             <span className="text-label"> · {r.requester.name} · {r.requester.unit}</span>
             <p className="text-label">{r.summary}</p>
             <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-caption text-subtle">
@@ -53,7 +52,7 @@ export function ApprovalRow({ r, decided }: { r: RequestView; decided?: boolean 
         {!decided && (mode === "idle" ? (
           <div className="flex flex-none gap-2 pl-[52px] @3xl:pl-0">
             <Button size="sm" variant="sec" icon={<Check size={14} aria-hidden />} onClick={() => setMode("confirm")}>{a.approve}</Button>
-            <ButtonLink size="sm" variant="gh" href={`/servicos/aprovacoes/${r.id}`}>{a.open}</ButtonLink>
+            <ButtonLink size="sm" variant="gh" href={`/servicos/aprovacoes/decidir?id=${r.id}`}>{a.open}</ButtonLink>
           </div>
         ) : (
           <div className="flex flex-none flex-wrap items-center gap-2 pl-[52px] @3xl:pl-0" role="group" aria-label={a.confirm}>

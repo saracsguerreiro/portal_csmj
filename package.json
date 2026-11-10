@@ -6,7 +6,8 @@
     "dev": "next dev -p 8490",
     "build": "next build",
     "start": "next start -p 8490",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "build:pages": "PAGES=1 next build"
   },
   "dependencies": {
     "lucide-react": "^1.70.0",

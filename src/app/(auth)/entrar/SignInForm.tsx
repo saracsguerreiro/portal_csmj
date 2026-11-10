@@ -9,6 +9,7 @@ import { Alert, Button, PasswordField, TextField } from "@/design-system";
 import { setPrefs } from "@/features/shell/client-api";
 import { t } from "@/i18n";
 import { COOKIE } from "@/lib/cookies";
+import { asset } from "@/lib/assets";
 
 const a = t.auth;
 
@@ -29,7 +30,7 @@ export function SignInForm() {
     setBusy(true);
     await setPrefs({ [COOKIE.out]: null });
     const back = params.get("volta");
-    window.location.replace(back && back.startsWith("/") && !back.startsWith("//") ? back : "/");
+    window.location.replace(asset(back && back.startsWith("/") && !back.startsWith("//") ? back : "/"));
   };
 
   const onCredentials = (e: React.FormEvent) => {

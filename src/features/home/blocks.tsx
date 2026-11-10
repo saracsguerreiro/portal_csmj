@@ -1,9 +1,12 @@
+"use client";
+
 import { Cake, CloudOff, FileSpreadsheet, FileText, MapPin, MonitorPlay, Shuffle, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { Avatar, DateMark, ScopeTag, Skeleton, StatusBadge } from "@/design-system";
 import { t } from "@/i18n";
 import { getAgenda, getHighlights, getNewDocuments, getPeopleBlock, getShortcuts, getTasks } from "@/lib/api";
 import type { Session } from "@/lib/session";
+import { useLoad } from "@/lib/client";
 import { BlockRetry } from "./BlockRetry";
 import { NeedsYou } from "./NeedsYou";
 import { NewsCover } from "@/features/comunicacao/content";
@@ -29,8 +32,11 @@ function BlockError() {
   );
 }
 
-export async function NeedsYouBlock({ session }: { session: Session }) {
-  const { items, total } = await getTasks(session);
+export function NeedsYouBlock({ session }: { session: Session }) {
+  const r = useLoad(() => getTasks(session), [session]);
+  if (!r.ready) return <NeedsSkeleton />;
+  if (r.error || !r.data) return <BlockError />;
+  const { items, total } = r.data;
   return <NeedsYou key={`${session.person.id}-${session.unit.id}`} items={items} total={total} />;
 }
 
@@ -39,8 +45,10 @@ export function QuickAccessBlock({ session }: { session: Session }) {
   return <QuickAccess key={session.person.id} all={all} pinned={pinned} />;
 }
 
-export async function HighlightsBlock({ session }: { session: Session }) {
-  const items = await getHighlights(session);
+export function HighlightsBlock({ session }: { session: Session }) {
+  const r = useLoad(() => getHighlights(session), [session]);
+  if (!r.ready) return <HighlightsSkeleton />;
+  const items = r.data ?? [];
   if (items.length === 0) return null;
   const [main, ...rest] = items;
   return (
@@ -84,11 +92,11 @@ export async function HighlightsBlock({ session }: { session: Session }) {
 
 const modeIcon = { online: MonitorPlay, presencial: MapPin, hibrido: Shuffle } as const;
 
-export async function AgendaBlock({ session }: { session: Session }) {
-  let items;
-  try {
-    items = await getAgenda(session);
-  } catch {
+export function AgendaBlock({ session }: { session: Session }) {
+  const r = useLoad(() => getAgenda(session), [session]);
+  if (!r.ready) return <ListSkeleton label={h.agenda.title} />;
+  const items = r.data;
+  if (r.error || !items) {
     return <section aria-label={h.agenda.title}><h2 className="mb-3 text-block font-semibold">{h.agenda.title}</h2><BlockError /></section>;
   }
   if (items.length === 0) return null;
@@ -119,8 +127,10 @@ export async function AgendaBlock({ session }: { session: Session }) {
   );
 }
 
-export async function DocumentsBlock({ session }: { session: Session }) {
-  const items = await getNewDocuments(session);
+export function DocumentsBlock({ session }: { session: Session }) {
+  const r = useLoad(() => getNewDocuments(session), [session]);
+  if (!r.ready) return <ListSkeleton label={h.documents.title} rows={5} />;
+  const items = r.data ?? [];
   if (items.length === 0) return null;
   return (
     <section aria-label={h.documents.title}>
@@ -149,8 +159,11 @@ export async function DocumentsBlock({ session }: { session: Session }) {
   );
 }
 
-export async function PeopleBlock({ session }: { session: Session }) {
-  const { birthdays, newcomers } = await getPeopleBlock(session);
+export function PeopleBlock({ session }: { session: Session }) {
+  const r = useLoad(() => getPeopleBlock(session), [session]);
+  if (!r.ready) return <ListSkeleton label={h.people.title} rows={1} />;
+  if (!r.data) return null;
+  const { birthdays, newcomers } = r.data;
   if (birthdays.length === 0 && newcomers.length === 0) return null;
   return (
     <section aria-label={h.people.title}>

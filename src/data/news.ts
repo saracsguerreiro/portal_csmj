@@ -1,3 +1,4 @@
+import { asset } from "@/lib/assets";
 import type { Block, NewsItem } from "./types";
 
 const plano: Block[] = [
@@ -15,8 +16,8 @@ const plano: Block[] = [
   { t: "live-event", eventId: "e1" },
   { t: "columns", cols: ["Para os magistrados, os módulos contam para a progressão e são marcados em articulação com o juiz presidente de cada comarca.", "Para os oficiais de justiça, a chefia de secção assegura a substituição durante as sessões presenciais."] },
   { t: "details", title: "Quem está dispensado da carga mínima", text: "Estão dispensadas as pessoas em licença prolongada durante mais de seis meses do ano e quem tenha concluído formação equivalente reconhecida pelo Conselho." },
-  { t: "img", src: "/album/f2.svg", alt: "Colunata do edifício do Conselho", caption: "Os módulos presenciais de Luanda decorrem no edifício do Conselho." },
-  { t: "video", title: "Apresentação do plano de formação", poster: "/covers/plenario.svg", duration: "3:42" },
+  { t: "img", src: asset("/album/f2.svg"), alt: "Colunata do edifício do Conselho", caption: "Os módulos presenciais de Luanda decorrem no edifício do Conselho." },
+  { t: "video", title: "Apresentação do plano de formação", poster: asset("/covers/plenario.svg"), duration: "3:42" },
   { t: "h2", id: "documentos", text: "Documentos e contactos" },
   { t: "file", name: "Plano de formação contínua 2027", format: "PDF", size: "1,2 MB" },
   { t: "live-person", personId: "marcos-kavungo" },
@@ -25,12 +26,12 @@ const plano: Block[] = [
 ];
 
 const c = {
-  ple: ["/covers/plenario.svg", "Hemiciclo de cadeiras visto de cima, com três lugares assinalados a ouro"],
-  bal: ["/covers/balcao.svg", "Arcada com cinco balcões de atendimento"],
-  col: ["/covers/colunata.svg", "Fachada de tribunal com sete colunas"],
-  red: ["/covers/rede.svg", "Rede de tribunais ligados entre si"],
-  tra: ["/covers/tramitacao.svg", "Processos a avançar por cinco etapas"],
-  liv: ["/covers/livros.svg", "Fileira de livros numa estante"],
+  ple: [asset("/covers/plenario.svg"), "Hemiciclo de cadeiras visto de cima, com três lugares assinalados a ouro"],
+  bal: [asset("/covers/balcao.svg"), "Arcada com cinco balcões de atendimento"],
+  col: [asset("/covers/colunata.svg"), "Fachada de tribunal com sete colunas"],
+  red: [asset("/covers/rede.svg"), "Rede de tribunais ligados entre si"],
+  tra: [asset("/covers/tramitacao.svg"), "Processos a avançar por cinco etapas"],
+  liv: [asset("/covers/livros.svg"), "Fileira de livros numa estante"],
 };
 
 function item(id: string, slug: string, title: string, summary: string, date: string, cover: string[], scope: string, tags: string[], author: string, paragraphs?: string[]): NewsItem {

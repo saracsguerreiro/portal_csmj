@@ -24,7 +24,6 @@ export function DecisionPanel({ id }: { id: string }) {
       await postService({ action: "decision", id, verdict, comment });
       show({ message: verdict === "approve" ? a.approved : verdict === "return" ? a.returned : a.refused });
       router.push("/servicos/aprovacoes");
-      router.refresh();
     } catch (e) {
       setError((e as Error).message);
       setBusy(null);

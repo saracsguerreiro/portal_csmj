@@ -37,7 +37,6 @@ export function AbsenceManager({ mine, people }: { mine: Mine[]; people: PickOpt
       const res = await postService<{ warning?: string }>({ action: "absence.save", id: open !== "new" ? open?.id : undefined, ...form });
       setOpen(null);
       show({ message: res.warning ?? a.saved });
-      router.refresh();
     } catch (e) {
       setError({ server: (e as Error).message });
     } finally {
@@ -48,8 +47,7 @@ export function AbsenceManager({ mine, people }: { mine: Mine[]; people: PickOpt
   const end = async (m: Mine) => {
     try {
       const res = await postService<{ before: string }>({ action: "absence.end", id: m.id });
-      show({ message: a.ended, onUndo: async () => { await postService({ action: "absence.restore", id: m.id, end: res.before }).catch(() => {}); router.refresh(); } });
-      router.refresh();
+      show({ message: a.ended, onUndo: async () => { await postService({ action: "absence.restore", id: m.id, end: res.before }).catch(() => {}); } });
     } catch (e) {
       show({ message: (e as Error).message });
     }

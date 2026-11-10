@@ -83,8 +83,8 @@
   --ds-avatar-bg: #faf1d6;
   --ds-avatar-fg: #000000;
 
-  --ds-pattern-soft: url("/brand/engrenagem-grena-8.svg");
-  --ds-pattern-brand: url("/brand/engrenagem-ouro-20.svg");
+  --ds-pattern-soft: url("../../public/brand/engrenagem-grena-8.svg");
+  --ds-pattern-brand: url("../../public/brand/engrenagem-ouro-20.svg");
 
   /* Sombras: só no que flutua */
   --ds-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
@@ -135,7 +135,7 @@
     --ds-status-brand-fg: #f5e4b2;
     --ds-avatar-bg: #2e2405;
     --ds-avatar-fg: #f5e4b2;
-    --ds-pattern-soft: url("/brand/engrenagem-ouro-30.svg");
+    --ds-pattern-soft: url("../../public/brand/engrenagem-ouro-30.svg");
   }
 }
 
@@ -182,7 +182,7 @@
   --ds-status-brand-fg: #f5e4b2;
   --ds-avatar-bg: #2e2405;
   --ds-avatar-fg: #f5e4b2;
-  --ds-pattern-soft: url("/brand/engrenagem-ouro-30.svg");
+  --ds-pattern-soft: url("../../public/brand/engrenagem-ouro-30.svg");
 }
 
 /* Densidade */

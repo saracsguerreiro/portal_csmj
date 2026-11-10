@@ -6,6 +6,7 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ReactNode, RefObject } from "react";
 import { t } from "@/i18n";
 import { useShellOptional } from "./ShellContext";
+import { suggest } from "./client-api";
 
 const s = t.search;
 
@@ -24,9 +25,8 @@ export function useSuggestions(query: string) {
     setLoading(true);
     const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/pesquisa?q=${encodeURIComponent(q)}`, { signal: ctl.signal });
-        if (!res.ok) throw new Error();
-        setHits((await res.json()).data);
+        const data = await suggest(q);
+        if (!ctl.signal.aborted) setHits(data);
         setFailed(false);
       } catch (e) {
         if ((e as Error).name !== "AbortError") { setHits([]); setFailed(true); }

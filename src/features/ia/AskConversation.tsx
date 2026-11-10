@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { Button, ButtonLink } from "@/design-system";
 import { t } from "@/i18n";
 import type { Answer, Source } from "@/lib/api-ia";
+import { asset } from "@/lib/assets";
+import { askIntranet } from "@/features/shell/client-api";
 
 const a = t.ask;
 
@@ -26,8 +28,8 @@ function Cite({ source }: { source: Source }) {
       <button
         type="button" className="cite" aria-label={a.sourceN(source.n, source.title)} aria-expanded={open} aria-describedby={open ? id : undefined}
         onFocus={() => setOpen(true)} onBlur={(e) => { if (!wrap.current?.contains(e.relatedTarget as Node)) setOpen(false); }}
-        onPointerUp={(e) => { if (e.pointerType === "mouse") window.location.assign(source.href); else setOpen((o) => !o); }}
-        onKeyUp={(e) => { if (e.key === "Enter") window.location.assign(source.href); }}
+        onPointerUp={(e) => { if (e.pointerType === "mouse") window.location.assign(asset(source.href)); else setOpen((o) => !o); }}
+        onKeyUp={(e) => { if (e.key === "Enter") window.location.assign(asset(source.href)); }}
       >{source.n}</button>
       {open && (
         <span id={id} role="tooltip" className="menu absolute bottom-full left-1/2 z-30 mb-2 block w-72 -translate-x-1/2 !p-4 text-left text-body font-normal">
@@ -81,9 +83,7 @@ export function AskConversation({ initial, compact }: { initial?: string; compac
     setTurns((tt) => [...tt, { q: question, state: "working", step: 0 }]);
     const stepper = [1, 2].map((s, i) => setTimeout(() => setTurns((tt) => tt.map((x, j) => (j === idx && x.state === "working" ? { ...x, step: s } : x))), 380 * (i + 1)));
     try {
-      const [res] = await Promise.all([fetch("/api/perguntar", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ q: question }) }), new Promise((r) => setTimeout(r, 1100))]);
-      if (!res.ok) throw new Error();
-      const answer = (await res.json()) as Answer;
+      const [answer] = await Promise.all([askIntranet(question), new Promise((r) => setTimeout(r, 1100))]);
       setTurns((tt) => tt.map((x, j) => (j === idx ? { ...x, state: "done", answer } : x)));
     } catch {
       stepper.forEach(clearTimeout);

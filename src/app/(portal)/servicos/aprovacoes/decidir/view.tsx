@@ -1,3 +1,5 @@
+"use client";
+
 import { notFound } from "next/navigation";
 import { Alert, Avatar, ButtonLink, PageHeader } from "@/design-system";
 import { Denied } from "@/features/comunicacao/content";
@@ -6,14 +8,15 @@ import { Answers, Timeline } from "@/features/servicos/parts";
 import { RequestHeaderStatus } from "@/features/servicos/RequestDetail";
 import { t } from "@/i18n";
 import { decisionContext } from "@/lib/api-servicos";
-import { getSession } from "@/lib/session";
+import { useSession } from "@/lib/client";
+import { useQuery } from "@/lib/use-query";
 
 const a = t.approvals;
 const v = t.services;
 
-export default async function DecisionPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const s = await getSession();
+export function DecisionView() {
+  const id = useQuery().id ?? "";
+  const s = useSession();
   const data = decisionContext(s, id);
   if (data.status === "missing") notFound();
   if (data.status === "denied") return <Denied />;

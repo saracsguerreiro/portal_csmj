@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ButtonLink } from "@/design-system";
 import { UnitControl } from "@/features/shell/AccountMenu";
@@ -30,7 +32,7 @@ export function TodayBlock({ session }: { session: Session }) {
     <TodayMotion>
       <section aria-labelledby="hoje-titulo" className="card flex flex-col justify-between gap-4 md:col-span-8 md:!p-8">
         <div className="hoje-1 flex flex-wrap items-center justify-between gap-x-4">
-          <h1 id="hoje-titulo" className="text-page font-semibold tracking-[-0.02em] md:text-display">{greetingFor()}, {first}.</h1>
+          <h1 id="hoje-titulo" suppressHydrationWarning className="text-page font-semibold tracking-[-0.02em] md:text-display">{greetingFor()}, {first}.</h1>
           <div className="flex items-center gap-3">
             <UnitControl quiet />
             {session.can("portal.build") && <ButtonLink size="sm" variant="gh" href="/painel/paginas/inicio/editar">{h.editPage}</ButtonLink>}

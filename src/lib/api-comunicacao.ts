@@ -1,4 +1,3 @@
-import "server-only";
 import { prototypeLastVisit, prototypeToday, holidays } from "@/data/calendar";
 import { comments as seedComments, seedReactions } from "@/data/comments";
 import { events } from "@/data/events";

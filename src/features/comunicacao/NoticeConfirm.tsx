@@ -19,7 +19,6 @@ export function NoticeConfirm({ id }: { id: string }) {
     try {
       await postAction({ action: "notice.confirm", id });
       show({ message: b.confirmed });
-      router.refresh();
     } catch {
       show({ message: t.home.needs.failed });
     } finally {

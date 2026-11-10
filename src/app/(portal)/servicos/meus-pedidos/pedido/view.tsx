@@ -1,16 +1,19 @@
+"use client";
+
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/design-system";
 import { Denied } from "@/features/comunicacao/content";
 import { RequestDetail, RequestHeaderStatus } from "@/features/servicos/RequestDetail";
 import { t } from "@/i18n";
 import { getRequest } from "@/lib/api-servicos";
-import { getSession } from "@/lib/session";
+import { useSession } from "@/lib/client";
+import { useQuery } from "@/lib/use-query";
 
 const v = t.services;
 
-export default async function RequestDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const s = await getSession();
+export function RequestDetailView() {
+  const id = useQuery().id ?? "";
+  const s = useSession();
   const data = getRequest(s, id);
   if (data.status === "missing") notFound();
   if (data.status === "denied") return <Denied />;

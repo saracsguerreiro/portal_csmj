@@ -133,7 +133,6 @@ export function RoomBooking({ data, view }: { data: Data; view: "dia" | "semana"
     try {
       await postService({ action: "booking.create", roomId: room.id, date: data.day, start: slotTime(form.start), end: slotTime(form.end), subject: form.subject, people: Number(form.people) });
       show({ message: r.sent });
-      router.refresh();
     } catch (e) {
       setOptimistic((o) => o.filter((x) => x !== tmp));
       show({ message: (e as Error).message });
@@ -145,8 +144,7 @@ export function RoomBooking({ data, view }: { data: Data; view: "dia" | "semana"
   const cancel = async (id: string) => {
     try {
       await postService({ action: "booking.cancel", id });
-      show({ message: r.cancelled, onUndo: async () => { await postService({ action: "booking.restore", id }).catch(() => {}); router.refresh(); } });
-      router.refresh();
+      show({ message: r.cancelled, onUndo: async () => { await postService({ action: "booking.restore", id }).catch(() => {}); } });
     } catch (e) {
       show({ message: (e as Error).message });
     }

@@ -49,7 +49,6 @@ export function NoticeBanner() {
     show({ message: b.confirmed });
     try {
       await postAction({ action: "notice.confirm", id });
-      router.refresh();
     } catch {
       setDone((d) => d.filter((x) => x !== id));
       show({ message: t.home.needs.failed });

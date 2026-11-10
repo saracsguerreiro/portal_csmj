@@ -22,10 +22,9 @@ export function RsvpControl({ id, rsvp, full, closed, needsApproval, hasSignup, 
   const set = async (value: Rsvp, message: string) => {
     const before = state;
     setState(value);
-    show({ message, onUndo: async () => { setState(before); await postAction({ action: "event.set", id, value: before }).catch(() => {}); router.refresh(); } });
+    show({ message, onUndo: async () => { setState(before); await postAction({ action: "event.set", id, value: before }).catch(() => {}); } });
     try {
       await postAction({ action: "event.set", id, value });
-      router.refresh();
     } catch {
       setState(before);
       show({ message: t.home.needs.failed });

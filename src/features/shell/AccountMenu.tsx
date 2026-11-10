@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { Avatar, Segmented } from "@/design-system";
 import { t } from "@/i18n";
 import { COOKIE } from "@/lib/cookies";
+import { asset } from "@/lib/assets";
 import { applyDensity, applyTheme, setPrefs } from "./client-api";
 import { useShell } from "./ShellContext";
 
@@ -48,7 +49,7 @@ export function UnitControl({ quiet }: { quiet?: boolean }) {
     <span className="inp-wrap inline-block">
       <select
         aria-label={a.activeUnit} className={quiet ? "appearance-none [field-sizing:content] bg-transparent pr-6 text-body font-medium text-ink cursor-pointer min-h-11 md:min-h-0" : "inp"} value={data.unit.value}
-        onChange={async (e) => { await setPrefs({ [COOKIE.unit]: e.target.value }); router.refresh(); }}
+        onChange={async (e) => { await setPrefs({ [COOKIE.unit]: e.target.value }); }}
       >
         {data.myUnits.map((u) => <option key={u.value} value={u.value}>{u.label}</option>)}
       </select>
@@ -59,7 +60,7 @@ export function UnitControl({ quiet }: { quiet?: boolean }) {
 
 export async function signOut() {
   await setPrefs({ [COOKIE.out]: "1" });
-  window.location.href = "/entrar";
+  window.location.href = asset("/entrar/");
 }
 
 export function AccountMenu() {

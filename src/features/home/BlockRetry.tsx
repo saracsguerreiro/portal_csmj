@@ -1,9 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { bump } from "@/lib/prefs";
 import { t } from "@/i18n";
 
 export function BlockRetry() {
-  const router = useRouter();
-  return <button type="button" className="link" onClick={() => router.refresh()}>{t.common.tryAgain}</button>;
+  return <button type="button" className="link" onClick={() => bump()}>{t.common.tryAgain}</button>;
 }

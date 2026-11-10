@@ -1,30 +1,32 @@
-import { ButtonLink, PageHeader, StatusBadge } from "@/design-system";
-import { t } from "@/i18n";
+import { Suspense } from "react";
+import { Booted } from "@/features/shell/Booted";
+import { entity } from "@/config/entity";
+import { documents } from "@/data/documents";
+import { menu } from "@/data/navigation";
+import { people } from "@/data/people";
+import { services } from "@/data/services";
+import { allShortcuts } from "@/data/shortcuts";
+import { PlaceholderView } from "./view";
 
-const PHASES: [RegExp, number][] = [
-  [/^\/(comunicacao|pesquisa|perguntar)/, 2],
-  [/^\/servicos/, 3],
-  [/^\/(documentos|pessoas|instituicao|participar|notificacoes|conta)/, 4],
-  [/^\/painel\/(paginas|menus|etiquetas|documentos|enquetes|clima|comentarios|servicos|ausencias)/, 6],
-  [/^\/painel\/(pessoas|unidades|salas|indicadores|envios|sistema)/, 7],
-  [/^\/painel/, 5],
-];
+export const dynamicParams = false;
 
-export default async function Placeholder({ params, searchParams }: { params: Promise<{ resto: string[] }>; searchParams: Promise<{ q?: string }> }) {
+/** Páginas das fases seguintes: geradas para todos os destinos que o protótipo já liga. */
+export function generateStaticParams() {
+  const built = new Set(["/", "/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/avisos", "/comunicacao/multimedia", "/comunicacao/newsletter", "/servicos", "/servicos/meus-pedidos", "/servicos/aprovacoes", "/servicos/salas", "/servicos/ausencias", "/pesquisa", "/perguntar"]);
+  const paths = new Set<string>([
+    ...menu.flatMap((m) => m.items.map((i) => i.href)),
+    ...allShortcuts.map((s) => s.href),
+    ...entity.footer.flatMap((c) => c.links.map((l) => l.href)),
+    ...documents.map((d) => `/documentos/ficheiro/${d.id}`),
+    ...people.map((p) => `/pessoas/${p.slug}`),
+    "/documentos", "/conta", "/ajuda", "/ajuda/acessibilidade", "/ajuda/privacidade", "/notificacoes", "/participar/enquetes", "/participar/clima/2026",
+    "/painel", "/painel/noticias/nova", "/painel/eventos/novo", "/painel/paginas/inicio/editar", "/painel/noticias/n1",
+  ]);
+  services.forEach(() => undefined);
+  return [...paths].map((p) => p.split("?")[0]).filter((p) => !built.has(p) && !p.startsWith("/servicos/pedir/")).map((p) => ({ resto: p.split("/").filter(Boolean) }));
+}
+
+export default async function Page({ params }: { params: Promise<{ resto: string[] }> }) {
   const { resto } = await params;
-  const { q } = await searchParams;
-  const path = `/${resto.join("/")}`;
-  const phase = PHASES.find(([r]) => r.test(path))?.[1];
-  const title = resto[resto.length - 1].replaceAll("-", " ");
-  const heading = title.charAt(0).toUpperCase() + title.slice(1);
-  return (
-    <div className="wrap py-8">
-      <PageHeader title={heading} description={phase ? t.placeholder.lead : t.placeholder.pageNotFound} />
-      <div className="mt-4 flex flex-wrap items-center gap-3">
-        {phase && <StatusBadge tone="info">{t.placeholder.phase(phase)}</StatusBadge>}
-        {q && <span className="text-body">{t.placeholder.query(q)}</span>}
-      </div>
-      <ButtonLink href="/" variant="pri" className="mt-6">{t.placeholder.backHome}</ButtonLink>
-    </div>
-  );
+  return <Suspense><Booted><PlaceholderView path={`/${resto.join("/")}`} /></Booted></Suspense>;
 }

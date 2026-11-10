@@ -2,6 +2,8 @@
  * Configuração da entidade. Outra entidade do JURIS 5.0 troca este objecto
  * e os ficheiros do logótipo, sem alterar componentes.
  */
+import { asset } from "@/lib/assets";
+
 export const entity = {
   id: "csmj",
   name: "Conselho Superior da Magistratura Judicial",
@@ -9,11 +11,11 @@ export const entity = {
   productName: "Intranet",
   programme: "Projecto JURIS 5.0",
   logo: {
-    onBrand: "/brand/csmj-logotipo-ouro.svg",
-    onLight: "/brand/csmj-logotipo-preto.svg",
-    onDark: "/brand/csmj-logotipo-ouro.svg",
-    white: "/brand/csmj-logotipo-branco.svg",
-    symbol: "/brand/csmj-simbolo-ouro.svg",
+    onBrand: asset("/brand/csmj-logotipo-ouro.svg"),
+    onLight: asset("/brand/csmj-logotipo-preto.svg"),
+    onDark: asset("/brand/csmj-logotipo-ouro.svg"),
+    white: asset("/brand/csmj-logotipo-branco.svg"),
+    symbol: asset("/brand/csmj-simbolo-ouro.svg"),
     ratio: 954 / 261,
   },
   colors: {

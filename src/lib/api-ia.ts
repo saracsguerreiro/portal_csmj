@@ -1,4 +1,3 @@
-import "server-only";
 import { documents } from "@/data/documents";
 import { events } from "@/data/events";
 import { news } from "@/data/news";

@@ -29,7 +29,6 @@ export function PrototypeSwitcher() {
 
   const save = async (set: Parameters<typeof setPrefs>[0], reset = false) => {
     await setPrefs(set, reset);
-    router.refresh();
   };
 
   return (

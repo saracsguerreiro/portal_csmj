@@ -24,7 +24,6 @@ export function RequestActions({ id, status, canCancel, answers }: { id: string;
     try {
       const res = await postService<{ id?: string }>(body);
       show({ message });
-      router.refresh();
       return res;
     } catch (e) {
       setError((e as Error).message);
