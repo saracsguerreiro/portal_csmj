@@ -47,7 +47,7 @@ export function listNews(s: Session, f: NewsFilters) {
   const isFirst = page === 1;
   const rest = filtered.slice(1);
   const pages = Math.max(1, Math.ceil(rest.length / PER_PAGE));
-  return { total: filtered.length, tags, featured: isFirst ? filtered[0] : undefined, items: rest.slice((page - 1) * PER_PAGE, page * PER_PAGE), page, pages };
+  return { total: filtered.length, tags, featured: isFirst ? filtered[0] : undefined, items: rest.slice((page - 1) * PER_PAGE, page * PER_PAGE), page, pages, all: filtered };
 }
 
 function readMinutes(n: NewsItem) {

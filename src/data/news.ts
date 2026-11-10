@@ -1,5 +1,6 @@
 import { asset } from "@/lib/assets";
 import type { Block, NewsItem } from "./types";
+import { photoOf } from "./photos";
 
 const plano: Block[] = [
   { t: "p", text: "O Plenário do Conselho aprovou o plano de formação contínua para 2027. O plano abrange magistrados, oficiais de justiça e funcionários das secretarias, em todas as comarcas." },
@@ -35,7 +36,8 @@ const c = {
 };
 
 function item(id: string, slug: string, title: string, summary: string, date: string, cover: string[], scope: string, tags: string[], author: string, paragraphs?: string[]): NewsItem {
-  return { id, slug, title, summary, publishedAt: `${date}+01:00`, cover: cover[0], coverAlt: cover[1], tags, authorId: author, scopes: [scope], body: paragraphs?.map((text) => ({ t: "p", text })) };
+  const ph = photoOf(id);
+  return { id, slug, title, summary, publishedAt: `${date}+01:00`, cover: ph?.src ?? cover[0], coverAlt: ph?.alt ?? cover[1], tags, authorId: author, scopes: [scope], body: paragraphs?.map((text) => ({ t: "p", text })) };
 }
 
 export const news: NewsItem[] = [

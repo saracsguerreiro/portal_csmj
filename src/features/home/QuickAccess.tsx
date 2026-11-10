@@ -1,6 +1,6 @@
 "use client";
 
-import { Pin, PinOff } from "lucide-react";
+import { ArrowUpRight, Pin, PinOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { Shortcut } from "@/data/types";
@@ -35,17 +35,20 @@ export function QuickAccess({ all, pinned }: { all: Shortcut[]; pinned: string[]
         <h2 className="panel-title">{q.title}</h2>
         {editing ? <Button size="sm" variant="sec" onClick={finish}>{q.save}</Button> : <Button size="sm" variant="gh" onClick={() => setEditing(true)}>{q.edit}</Button>}
       </div>
-      <ul className="grid grid-cols-4 gap-1 md:grid-cols-2">
+      <ul className="quick-grid grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-2">
         {shown.map((s) => (
           <li key={s.id}>
             {editing ? (
-              <button type="button" className="menu-item h-full !flex-col !gap-1 text-center md:@[300px]:!flex-row md:@[300px]:text-left" aria-label={q.unpin(s.label)} onClick={() => setIds((x) => x.filter((v) => v !== s.id))}>
-                <PinOff size={18} aria-hidden /><span className="text-label">{s.label}</span>
+              <button type="button" className="quick-tile w-full text-left" aria-label={q.unpin(s.label)} onClick={() => setIds((x) => x.filter((v) => v !== s.id))}>
+                <span className="quick-ico"><PinOff size={22} aria-hidden /></span><span className="text-[16px] font-semibold leading-5">{s.label}</span>
               </button>
             ) : (
-              <Link href={s.href} className="menu-item h-full !flex-col !gap-1 !px-1 text-center md:@[300px]:!flex-row md:@[300px]:!px-3 md:@[300px]:text-left">
-                <span className="text-brand"><NamedIcon name={s.icon} /></span>
-                <span className="text-label font-medium">{s.label}</span>
+              <Link href={s.href} className="quick-tile group">
+                <span className="flex items-start justify-between">
+                  <span className="quick-ico"><NamedIcon name={s.icon} size={26} /></span>
+                  <ArrowUpRight size={20} aria-hidden className="opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
+                </span>
+                <span className="text-[16px] font-semibold leading-5">{s.label}</span>
               </Link>
             )}
           </li>

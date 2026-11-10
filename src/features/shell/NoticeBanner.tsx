@@ -24,7 +24,7 @@ function NoticeBody({ notice }: { notice: NoticeView }) {
   );
 }
 
-export function NoticeBanner() {
+export function NoticeBanner({ compact }: { compact?: boolean } = {}) {
   const { data } = useShell();
   const router = useRouter();
   const { show } = useToast();
@@ -72,6 +72,27 @@ export function NoticeBanner() {
         <p className="mb-3 font-medium text-ink">{b.blockingLead}</p>
         <NoticeBody notice={current} />
       </Dialog>
+    );
+  }
+
+  const sheet = (
+    <Sheet open={openNotice} onClose={closeSheet} title={<span style={openNotice ? { viewTransitionName: titleName } : undefined}>{label}</span>} footer={confirmControls}>
+      <NoticeBody notice={current} />
+    </Sheet>
+  );
+
+  if (compact) {
+    return (
+      <section aria-label={b.region} className="flex min-w-0 max-w-[460px] items-center gap-3 border-l-[3px] border-[var(--ds-brand-background-default)] bg-[var(--ds-toned-background)] py-1.5 pl-3 pr-1.5 max-md:w-full">
+        <Megaphone size={18} aria-hidden className="flex-none text-brand" />
+        {list.length > 1 && <span className="count flex-none" aria-label={`${list.length} avisos por confirmar`}>{list.length}</span>}
+        <p className="min-w-0 flex-1 truncate text-ui font-medium text-ink md:max-2xl:sr-only 2xl:max-w-[280px]" title={label}>
+          <span style={openNotice ? undefined : { viewTransitionName: titleName }}>{label}</span>
+          
+        </p>
+        <Button variant="pri" size="sm" onClick={open}><span className="md:hidden">{b.readShort}</span><span className="hidden md:inline">{b.read}</span></Button>
+        {sheet}
+      </section>
     );
   }
 

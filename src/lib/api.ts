@@ -169,3 +169,9 @@ export function getWeek(s: Session) {
   const openTasks = tasks.filter((t) => (t.assignees.includes("*") || t.assignees.includes(s.person.id)) && inScope(t, s.unit.id) && !st.doneTasks.has(t.id) && !st.postponed.has(t.id)).length;
   return { days, max: Math.max(...days.map((d) => d.n), 1), noticesPct: Math.round((confirmed / total) * 100), tasks: { done: doneTasks, total: doneTasks + openTasks } };
 }
+
+/** Notícias da Início: as primeiras rodam no carrossel, as seguintes ficam nos destaques. */
+export async function getHomeNews(s: Session) {
+  await wait(LATENCY.rest);
+  return news.filter((n) => inScope(n, s.unit.id)).slice(0, 10).map((n) => ({ ...n, dateLabel: dateLong(n.publishedAt), scopeLabel: scopeLabel(n), scopeKind: scopeKind(n) }));
+}

@@ -1,22 +1,21 @@
 "use client";
 
-import { ArrowUpRight, Bookmark, BookmarkCheck, BookOpen, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { ArrowUpRight, Bookmark, BookmarkCheck, BookOpen, Pause, Play, Quote } from "lucide-react";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import { entity } from "@/config/entity";
 import { ButtonLink, Skeleton, useToast } from "@/design-system";
 import { AgendaBlock, DocumentsBlock, NeedsYouBlock, PeopleBlock, QuickAccessBlock } from "@/features/home/blocks";
 import { postAction } from "@/features/shell/client-api";
-import { TopRow } from "@/features/shell/Frame";
-import { HomeSearchRef } from "@/features/shell/home-search";
 import { t } from "@/i18n";
-import { getDaySeal, getHighlights, getSinceLastVisit, getWeek } from "@/lib/api";
+import { getDaySeal, getHomeNews, getSinceLastVisit, getWeek } from "@/lib/api";
 import { useLoad, useSession } from "@/lib/client";
 import type { Session } from "@/lib/session";
 import { stateOf } from "@/lib/store";
 
 const h = t.home;
 const H = h.panels;
+type HomeNews = Awaited<ReturnType<typeof getHomeNews>>[number];
 
 function greetingFor() {
   const hour = Number(new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hour12: false, timeZone: entity.timeZone }).format(new Date()));
@@ -34,11 +33,32 @@ function PanelHead({ title, href, label, id }: { title: string; href?: string; l
   );
 }
 
-/** Painel principal: saudação, o destaque do momento com a capa grande e o progresso do que a pessoa tem em mãos. */
-function Hero({ s }: { s: Session }) {
-  const searchRef = useContext(HomeSearchRef);
-  const r = useLoad(() => getHighlights(s), [s]);
-  const main = r.data?.[0];
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const m = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(m.matches);
+    const on = () => setReduced(m.matches);
+    m.addEventListener("change", on);
+    return () => m.removeEventListener("change", on);
+  }, []);
+  return reduced;
+}
+
+/** Painel principal: saudação, carrossel das notícias com fotografia (muda a cada 3 s, com pausa) e progresso das tarefas. */
+function Hero({ s, items }: { s: Session; items: HomeNews[] | null }) {
+  const reduced = useReducedMotion();
+  const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [hover, setHover] = useState(false);
+  const slides = items?.slice(0, 4) ?? [];
+  const running = !paused && !hover && !reduced && slides.length > 1;
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setI((x) => (x + 1) % slides.length), 3000);
+    return () => clearInterval(id);
+  }, [running, slides.length]);
+  const cur = slides[i % Math.max(slides.length, 1)];
   const seal = getDaySeal();
   const since = getSinceLastVisit(s);
   const week = getWeek(s);
@@ -50,37 +70,48 @@ function Hero({ s }: { s: Session }) {
 
   return (
     <section aria-labelledby="hoje-titulo" className="panel flex flex-col gap-8 p-6 md:p-10 xl:col-span-7 xl:row-span-2">
-      <TopRow searchRef={searchRef ?? undefined} />
       <div className="flex flex-wrap items-start justify-between gap-4">
         <h1 id="hoje-titulo" suppressHydrationWarning className="text-[40px] font-semibold leading-[44px] tracking-[-0.03em] text-ink md:text-[64px] md:leading-[64px] 2xl:text-[76px] 2xl:leading-[76px]">
           {greetingFor()},<br />{first}
         </h1>
         {s.can("portal.build") && <ButtonLink size="sm" variant="gh" href="/painel/paginas/inicio/editar">{h.editPage}</ButtonLink>}
       </div>
-      {!r.ready ? <Skeleton className="aspect-[16/8] w-full !rounded-none" /> : main ? (
+      {!items ? <Skeleton className="aspect-[16/9] w-full !rounded-none" /> : cur ? (
         <>
-          <div className="grid gap-4 md:grid-cols-[1fr_1.4fr_1.3fr] md:items-start md:gap-6">
+          <div className="grid gap-4 md:grid-cols-[1fr_1.5fr_1.3fr] md:items-start md:gap-6">
             <p className="text-ui text-subtle">{H.now}</p>
             <div className="min-w-0">
-              <p className="text-[18px] font-bold uppercase leading-6 tracking-[0.01em] text-ink">{main.title}</p>
-              <p className="mt-1 text-ui text-subtle">{main.scopeLabel} · {main.dateLabel}</p>
+              <p className="text-[18px] font-bold uppercase leading-6 tracking-[0.01em] text-ink"><Link href={`/comunicacao/noticias/${cur.slug}`} className="hover:underline">{cur.title}</Link></p>
+              <p className="mt-1 text-ui text-subtle">{cur.scopeLabel} · {cur.dateLabel}</p>
             </div>
-            <p className="flex gap-2 text-ui text-ink"><Quote size={16} aria-hidden className="mt-0.5 flex-none fill-[var(--ds-brand-background-default)] text-[var(--ds-brand-background-default)]" />{quote}</p>
+            <p className="flex gap-2 text-ui text-ink"><Quote size={16} aria-hidden className="mt-0.5 flex-none fill-[var(--ds-color-brand-700)] text-[var(--ds-color-brand-700)]" />{quote}</p>
           </div>
-          <div className="relative overflow-hidden bg-surface-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={main.cover} alt={main.coverAlt} className="cover-img aspect-[16/8] w-full object-cover" />
+          <div className="relative flex min-h-[260px] flex-1 flex-col overflow-hidden bg-surface-2 md:min-h-[380px]" role="region" aria-roledescription="carrossel" aria-label={h.highlights.title} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} onFocus={() => setHover(true)} onBlur={() => setHover(false)}>
+            <div className="relative w-full flex-1 max-md:aspect-[4/3]">
+              {slides.map((n, k) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={n.id} src={n.cover} alt={k === i ? n.coverAlt : ""} aria-hidden={k !== i} loading={k === 0 ? "eager" : "lazy"}
+                  className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${k === i ? "opacity-100" : "opacity-0"}`} />
+              ))}
+              <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/45 to-transparent" />
+            </div>
+            <div className="absolute bottom-0 left-0 flex items-center gap-2 p-3 md:p-4">
+              <button type="button" className="grid h-11 w-11 place-items-center bg-black/55 text-white hover:bg-black/75" aria-label={paused ? H.play : H.pause} onClick={() => setPaused((p) => !p)}>{paused ? <Play size={18} aria-hidden /> : <Pause size={18} aria-hidden />}</button>
+              <div className="flex" role="group" aria-label={H.slides}>
+                {slides.map((n, k) => <button key={n.id} type="button" className="grid h-11 w-11 place-items-center" aria-label={H.slide(k + 1, n.title)} aria-current={k === i} onClick={() => setI(k)}><span className={`block h-1 w-6 ${k === i ? "bg-white" : "bg-white/45"}`} /></button>)}
+              </div>
+            </div>
             <div className="absolute bottom-0 right-0 flex">
-              <Link href={`/comunicacao/noticias/${main.slug}`} className="sq-btn bg-surface text-ink hover:bg-surface-2 max-md:!h-14 max-md:!w-14" aria-label={H.read(main.title)} title={H.readShort}><BookOpen size={26} strokeWidth={1.5} aria-hidden /></Link>
-              <Link href="/comunicacao/noticias" className="sq-btn bg-[var(--ds-brand-background-default)] text-[var(--ds-brand-content)] hover:bg-[var(--ds-brand-background-hover)] max-md:!h-14 max-md:!w-14" aria-label={h.highlights.seeAll} title={h.highlights.seeAll}><ArrowUpRight size={26} strokeWidth={1.5} aria-hidden /></Link>
+              <Link href={`/comunicacao/noticias/${cur.slug}`} className="sq-btn bg-surface text-ink hover:bg-surface-2 max-md:!h-14 max-md:!w-14" aria-label={H.read(cur.title)} title={H.readShort}><BookOpen size={26} strokeWidth={1.5} aria-hidden /></Link>
+              <Link href="/comunicacao/noticias" className="sq-btn bg-[var(--ds-color-brand-700)] text-white hover:bg-[var(--ds-color-brand-800)] max-md:!h-14 max-md:!w-14" aria-label={h.highlights.seeAll} title={h.highlights.seeAll}><ArrowUpRight size={26} strokeWidth={1.5} aria-hidden /></Link>
             </div>
           </div>
         </>
       ) : null}
-      <div className="mt-auto grid grid-cols-[auto_1fr_auto] items-center gap-6">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6">
         <Link href="/notificacoes" className="text-[16px] text-ink hover:underline">{H.tasksDone(week.tasks.done, week.tasks.total)}</Link>
         <span className="relative h-1 bg-surface-2" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={H.tasksLabel}>
-          <span className="absolute inset-y-0 left-0 bg-[var(--ds-brand-background-default)]" style={{ width: `${pct}%` }} />
+          <span className="absolute inset-y-0 left-0 bg-[var(--ds-color-brand-700)]" style={{ width: `${pct}%` }} />
         </span>
         <span className="font-mono text-[16px] text-subtle">{pct}%</span>
       </div>
@@ -88,83 +119,54 @@ function Hero({ s }: { s: Session }) {
   );
 }
 
-/** Destaques em lombadas: a escolhida abre em capa, as outras ficam estreitas ao lado. */
-function Shelf({ s }: { s: Session }) {
-  const r = useLoad(() => getHighlights(s), [s]);
+/** Destaques na largura toda: lombadas com fotografia que abrem em acordeão ao passar o rato ou ao escolher. */
+function Shelf({ s, items }: { s: Session; items: HomeNews[] | null }) {
   const toast = useToast();
   const [i, setI] = useState(0);
   const [, force] = useState(0);
-  const items = r.data ?? [];
-  if (!r.ready) return <section className="panel p-6 md:p-10 xl:col-span-5"><Skeleton className="h-[320px] w-full !rounded-none" /></section>;
-  if (!items.length) return null;
-  const cur = items[i % items.length];
+  const list = items?.slice(4, 10) ?? [];
+  if (!items) return <section className="panel p-6 md:p-10 xl:col-span-12"><Skeleton className="h-[420px] w-full !rounded-none" /></section>;
+  if (!list.length) return null;
+  const cur = list[i % list.length];
   const saved = stateOf(s.person.id).saved.has(cur.id);
   const toggle = async () => {
     try { await postAction({ action: "saved.toggle", id: cur.id }); force((n) => n + 1); toast.show({ message: saved ? H.unsaved : H.saved }); } catch { toast.show({ message: h.needs.failed }); }
   };
   return (
-    <section aria-labelledby="destaques" className="panel flex flex-col gap-6 p-6 md:p-10 xl:col-span-5">
+    <section aria-labelledby="destaques" className="panel flex flex-col gap-6 p-6 md:p-10 xl:col-span-12">
       <PanelHead id="destaques" title={h.highlights.title} href="/comunicacao/noticias" label={h.highlights.seeAll} />
-      <div className="flex items-center gap-2">
-        <button type="button" className="icbtn flex-none" aria-label={H.prev} onClick={() => setI((x) => (x - 1 + items.length) % items.length)}><ChevronLeft size={20} aria-hidden /></button>
-        <ul className="flex h-[240px] min-w-0 flex-1 items-stretch gap-1.5 md:h-[260px]" aria-label={h.highlights.title}>
-          {items.map((n, k) => {
-            const on = k === i % items.length;
-            return (
-              <li key={n.id} className={`relative overflow-hidden transition-[flex] duration-300 ${on ? "flex-[5]" : "min-w-[44px] flex-[1]"}`}>
-                <button type="button" className="group block h-full w-full text-left" aria-pressed={on} aria-label={n.title} onClick={() => setI(k)}>
+      <ul className="flex h-[300px] gap-1 md:h-[420px]" aria-label={h.highlights.title}>
+        {list.map((n, k) => {
+          const on = k === i % list.length;
+          return (
+            <li key={n.id} className={`relative min-w-[48px] overflow-hidden transition-[flex-grow] duration-500 ease-out ${on ? "flex-[6]" : "flex-[1]"}`} onMouseEnter={() => setI(k)}>
+              {on ? (
+                <Link href={`/comunicacao/noticias/${n.slug}`} className="group block h-full w-full">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={n.cover} alt="" className={`h-full w-full object-cover ${on ? "" : "brightness-[0.55] group-hover:brightness-75"}`} />
-                  {!on && <span className="absolute inset-0 flex items-start justify-center pt-3"><span className="vtext line-clamp-1 max-h-[90%] overflow-hidden !text-white font-semibold" style={{ transform: "rotate(180deg)" }}>{n.title}</span></span>}
+                  <img src={n.cover} alt={n.coverAlt} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
+                  <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+                  <span className="absolute inset-x-0 bottom-0 flex flex-col gap-2 p-5 text-white md:p-8">
+                    <span className="text-label font-semibold uppercase tracking-[0.06em] text-white/85">{n.scopeLabel} · {n.dateLabel}</span>
+                    <span className="max-w-[28ch] text-[22px] font-semibold leading-7 tracking-[-0.01em] md:text-[30px] md:leading-9">{n.title}</span>
+                    <span className="hidden max-w-[60ch] text-[15px] leading-6 text-white/90 md:line-clamp-2">{n.summary}</span>
+                  </span>
+                </Link>
+              ) : (
+                <button type="button" className="group block h-full w-full" aria-label={n.title} onClick={() => setI(k)} onFocus={() => setI(k)}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={n.cover} alt="" className="h-full w-full object-cover brightness-[0.5] transition group-hover:brightness-75" />
+                  <span className="absolute inset-0 flex items-end justify-center pb-5"><span className="vtext line-clamp-1 max-h-[86%] overflow-hidden font-semibold !text-white" style={{ transform: "rotate(180deg)" }}>{n.title}</span></span>
                 </button>
-              </li>
-            );
-          })}
-        </ul>
-        <button type="button" className="icbtn flex-none" aria-label={H.next} onClick={() => setI((x) => (x + 1) % items.length)}><ChevronRight size={20} aria-hidden /></button>
-      </div>
-      <article className="flex flex-col gap-3">
-        <div className="flex items-start justify-between gap-4">
-          <h3 className="text-[22px] font-semibold leading-7 tracking-[-0.01em]"><Link href={`/comunicacao/noticias/${cur.slug}`} className="hover:underline">{cur.title}</Link></h3>
-          <button type="button" className="icbtn flex-none" aria-pressed={saved} aria-label={saved ? H.unsaveLabel(cur.title) : H.saveLabel(cur.title)} onClick={() => void toggle()}>
-            {saved ? <BookmarkCheck size={22} aria-hidden className="text-brand" /> : <Bookmark size={22} aria-hidden />}
-          </button>
-        </div>
-        <p className="line-clamp-3 max-w-[60ch] text-[16px] leading-6 text-copy">{cur.summary}</p>
-        <p className="text-ui text-subtle">{cur.scopeLabel} · {cur.dateLabel}</p>
-      </article>
-    </section>
-  );
-}
-
-/** A semana em barras (hoje em grená) e os avisos confirmados no ano em quadrículas. */
-function Week({ s }: { s: Session }) {
-  const w = getWeek(s);
-  const cells = 50;
-  const filled = Math.round((w.noticesPct / 100) * cells);
-  return (
-    <section aria-labelledby="semana" className="panel flex flex-col gap-6 p-6 md:p-10 xl:col-span-5">
-      <PanelHead id="semana" title={H.week} href="/servicos/meus-pedidos" label={H.weekLink} />
-      <div className="mt-auto grid grid-cols-1 items-end gap-8 sm:grid-cols-[1fr_auto]">
-        <ul className="flex h-[150px] items-end justify-between gap-2" aria-label={H.weekBars}>
-          {w.days.map((d) => (
-            <li key={d.iso} className="flex h-full flex-1 flex-col items-center justify-end gap-2" title={d.holiday ?? H.dayCount(d.n)}>
-              <span className={`text-[11px] font-semibold uppercase tracking-[0.04em] ${d.today ? "text-brand" : "text-subtle"}`}>{d.label}</span>
-              <span className={`w-1 ${d.today ? "bg-[var(--ds-brand-background-default)]" : d.holiday || d.weekend ? "bg-[var(--ds-border-default)]" : "bg-[var(--ds-content-strong)]"}`} style={{ height: `${d.holiday ? 8 : Math.max(8, (d.n / w.max) * 110)}px` }} aria-hidden />
-              <span className="sr-only">{d.holiday ? `${d.label}: ${d.holiday}` : `${d.label}: ${H.dayCount(d.n)}`}</span>
+              )}
             </li>
-          ))}
-        </ul>
-        <div className="flex flex-col items-start gap-3 sm:items-end">
-          <p className="text-ui text-subtle">{H.noticesPct(w.noticesPct)}</p>
-          <div className="grid grid-cols-10 gap-[3px]" role="img" aria-label={H.noticesPct(w.noticesPct)}>
-            {Array.from({ length: cells }, (_, k) => {
-              const col = k % 10, row = Math.floor(k / 10);
-              const order = col * 5 + row;
-              return <span key={k} className={`h-[14px] w-[14px] ${order < filled ? "bg-[var(--ds-brand-background-default)]" : "bg-surface-2"}`} />;
-            })}
-          </div>
-        </div>
+          );
+        })}
+      </ul>
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-ui text-subtle">{H.position(i % list.length + 1, list.length)}</p>
+        <button type="button" className="icbtn flex-none" aria-pressed={saved} aria-label={saved ? H.unsaveLabel(cur.title) : H.saveLabel(cur.title)} onClick={() => void toggle()}>
+          {saved ? <BookmarkCheck size={22} aria-hidden className="text-brand" /> : <Bookmark size={22} aria-hidden />}
+        </button>
       </div>
     </section>
   );
@@ -172,13 +174,14 @@ function Week({ s }: { s: Session }) {
 
 export function HomeView() {
   const s = useSession();
+  const r = useLoad(() => getHomeNews(s), [s]);
+  const items = r.ready ? r.data ?? [] : null;
   return (
     <div className="grid grid-cols-1 gap-[var(--gap)] xl:grid-cols-12">
-      <Hero s={s} />
+      <Hero s={s} items={items} />
       <section aria-label={h.needs.title} className="panel p-6 md:p-10 xl:col-span-5"><NeedsYouBlock session={s} /></section>
-      <Week s={s} />
-      <section aria-label={h.quick.title} className="panel p-6 md:p-10 xl:col-span-7"><QuickAccessBlock session={s} /></section>
-      <Shelf s={s} />
+      <section aria-label={h.quick.title} className="panel p-6 md:p-10 xl:col-span-5"><QuickAccessBlock session={s} /></section>
+      <Shelf s={s} items={items} />
       <div className="panel p-6 md:p-10 xl:col-span-5"><AgendaBlock session={s} /></div>
       <div className="panel p-6 md:p-10 xl:col-span-7"><DocumentsBlock session={s} /></div>
       <div className="panel p-6 md:p-10 xl:col-span-12"><PeopleBlock session={s} /></div>

@@ -35,7 +35,8 @@ export function resetStore() {
   persist();
 }
 
-const KEY = "csmj_dados_v1";
+/** Muda de versão quando os dados de exemplo mudam (v2: notícias com fotografia). */
+const KEY = "csmj_dados_v2";
 
 export function persist() {
   if (typeof window === "undefined") return;

@@ -2,6 +2,7 @@ import { asset } from "@/lib/assets";
 import { events } from "./events";
 import { news } from "./news";
 import { notices } from "./notices";
+import { photoOf } from "./photos";
 import type { ContentMeta, EventItem, NewsItem, Notice } from "./types";
 
 /** Cópias das sementes, feitas antes de qualquer alteração em tempo real. */
@@ -23,7 +24,7 @@ const meta = (authorId: string, at: string, status: ContentMeta["status"] = "pub
 
 const d = (s: string) => `${s}+01:00`;
 const draft = (id: string, slug: string, title: string, summary: string, at: string, status: ContentMeta["status"], cover: string, scopes: string[], tags: string[], html: string, extra: Partial<ContentMeta> = {}): AdminNews => ({
-  id, slug, title, summary, publishedAt: d(at), cover: asset(cover), coverAlt: "", tags, authorId: "filomena-tembo", scopes, html, meta: meta("filomena-tembo", d(at), status, extra),
+  id, slug, title, summary, publishedAt: d(at), cover: photoOf(id)?.src ?? asset(cover), coverAlt: "", tags, authorId: "filomena-tembo", scopes, html, meta: meta("filomena-tembo", d(at), status, extra),
 });
 
 export function seedAdminNews(): AdminNews[] {
