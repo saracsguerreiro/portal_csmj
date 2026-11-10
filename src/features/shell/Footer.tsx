@@ -7,7 +7,7 @@ const f = t.footer;
 export function Footer() {
   const year = 2026;
   return (
-    <footer className="has-bottom-bar mt-12 border-t border-line bg-surface">
+    <footer className="bg-surface">
       <div className="wrap grid grid-cols-1 gap-8 py-10 md:grid-cols-12">
         <div className="md:col-span-4">
           <img src={entity.logo.onLight} alt={entity.name} width={220} height={60} className="logo-light" style={{ width: 220, height: "auto" }} loading="lazy" />

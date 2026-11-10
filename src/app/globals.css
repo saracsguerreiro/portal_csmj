@@ -79,6 +79,39 @@ h1, h2, h3, h4 { color: var(--ds-content-strong); text-wrap: balance; }
 @media (max-width: 1279px) { .wrap { padding-inline: 24px; } }
 @media (max-width: 767px) { .wrap { padding-inline: 16px; } }
 
+/* Moldura em painéis: fundo cinzento, painéis brancos de cantos rectos, separados por 4 px */
+.frame { --gap: 4px; background: var(--ds-frame); min-height: 100dvh; padding: 12px; display: flex; gap: var(--gap); }
+.panel { background: var(--ds-surface-default); min-width: 0; }
+.rail { position: sticky; z-index: 30; top: 12px; height: calc(100dvh - 24px); width: 104px; flex: none; display: flex; flex-direction: column; align-items: center; padding: 28px 0 24px; }
+.rail-link { position: relative; display: grid; place-items: center; width: 48px; height: 48px; color: var(--ds-content-strong); border-radius: 0; transition: background var(--ds-duration-fast) var(--ds-ease), color var(--ds-duration-fast) var(--ds-ease); }
+.rail-link:hover { background: var(--ds-surface-2); }
+.rail-link[aria-current="page"] { color: var(--ds-content-brand); }
+.rail-link[aria-current="page"]::before { content: ""; position: absolute; left: -28px; top: 10px; bottom: 10px; width: 3px; background: var(--ds-brand-background-default); }
+.rail-tip { position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; padding: 4px 10px; background: var(--ds-surface-toast); color: #fff; font-size: 13px; line-height: 20px; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity var(--ds-duration-fast) var(--ds-ease); z-index: 50; }
+.rail-link:hover .rail-tip, .rail-link:focus-visible .rail-tip { opacity: 1; }
+.eyebrow { font-size: 13px; line-height: 18px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ds-content-strong); }
+.panel-title { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.01em; text-transform: uppercase; color: var(--ds-content-strong); }
+.search-plain .search-box { border-color: transparent; background: transparent; padding-left: 0; box-shadow: none; }
+.search-plain .search-box:focus-within { border-color: transparent; box-shadow: inset 0 -2px 0 var(--ds-border-focus); }
+.search-plain .search-box input { font-size: 16px; }
+.sq-btn { display: grid; place-items: center; width: 88px; height: 88px; border: 0; cursor: pointer; transition: background var(--ds-duration-fast) var(--ds-ease); }
+@media (max-width: 767px) { .frame { padding: 0; flex-direction: column; } .panel-title { font-size: 18px; line-height: 24px; } }
+
+/* Menu lateral: abre da esquerda, com uma coluna estreita e uma lista em secções */
+.sidemenu { position: fixed; inset: 0 auto 0 0; margin: 0; padding: 0; border: 0; max-width: 100vw; max-height: none; height: 100dvh; width: min(600px, 100vw); background: transparent; display: flex; }
+.sidemenu:not([open]) { display: none; }
+.sidemenu::backdrop { background: rgba(0,0,0,0.45); }
+.sidemenu[open] { animation: menu-in 260ms var(--ds-ease) both; }
+@keyframes menu-in { from { transform: translateX(-24px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .sidemenu[open] { animation: none; } }
+.sm-big { display: block; font-size: 30px; line-height: 40px; font-weight: 500; letter-spacing: -0.02em; color: var(--ds-content-strong); }
+.sm-big:hover, .sm-big[aria-current="page"] { color: var(--ds-content-brand); }
+.sm-row { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 12px 32px; border-top: 1px solid var(--ds-border-default); font-size: 15px; line-height: 20px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ds-content-strong); background: none; text-align: left; cursor: pointer; }
+.sm-row:hover { background: var(--ds-surface-2); }
+.sm-sub { display: block; padding: 6px 0; font-size: 15px; line-height: 22px; color: var(--ds-content-default); }
+.sm-sub:hover { color: var(--ds-content-brand); text-decoration: underline; text-underline-offset: 3px; }
+.vtext { writing-mode: vertical-rl; font-size: 13px; line-height: 18px; color: var(--ds-content-strong); }
+
 /* A barra inferior nunca tapa o conteúdo no telemóvel */
 @media (max-width: 767px) {
   .has-bottom-bar { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Cake, CloudOff, FileSpreadsheet, FileText, MapPin, MonitorPlay, Shuffle, UserPlus } from "lucide-react";
+import { ArrowUpRight, Cake, CloudOff, FileSpreadsheet, FileText, MapPin, MonitorPlay, Shuffle, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { Avatar, DateMark, ScopeTag, Skeleton, StatusBadge } from "@/design-system";
 import { t } from "@/i18n";
@@ -16,9 +16,9 @@ const h = t.home;
 
 function BlockTitle({ title, href, link }: { title: string; href: string; link: string }) {
   return (
-    <div className="mb-3 flex items-baseline justify-between gap-4">
-      <h2 className="text-block font-semibold">{title}</h2>
-      <Link href={href} className="link-quiet flex-none">{link}</Link>
+    <div className="mb-4 flex items-start justify-between gap-4">
+      <h2 className="panel-title">{title}</h2>
+      <Link href={href} className="icbtn flex-none" aria-label={link} title={link}><ArrowUpRight size={20} aria-hidden /></Link>
     </div>
   );
 }
@@ -97,7 +97,7 @@ export function AgendaBlock({ session }: { session: Session }) {
   if (!r.ready) return <ListSkeleton label={h.agenda.title} />;
   const items = r.data;
   if (r.error || !items) {
-    return <section aria-label={h.agenda.title}><h2 className="mb-3 text-block font-semibold">{h.agenda.title}</h2><BlockError /></section>;
+    return <section aria-label={h.agenda.title}><h2 className="panel-title mb-4">{h.agenda.title}</h2><BlockError /></section>;
   }
   if (items.length === 0) return null;
   return (

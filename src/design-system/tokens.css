@@ -40,6 +40,7 @@
   --ds-border-card: #e6e6e6;
   --ds-surface-default: #ffffff;
   --ds-surface-2: #f4f4f4;
+  --ds-frame: #e8e8e8;
   --ds-surface-hover: #f4f4f4;
   --ds-surface-brand: var(--ds-color-brand-700);
   --ds-surface-toast: #262626;
@@ -99,6 +100,8 @@
     --ds-border-card: #333333;
     --ds-surface-default: #1e1e1e;
     --ds-surface-2: #262626;
+  --ds-frame: #0a0a0a;
+    --ds-frame: #0a0a0a;
     --ds-surface-hover: #262626;
     --ds-surface-toast: #404040;
     --ds-content-strong: #ffffff;

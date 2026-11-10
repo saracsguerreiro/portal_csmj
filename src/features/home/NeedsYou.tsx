@@ -147,7 +147,7 @@ export function NeedsYou({ items, total }: { items: TaskView[]; total: number })
   return (
     <div className="@container">
       <div className="flex items-center justify-between gap-4 mb-1">
-        <h2 ref={heading} tabIndex={-1} className="flex items-center gap-2 text-block font-semibold outline-none">
+        <h2 ref={heading} tabIndex={-1} className="panel-title flex items-center gap-2 outline-none">
           {n.title}
           {count > 0 && <span className="count" aria-label={n.count(count)}>{count}</span>}
         </h2>

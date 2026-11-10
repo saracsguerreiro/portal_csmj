@@ -32,10 +32,10 @@ export function QuickAccess({ all, pinned }: { all: Shortcut[]; pinned: string[]
   return (
     <div className="@container flex h-full flex-col">
       <div className="mb-2 flex items-center justify-between gap-4">
-        <h2 className="text-block font-semibold">{q.title}</h2>
+        <h2 className="panel-title">{q.title}</h2>
         {editing ? <Button size="sm" variant="sec" onClick={finish}>{q.save}</Button> : <Button size="sm" variant="gh" onClick={() => setEditing(true)}>{q.edit}</Button>}
       </div>
-      <ul className="grid flex-1 auto-rows-fr grid-cols-4 gap-1 md:grid-cols-2">
+      <ul className="grid grid-cols-4 gap-1 md:grid-cols-2">
         {shown.map((s) => (
           <li key={s.id}>
             {editing ? (

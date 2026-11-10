@@ -63,7 +63,7 @@ export async function signOut() {
   window.location.href = asset("/entrar/");
 }
 
-export function AccountMenu() {
+export function AccountMenu({ placement }: { placement?: "rail" } = {}) {
   const { data } = useShell();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -84,7 +84,7 @@ export function AccountMenu() {
         <Avatar initials={data.person.initials} size="sm" />
       </button>
       {open && (
-        <div className="menu absolute right-0 top-full z-50 mt-2 w-[352px]">
+        <div className={`menu absolute z-50 w-[352px] ${placement === "rail" ? "bottom-0 left-full ml-3" : "right-0 top-full mt-2"}`}>
           <div className="flex items-center gap-3 px-3 py-2">
             <Avatar initials={data.person.initials} />
             <div className="min-w-0">

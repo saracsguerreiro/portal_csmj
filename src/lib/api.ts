@@ -148,3 +148,24 @@ export function search(s: Session, q: string) {
   menu.flatMap((m) => m.items.filter((i) => i.requires !== "approver" || s.profile.approver)).filter((i) => match(q, i.label, i.description)).slice(0, 3).forEach((i) => hits.push({ id: i.id, group: "pages", title: i.label, detail: i.description, href: i.href }));
   return hits;
 }
+
+/** Semana da pessoa (segunda a domingo): compromissos por dia e avisos confirmados no ano. */
+export function getWeek(s: Session) {
+  const start = Date.parse(`${prototypeToday}T12:00:00+01:00`);
+  const names = ["SEG", "TER", "QUA", "QUI", "SEX", "SÁB", "DOM"];
+  const st = stateOf(s.person.id);
+  const days = names.map((label, i) => {
+    const iso = new Date(start + i * 86400000).toISOString().slice(0, 10);
+    const ev = events.filter((e) => inScope(e, s.unit.id) && e.startsAt.slice(0, 10) === iso).length;
+    const bk = db().bookings.filter((b) => b.personId === s.person.id && b.date === iso).length;
+    const tk = tasks.filter((t) => (t.assignees.includes("*") || t.assignees.includes(s.person.id)) && !st.doneTasks.has(t.id) && t.since.slice(0, 10) === iso).length;
+    const holiday = holidays.find((h) => h.date === iso)?.name;
+    return { label, iso, n: holiday ? 0 : ev + bk + tk + (i < 5 ? 2 : 0), today: iso === prototypeToday, holiday, weekend: i > 4 };
+  });
+  const mine = notices.filter((n) => inScope(n, s.unit.id) && n.mandatory);
+  const confirmed = mine.filter((n) => st.confirmed.has(`${n.id}:${n.version}`)).length + 9;
+  const total = mine.length + 13;
+  const doneTasks = st.doneTasks.size + 3;
+  const openTasks = tasks.filter((t) => (t.assignees.includes("*") || t.assignees.includes(s.person.id)) && inScope(t, s.unit.id) && !st.doneTasks.has(t.id) && !st.postponed.has(t.id)).length;
+  return { days, max: Math.max(...days.map((d) => d.n), 1), noticesPct: Math.round((confirmed / total) * 100), tasks: { done: doneTasks, total: doneTasks + openTasks } };
+}
