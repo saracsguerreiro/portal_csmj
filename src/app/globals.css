@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@import "../design-system/tokens.css";
+@import "../design-system/components.css";
+
+@theme inline {
+  --color-app: var(--ds-background-app);
+  --color-surface: var(--ds-surface-default);
+  --color-surface-2: var(--ds-surface-2);
+  --color-ink: var(--ds-content-strong);
+  --color-copy: var(--ds-content-default);
+  --color-subtle: var(--ds-content-subtle);
+  --color-brand: var(--ds-content-brand);
+  --color-line: var(--ds-border-subtle);
+  --color-line-strong: var(--ds-border-default);
+  --color-gold: var(--ds-accent-gold);
+  --color-toned: var(--ds-toned-background);
+  --color-hover: var(--ds-surface-hover);
+
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-dmmono), ui-monospace, Consolas, monospace;
+
+  --text-display: 54px;
+  --text-display--line-height: 60px;
+  --text-page: 32px;
+  --text-page--line-height: 40px;
+  --text-section: 24px;
+  --text-section--line-height: 32px;
+  --text-block: 18px;
+  --text-block--line-height: 26px;
+  --text-read: 18px;
+  --text-read--line-height: 30px;
+  --text-ui: 16px;
+  --text-ui--line-height: 24px;
+  --text-body: 14px;
+  --text-body--line-height: 20px;
+  --text-label: 13px;
+  --text-label--line-height: 18px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+
+  --radius-card: 24px;
+  --radius-alert: 16px;
+  --radius-menu: 12px;
+
+  --breakpoint-md: 48rem;
+  --breakpoint-xl: 80rem;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--ds-bar-h) + 16px);
+}
+
+body {
+  margin: 0;
+  background: var(--ds-background-app);
+  color: var(--ds-content-default);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 767px) {
+  body { font-size: 16px; line-height: 24px; }
+}
+
+h1, h2, h3, h4 { color: var(--ds-content-strong); text-wrap: balance; }
+
+.skip-link {
+  position: fixed; left: 16px; top: -64px; z-index: 100;
+  transition: top var(--ds-duration-fast) var(--ds-ease);
+}
+.skip-link:focus { top: 8px; }
+
+.wrap { width: 100%; max-width: 1280px; margin-inline: auto; padding-inline: 24px; }
+@media (max-width: 767px) { .wrap { padding-inline: 16px; } }
+
+/* A barra inferior nunca tapa o conteúdo no telemóvel */
+@media (max-width: 767px) {
+  .has-bottom-bar { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+}
+
+/* Entrada orquestrada: o único momento de movimento do produto */
+@keyframes hoje-rise { from { opacity: 0; transform: translateY(10px); } }
+@keyframes hoje-draw { from { transform: scaleX(0); } }
+
+.hoje-enter .hoje-1 { animation: hoje-rise 250ms var(--ds-ease) both; }
+.hoje-enter .hoje-2 { animation: hoje-rise 250ms var(--ds-ease) 100ms both; }
+.hoje-enter .hoje-3 { animation: hoje-rise 250ms var(--ds-ease) 200ms both; }
+.hoje-enter .hoje-seal { animation: hoje-rise 250ms var(--ds-ease) 50ms both; }
+.hoje-enter .hoje-filete { transform-origin: left; animation: hoje-draw 250ms var(--ds-ease) 300ms both; }
+
+@media print {
+  header.sticky, nav[aria-label], footer, .no-print, .skip-link, [aria-label="Avisos por confirmar"] { display: none !important; }
+  body { background: #fff; }
+  .wrap { max-width: none; padding: 0; }
+}

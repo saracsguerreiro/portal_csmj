@@ -1,0 +1,228 @@
+/* Design System CSMJ v2.0 aplicado à intranet.
+   Os valores de marca são sobrepostos a partir de src/config/entity.ts. */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Grená CSMJ */
+  --ds-color-brand-50: #fcf4f3;
+  --ds-color-brand-100: #f8e5e2;
+  --ds-color-brand-200: #f0c7c2;
+  --ds-color-brand-300: #e39e96;
+  --ds-color-brand-400: #d16d61;
+  --ds-color-brand-500: #c03f30;
+  --ds-color-brand-600: #a12f21;
+  --ds-color-brand-700: #852418;
+  --ds-color-brand-800: #6c1d13;
+  --ds-color-brand-900: #4f140d;
+  --ds-color-brand-950: #2d0a06;
+
+  /* Ouro CSMJ */
+  --ds-color-gold-100: #faf1d6;
+  --ds-color-gold-200: #f5e4b2;
+  --ds-color-gold-400: #e1b229;
+  --ds-color-gold-700: #8d6d11;
+  --ds-color-gold-950: #2e2405;
+
+  /* Neutros */
+  --ds-color-neutral-100: #f4f4f4;
+  --ds-color-neutral-200: #e6e6e6;
+  --ds-color-neutral-300: #d4d4d4;
+  --ds-color-neutral-400: #a3a3a3;
+  --ds-color-neutral-500: #737373;
+  --ds-color-neutral-600: #5c5c5c;
+  --ds-color-neutral-700: #404040;
+  --ds-color-neutral-800: #262626;
+
+  /* Papéis */
+  --ds-background-app: #ffffff;
+  --ds-border-card: #e6e6e6;
+  --ds-surface-default: #ffffff;
+  --ds-surface-2: #f4f4f4;
+  --ds-surface-hover: #f4f4f4;
+  --ds-surface-brand: var(--ds-color-brand-700);
+  --ds-surface-toast: #262626;
+  --ds-content-strong: #000000;
+  --ds-content-default: #404040;
+  --ds-content-subtle: #5c5c5c;
+  --ds-content-disabled: #737373;
+  --ds-content-brand: var(--ds-color-brand-700);
+  --ds-content-on-brand: #ffffff;
+  --ds-accent-gold: var(--ds-color-gold-400);
+  --ds-border-subtle: #e6e6e6;
+  --ds-border-default: #d4d4d4;
+  --ds-border-field: #737373;
+  --ds-border-focus: var(--ds-color-brand-700);
+  --ds-brand-background-default: var(--ds-color-brand-700);
+  --ds-brand-background-hover: var(--ds-color-brand-800);
+  --ds-brand-background-active: var(--ds-color-brand-900);
+  --ds-brand-background-disabled: rgba(133, 36, 24, 0.5);
+  --ds-brand-content: #ffffff;
+  --ds-toned-background: rgba(133, 36, 24, 0.08);
+  --ds-black-wash: rgba(0, 0, 0, 0.05);
+  --ds-danger: #a61b1b;
+  --ds-danger-hover: #7a1212;
+  --ds-danger-content: #ffffff;
+
+  /* Estados: fundo, texto e contorno */
+  --ds-status-ok-bg: #262626;
+  --ds-status-ok-fg: #ffffff;
+  --ds-status-warn-bg: #ffe3b5;
+  --ds-status-warn-fg: #000000;
+  --ds-status-err-bg: #fbe5e5;
+  --ds-status-err-fg: #8b1414;
+  --ds-status-info-bg: #e6e6e6;
+  --ds-status-info-fg: #262626;
+  --ds-status-neu-bg: #ffffff;
+  --ds-status-neu-fg: #404040;
+  --ds-status-neu-line: #d4d4d4;
+  --ds-status-brand-bg: #faf1d6;
+  --ds-status-brand-fg: #000000;
+
+  --ds-avatar-bg: #faf1d6;
+  --ds-avatar-fg: #000000;
+
+  --ds-pattern-soft: url("/brand/engrenagem-grena-8.svg");
+  --ds-pattern-brand: url("/brand/engrenagem-ouro-20.svg");
+
+  /* Sombras: só no que flutua */
+  --ds-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --ds-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.08);
+  --ds-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -2px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ds-background-app: #121212;
+    --ds-border-card: #333333;
+    --ds-surface-default: #1e1e1e;
+    --ds-surface-2: #262626;
+    --ds-surface-hover: #262626;
+    --ds-surface-toast: #404040;
+    --ds-content-strong: #ffffff;
+    --ds-content-default: #c8c8c8;
+    --ds-content-subtle: #9e9e9e;
+    --ds-content-disabled: #737373;
+    --ds-content-brand: var(--ds-color-brand-300);
+    --ds-border-subtle: #333333;
+    --ds-border-default: #404040;
+    --ds-border-field: #737373;
+    --ds-border-focus: var(--ds-color-brand-300);
+    --ds-brand-background-default: var(--ds-color-brand-300);
+    --ds-brand-background-hover: var(--ds-color-brand-200);
+    --ds-brand-background-active: var(--ds-color-brand-100);
+    --ds-brand-background-disabled: rgba(227, 158, 150, 0.4);
+    --ds-brand-content: #2d0a06;
+    --ds-toned-background: rgba(227, 158, 150, 0.14);
+    --ds-black-wash: rgba(255, 255, 255, 0.08);
+    --ds-danger: #f0c7c2;
+    --ds-danger-hover: #f8e5e2;
+    --ds-danger-content: #2d0a06;
+    --ds-status-ok-bg: #404040;
+    --ds-status-ok-fg: #ffffff;
+    --ds-status-warn-bg: #2e2405;
+    --ds-status-warn-fg: #f5e4b2;
+    --ds-status-err-bg: #4f140d;
+    --ds-status-err-fg: #f0c7c2;
+    --ds-status-info-bg: #262626;
+    --ds-status-info-fg: #e6e6e6;
+    --ds-status-neu-bg: #1e1e1e;
+    --ds-status-neu-fg: #c8c8c8;
+    --ds-status-neu-line: #404040;
+    --ds-status-brand-bg: #2e2405;
+    --ds-status-brand-fg: #f5e4b2;
+    --ds-avatar-bg: #2e2405;
+    --ds-avatar-fg: #f5e4b2;
+    --ds-pattern-soft: url("/brand/engrenagem-ouro-30.svg");
+  }
+}
+
+:root[data-theme="dark"],
+[data-theme="dark"] {
+  color-scheme: dark;
+  --ds-background-app: #121212;
+  --ds-border-card: #333333;
+  --ds-surface-default: #1e1e1e;
+  --ds-surface-2: #262626;
+  --ds-surface-hover: #262626;
+  --ds-surface-toast: #404040;
+  --ds-content-strong: #ffffff;
+  --ds-content-default: #c8c8c8;
+  --ds-content-subtle: #9e9e9e;
+  --ds-content-disabled: #737373;
+  --ds-content-brand: var(--ds-color-brand-300);
+  --ds-border-subtle: #333333;
+  --ds-border-default: #404040;
+  --ds-border-field: #737373;
+  --ds-border-focus: var(--ds-color-brand-300);
+  --ds-brand-background-default: var(--ds-color-brand-300);
+  --ds-brand-background-hover: var(--ds-color-brand-200);
+  --ds-brand-background-active: var(--ds-color-brand-100);
+  --ds-brand-background-disabled: rgba(227, 158, 150, 0.4);
+  --ds-brand-content: #2d0a06;
+  --ds-toned-background: rgba(227, 158, 150, 0.14);
+  --ds-black-wash: rgba(255, 255, 255, 0.08);
+  --ds-danger: #f0c7c2;
+  --ds-danger-hover: #f8e5e2;
+  --ds-danger-content: #2d0a06;
+  --ds-status-ok-bg: #404040;
+  --ds-status-ok-fg: #ffffff;
+  --ds-status-warn-bg: #2e2405;
+  --ds-status-warn-fg: #f5e4b2;
+  --ds-status-err-bg: #4f140d;
+  --ds-status-err-fg: #f0c7c2;
+  --ds-status-info-bg: #262626;
+  --ds-status-info-fg: #e6e6e6;
+  --ds-status-neu-bg: #1e1e1e;
+  --ds-status-neu-fg: #c8c8c8;
+  --ds-status-neu-line: #404040;
+  --ds-status-brand-bg: #2e2405;
+  --ds-status-brand-fg: #f5e4b2;
+  --ds-avatar-bg: #2e2405;
+  --ds-avatar-fg: #f5e4b2;
+  --ds-pattern-soft: url("/brand/engrenagem-ouro-30.svg");
+}
+
+/* Densidade */
+:root,
+[data-density="comfortable"] {
+  --ds-btn-sm: 32px;
+  --ds-btn-md: 40px;
+  --ds-btn-lg: 48px;
+  --ds-input-h: 44px;
+  --ds-row-h: 48px;
+  --ds-block-gap: 32px;
+  --ds-card-pad: 24px;
+}
+
+[data-density="compact"] {
+  --ds-btn-sm: 28px;
+  --ds-btn-md: 36px;
+  --ds-btn-lg: 44px;
+  --ds-input-h: 36px;
+  --ds-row-h: 40px;
+  --ds-block-gap: 24px;
+  --ds-card-pad: 16px;
+}
+
+/* No telemóvel os alvos têm sempre 44 px, em qualquer densidade */
+@media (max-width: 767px) {
+  :root,
+  [data-density] {
+    --ds-btn-sm: 44px;
+    --ds-btn-md: 44px;
+    --ds-btn-lg: 48px;
+    --ds-input-h: 48px;
+    --ds-card-pad: 16px;
+    --ds-block-gap: 24px;
+  }
+}
+
+:root {
+  --ds-duration-fast: 150ms;
+  --ds-duration-moderate: 250ms;
+  --ds-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ds-bar-h: 80px;
+}
