@@ -103,7 +103,7 @@ export function AskConversation({ initial, compact }: { initial?: string; compac
       {turns.length === 0 && (
         <div>
           <p className="mb-2 text-label font-semibold text-subtle">{a.examples}</p>
-          <ul className="flex flex-wrap gap-2">{a.exampleList.map((x) => <li key={x}><button type="button" className="chip" onClick={() => askQ(x)}>{x}</button></li>)}</ul>
+          <ul className="flex flex-wrap gap-2">{a.exampleList.map((x) => <li key={x}><button type="button" className="chip chip-wrap" onClick={() => askQ(x)}>{x}</button></li>)}</ul>
         </div>
       )}
       {turns.map((turn, i) => (
@@ -130,7 +130,7 @@ export function AskConversation({ initial, compact }: { initial?: string; compac
                 {turn.answer.followUps.length > 0 && (
                   <div>
                     <p className="mb-2 text-label font-semibold text-ink">{a.followUps}</p>
-                    <ul className="flex flex-wrap gap-2">{turn.answer.followUps.map((x) => <li key={x}><button type="button" className="chip" onClick={() => askQ(x)}>{x}</button></li>)}</ul>
+                    <ul className="flex flex-wrap gap-2">{turn.answer.followUps.map((x) => <li key={x}><button type="button" className="chip chip-wrap" onClick={() => askQ(x)}>{x}</button></li>)}</ul>
                   </div>
                 )}
               </div>

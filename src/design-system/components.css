@@ -120,6 +120,8 @@
   .chip:hover, .chip[data-force="hover"] { background: var(--ds-black-wash); }
   .chip:active, .chip[data-force="active"] { background: var(--ds-border-subtle); }
   .chip[aria-pressed="true"], .chip-on { background: var(--ds-brand-background-default); color: var(--ds-brand-content); border-color: transparent; }
+  .chip-wrap { height: auto; min-height: 32px; padding-top: 6px; padding-bottom: 6px; white-space: normal; text-align: left; max-width: 100%; }
+  @media (max-width: 767px) { .chip-wrap { min-height: 44px; } }
   .chip:disabled { color: var(--ds-content-disabled); border-color: var(--ds-border-default); background: transparent; cursor: not-allowed; }
   @media (max-width: 767px) { .chip { height: 44px; padding: 0 16px; font-size: 14px; } }
 
