@@ -27,10 +27,26 @@ const rows: Row[] = [
   ["victor-ngunza", "Victor Ngunza", "Juiz de Direito", "com-icolo"],
   ["celeste-manuel", "Celeste Manuel", "Directora", "dti"],
   ["ernesto-bunga", "Ernesto Bunga", "Escrivão", "com-sumbe"],
+  ["augusta-ngueve", "Augusta Ngueve", "Presidente do Conselho", "plenario"],
 ];
+
+const sectorOf = (role: string, unit: string) =>
+  /Juiz|Juíza|Vogal|Presidente do Conselho/.test(role) ? "Magistratura" : unit === "dti" ? "Tecnologia" : unit === "drh" ? "Recursos humanos" : /Comunicação|Redactora/.test(role) ? "Comunicação" : /Oficial|Escrivão|Chefe de Secção|Assistente/.test(role) ? "Secretaria judicial" : "Administração";
+
+/** Dados de contacto fictícios: só aparecem quando existem (campos vazios não se mostram). */
+const extra: Record<string, Partial<Person>> = {
+  "marta-kiala": { room: "Gabinete 2.04", phone: "+244 222 410 204", showBirthday: false },
+  "domingos-tchipa": { room: "Gabinete 1.01", phone: "+244 222 410 101", mobile: "+244 923 000 101", showBirthday: true },
+  "isabel-ngola": { room: "Secretaria · balcão 3", showBirthday: true },
+  "luisa-chilombo": { room: "Gabinete da Secretária-Geral", phone: "+244 222 000 010", mobile: "+244 923 000 010" },
+  "celeste-manuel": { room: "Piso 3 · sala 3.10", phone: "+244 222 000 310" },
+  "esperanca-nzinga": { room: "Piso 2 · sala 2.20", phone: "+244 222 000 220" },
+  "augusta-ngueve": { room: "Gabinete da Presidência", phone: "+244 222 000 001" },
+  "rosa-cambuta": { showBirthday: true },
+};
 
 export const people: Person[] = rows.map(([id, name, role, unitId, birthday, joinedAt], i) => {
   const parts = name.split(" ");
   const ascii = name.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().split(" ").join(".");
-  return { id, slug: id, name, initials: parts[0][0] + parts[parts.length - 1][0], role, unitId, email: `${ascii}@exemplo.ao`, extension: String(2100 + i * 7), birthday, joinedAt };
+  return { id, slug: id, name, initials: parts[0][0] + parts[parts.length - 1][0], role, unitId, email: `${ascii}@exemplo.ao`, extension: String(2100 + i * 7), birthday, joinedAt, sector: sectorOf(role, unitId), ...extra[id] };
 });

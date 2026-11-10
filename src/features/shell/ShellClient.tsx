@@ -9,6 +9,7 @@ import { CommandPalette, ShortcutsHelp } from "./CommandPalette";
 import { GlobalBar } from "./GlobalBar";
 import { KeyboardShortcuts } from "./KeyboardShortcuts";
 import { NoticeBanner } from "./NoticeBanner";
+import { OfflineBanner } from "./OfflineBanner";
 import { NotificationsPanel } from "./NotificationsPanel";
 import { ShellProvider } from "./ShellContext";
 import type { ShellData } from "./types";
@@ -20,6 +21,7 @@ export function ShellClient({ data, children, footer, skipLabel }: { data: Shell
       <ToastProvider>
         <a href="#conteudo" className="btn btn-pri skip-link">{skipLabel}</a>
         <GlobalBar searchRef={searchRef} />
+        <OfflineBanner />
         <NoticeBanner />
         <main id="conteudo" tabIndex={-1} className="outline-none">{children}</main>
         {footer}

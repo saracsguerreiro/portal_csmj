@@ -141,3 +141,36 @@ export function UrlSheet({ param, title, status, children, footer }: { param: st
   };
   return <Sheet open onClose={close} title={title} status={status} footer={footer}>{children}</Sheet>;
 }
+
+/** Menu "⋯" com acções secundárias: abre ao clicar, setas percorrem, Escape fecha. */
+export function ActionMenu({ label, items }: { label: string; items: { label: string; onSelect: () => void; icon?: ReactNode }[] }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const btn = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", onDown);
+    requestAnimationFrame(() => ref.current?.querySelector<HTMLElement>("[role=menuitem]")?.focus());
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+  const onKey = (e: React.KeyboardEvent) => {
+    const els = Array.from(ref.current?.querySelectorAll<HTMLElement>("[role=menuitem]") ?? []);
+    const i = els.indexOf(document.activeElement as HTMLElement);
+    if (e.key === "Escape") { e.stopPropagation(); setOpen(false); btn.current?.focus(); }
+    if (e.key === "ArrowDown") { e.preventDefault(); els[(i + 1) % els.length]?.focus(); }
+    if (e.key === "ArrowUp") { e.preventDefault(); els[(i - 1 + els.length) % els.length]?.focus(); }
+  };
+  return (
+    <div ref={ref} className="relative" onKeyDown={onKey}>
+      <button ref={btn} type="button" className="icbtn" aria-label={label} title={label} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>
+      </button>
+      {open && (
+        <div role="menu" aria-label={label} className="menu absolute right-0 top-full z-30 mt-1 w-56">
+          {items.map((it) => <button key={it.label} type="button" role="menuitem" className="menu-item" onClick={() => { setOpen(false); it.onSelect(); }}>{it.icon}{it.label}</button>)}
+        </div>
+      )}
+    </div>
+  );
+}

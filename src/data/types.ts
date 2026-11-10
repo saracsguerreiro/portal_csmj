@@ -9,7 +9,7 @@ export type Permission =
   | "documents.manage" | "polls.create" | "climate.manage" | "access.grant" | "people.manage" | "services.design"
   | "metrics.view" | "system.configure";
 
-export type Person = { id: string; slug: string; name: string; initials: string; role: string; unitId: string; email: string; extension: string; birthday?: string; joinedAt?: string };
+export type Person = { id: string; slug: string; name: string; initials: string; role: string; unitId: string; email: string; extension: string; birthday?: string; joinedAt?: string; phone?: string; mobile?: string; room?: string; sector: string; showBirthday?: boolean };
 
 export type Scoped = { scopes: string[] };
 
@@ -26,7 +26,12 @@ export type EventMode = "online" | "presencial" | "hibrido";
 export type EventItem = Scoped & { id: string; slug: string; title: string; startsAt: string; endsAt: string; mode: EventMode; place?: string; address?: string; capacity?: number; taken?: number; deadline?: string; needsApproval?: boolean; publishedAt: string; organizer: string; tags: string[]; description: string[]; programme?: { time: string; title: string }[]; speakers?: string[]; showAttendees?: boolean };
 export type Rsvp = "none" | "going" | "waitlist" | "pending";
 export type Notice = Scoped & { id: string; title: string; number?: string; kind: "aviso" | "circular"; mandatory: boolean; publishedAt: string; version: number; body: string[]; changed?: number[]; updatedAt?: string; attachments?: { name: string; format: string; size: string }[] };
-export type DocumentItem = Scoped & { id: string; title: string; collection: string; type: string; format: string; size: string; updatedAt: string; isNew: boolean };
+export type DocumentItem = Scoped & {
+  id: string; title: string; collection: string; type: string; format: string; size: string; updatedAt: string; isNew: boolean;
+  collectionId: string; folder: string; description: string; number?: string; year: number; publishedAt: string; validUntil?: string; outOfDate?: boolean;
+  responsibleId: string; versions: { label: string; date: string }[]; tags: string[]; views: number; text: string; fileName: string;
+};
+export type Collection = { id: string; slug: string; name: string; description: string; icon: string; folders: { id: string; name: string; readers?: string[] }[] };
 export type FieldType = "text" | "textarea" | "number" | "date" | "daterange" | "select" | "radio" | "checks" | "yesno" | "file" | "person" | "unit";
 export type Field = { id: string; label: string; type: FieldType; required?: boolean; hint?: string; options?: string[]; min?: number; max?: number; section?: "dados" | "anexos" };
 /** Passo de decisão: por superior hierárquico ou por pessoa nomeada. */
@@ -59,3 +64,7 @@ export type Album = Scoped & { id: string; slug: string; title: string; happened
 export type Photo = { src: string; alt: string; caption: string; w: number; h: number; credit: string };
 export type VideoItem = Scoped & { id: string; title: string; poster: string; duration: string; publishedAt: string; tags: string[] };
 export type Edition = { id: string; number: number; sentAt: string; intro: string; sections: { title: string; items: { title: string; href: string; scopes: string[] }[] }[] };
+export type Poll = Scoped & { id: string; taskId?: string; question: string; description: string; closesAt: string; anonymous: boolean; options: string[]; results?: number[]; closed?: boolean; live?: boolean };
+export type ClimateQuestion = { id: string; text: string; kind: "scale5" | "scale10" | "single" | "multi" | "text"; options?: string[] };
+export type ClimateTheme = { id: string; title: string; questions: ClimateQuestion[] };
+export type Suggestion = { id: string; theme: string; text: string; status: "Recebida" | "Em análise" | "Respondida"; at: string; answer?: string; anonymous: boolean };

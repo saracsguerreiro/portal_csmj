@@ -7,6 +7,7 @@ import { services } from "@/data/services";
 import { units } from "@/data/units";
 import { dateLong, normalise, timeOf, dayOfMonth, monthLong } from "./format";
 import { inScope } from "./scope";
+import { canReadDoc } from "./docs";
 import type { Session } from "./session";
 import { searchAll } from "./api-pesquisa";
 
@@ -21,7 +22,7 @@ function catalogue(s: Session): Record<string, Cand> {
   const c: Record<string, Cand> = {};
   const ok = (scopes: string[]) => inScope({ scopes }, s.unit.id);
   services.forEach((x) => (c[`s:${x.id}`] = { type: "service", title: x.name, excerpt: `${x.description} Decide: ${x.decider}. Resposta média em ${x.avgDays} ${x.avgDays === 1 ? "dia" : "dias"}.`, href: `/servicos/pedir/${x.slug}`, scopes: ["nacional"] }));
-  documents.filter((d) => ok(d.scopes)).forEach((d) => (c[`d:${d.id}`] = { type: "document", title: d.title, excerpt: `${d.collection} · ${d.type} · ${d.format}, ${d.size}. Actualizado em ${dateLong(d.updatedAt)}.`, href: `/documentos/ficheiro/${d.id}`, scopes: d.scopes }));
+  documents.filter((d) => canReadDoc(s, d)).forEach((d) => (c[`d:${d.id}`] = { type: "document", title: d.title, excerpt: `${d.collection} · ${d.type} · ${d.format}, ${d.size}. Actualizado em ${dateLong(d.updatedAt)}.`, href: `/documentos/ficheiro/${d.id}`, scopes: d.scopes }));
   notices.filter((n) => ok(n.scopes)).forEach((n) => (c[`a:${n.id}`] = { type: "notice", title: n.number ? `${n.number} · ${n.title}` : n.title, excerpt: n.body[0], href: `/comunicacao/avisos/${n.id}`, scopes: n.scopes }));
   news.filter((n) => ok(n.scopes)).forEach((n) => (c[`n:${n.id}`] = { type: "news", title: n.title, excerpt: n.summary, href: `/comunicacao/noticias/${n.slug}`, scopes: n.scopes }));
   events.filter((e) => ok(e.scopes)).forEach((e) => (c[`e:${e.id}`] = { type: "event", title: e.title, excerpt: `${dateLong(e.startsAt)}, ${timeOf(e.startsAt)} · ${e.place ?? "Online"}. ${e.description[0]}`, href: `/comunicacao/eventos/${e.slug}`, scopes: e.scopes }));

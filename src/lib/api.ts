@@ -14,6 +14,7 @@ import { units } from "@/data/units";
 import type { MenuSection } from "@/data/types";
 import { dateLong, dayOfMonth, monthLong, monthShort, normalise, relative, timeOf, weekday } from "./format";
 import { inScope, scopeKind, scopeLabel } from "./scope";
+import { canReadDoc } from "./docs";
 import type { Session } from "./session";
 import { db, stateOf } from "./store";
 
@@ -37,7 +38,7 @@ export function getSinceLastVisit(s: Session) {
   const after = (iso: string) => new Date(iso) > new Date(prototypeLastVisit);
   return {
     news: news.filter((n) => inScope(n, s.unit.id) && after(n.publishedAt)).length,
-    documents: documents.filter((d) => inScope(d, s.unit.id) && d.isNew && after(d.updatedAt)).length,
+    documents: documents.filter((d) => canReadDoc(s, d) && d.isNew && after(d.updatedAt)).length,
     events: events.filter((e) => inScope(e, s.unit.id) && after(e.publishedAt)).length,
   };
 }
@@ -87,7 +88,7 @@ export async function getAgenda(s: Session) {
 
 export async function getNewDocuments(s: Session) {
   await wait(LATENCY.rest);
-  return documents.filter((d) => inScope(d, s.unit.id)).slice(0, 5).map((d) => ({ ...d, dateLabel: relative(d.updatedAt), scopeLabel: scopeLabel(d), scopeKind: scopeKind(d) }));
+  return documents.filter((d) => canReadDoc(s, d)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 5).map((d) => ({ ...d, dateLabel: relative(d.updatedAt), scopeLabel: scopeLabel(d), scopeKind: scopeKind(d) }));
 }
 
 export async function getPeopleBlock(s: Session) {
@@ -114,7 +115,7 @@ export function getNavigation(s: Session) {
   const statusLabel = (r: typeof req) => requestView(r).position ?? requestView(r).statusLabel;
   const firstNews = news.find((n) => inScope(n, s.unit.id));
   const nextEvent = events.filter((e) => inScope(e, s.unit.id) && e.startsAt >= "2026-11-10").sort((a, b) => a.startsAt.localeCompare(b.startsAt))[0];
-  const doc = documents.find((d) => inScope(d, s.unit.id));
+  const doc = [...documents].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).find((d) => canReadDoc(s, d));
   const newcomer = people.find((p) => p.joinedAt);
   const highlight: Record<string, HighlightCard | undefined> = {
     comunicacao: nextEvent && { label: "Próximo evento", title: nextEvent.title, detail: `${dayOfMonth(nextEvent.startsAt)} ${monthShort(nextEvent.startsAt)} · ${timeOf(nextEvent.startsAt)}`, href: `/comunicacao/eventos/${nextEvent.slug}` },
@@ -141,7 +142,7 @@ export function search(s: Session, q: string) {
   const hits: SearchHit[] = [];
   people.filter((p) => match(q, p.name, p.role)).slice(0, 3).forEach((p) => hits.push({ id: p.id, group: "people", title: p.name, detail: `${p.role} · ${units.find((u) => u.id === p.unitId)?.short}`, href: `/pessoas/${p.slug}` }));
   services.filter((x) => match(q, x.name, x.description, x.category)).slice(0, 3).forEach((x) => hits.push({ id: x.id, group: "services", title: x.name, detail: x.category, href: `/servicos/pedir/${x.slug}` }));
-  documents.filter((d) => inScope(d, s.unit.id) && match(q, d.title, d.collection, d.type)).slice(0, 3).forEach((d) => hits.push({ id: d.id, group: "documents", title: d.title, detail: `${d.collection} · ${d.format}`, href: `/documentos/ficheiro/${d.id}` }));
+  documents.filter((d) => canReadDoc(s, d) && match(q, d.title, d.collection, d.type)).slice(0, 3).forEach((d) => hits.push({ id: d.id, group: "documents", title: d.title, detail: `${d.collection} · ${d.format}`, href: `/documentos/ficheiro/${d.id}` }));
   [...news.filter((n) => inScope(n, s.unit.id) && match(q, n.title, n.summary)).map((n) => ({ id: n.id, title: n.title, detail: `Notícia · ${scopeLabel(n)}`, href: `/comunicacao/noticias/${n.slug}` })),
    ...events.filter((e) => inScope(e, s.unit.id) && match(q, e.title)).map((e) => ({ id: e.id, title: e.title, detail: `Evento · ${dayOfMonth(e.startsAt)} ${monthShort(e.startsAt)}`, href: `/comunicacao/eventos/${e.slug}` }))].slice(0, 3).forEach((n) => hits.push({ ...n, group: "news" }));
   menu.flatMap((m) => m.items.filter((i) => i.requires !== "approver" || s.profile.approver)).filter((i) => match(q, i.label, i.description)).slice(0, 3).forEach((i) => hits.push({ id: i.id, group: "pages", title: i.label, detail: i.description, href: i.href }));

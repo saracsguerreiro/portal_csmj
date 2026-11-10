@@ -1,14 +1,14 @@
 /** Estado do protótipo: substitui o que uma API real guardaria. No browser fica guardado em localStorage. */
 import { requests as seedRequests } from "@/data/services";
 import { absences as seedAbsences, bookings as seedBookings } from "@/data/rooms";
-import type { Absence, Booking, Comment, RequestItem } from "@/data/types";
+import type { Absence, Booking, Comment, RequestItem, Suggestion } from "@/data/types";
 
-type PersonState = { doneTasks: Set<string>; postponed: Set<string>; confirmed: Map<string, string>; readAll: boolean; read: Set<string>; shortcuts?: string[]; rsvp: Map<string, "going" | "waitlist" | "pending">; reacted: Map<string, string>; saved: Set<string>; votes: Map<string, string> };
+type PersonState = { doneTasks: Set<string>; postponed: Set<string>; confirmed: Map<string, string>; readAll: boolean; read: Set<string>; shortcuts?: string[]; rsvp: Map<string, "going" | "waitlist" | "pending">; reacted: Map<string, string>; saved: Set<string>; votes: Map<string, string>; favorites?: string[]; climate?: { answers: Record<string, string>; submitted: boolean }; suggestions?: Suggestion[]; welcomes: string[]; notifPrefs: Record<string, boolean>; profile: Record<string, string>; endedSessions: string[] };
 type Extra = { comments: Comment[] };
 type Db = { requests: RequestItem[]; bookings: Booking[]; absences: Absence[]; seq: number; trash: Record<string, Booking> };
 
 const fresh = (): Db => ({ requests: structuredClone(seedRequests), bookings: structuredClone(seedBookings), absences: structuredClone(seedAbsences), seq: 30, trash: {} });
-const emptyPerson = (): PersonState => ({ doneTasks: new Set(), postponed: new Set(), confirmed: new Map(), readAll: false, read: new Set(), rsvp: new Map(), reacted: new Map(), saved: new Set(), votes: new Map() });
+const emptyPerson = (): PersonState => ({ doneTasks: new Set(), postponed: new Set(), confirmed: new Map(), readAll: false, read: new Set(), rsvp: new Map(), reacted: new Map(), saved: new Set(), votes: new Map(), welcomes: [], notifPrefs: {}, profile: {}, endedSessions: [] });
 
 let people = new Map<string, PersonState>();
 export const extra: Extra = { comments: [] };

@@ -10,6 +10,7 @@ import { units } from "@/data/units";
 import { dateShort, normalise } from "./format";
 import { inPeriod } from "./api-comunicacao";
 import { inScope, scopeLabel } from "./scope";
+import { canReadDoc } from "./docs";
 import type { Session } from "./session";
 
 export type Group = "people" | "services" | "documents" | "news" | "events" | "pages" | "media";
@@ -72,7 +73,7 @@ export function searchAll(s: Session, q: string, f: { periodo?: string; quem?: s
   };
   people.forEach((p) => add({ id: p.id, group: "people", rawTitle: p.name, body: `${p.role} ${units.find((u) => u.id === p.unitId)?.name} ${p.extension}`, detail: `${p.role} · ${units.find((u) => u.id === p.unitId)?.short}`, href: `/pessoas/${p.slug}` }));
   services.forEach((x) => add({ id: x.id, group: "services", rawTitle: x.name, body: `${x.description} ${x.category}`, detail: `${x.category} · Decide: ${x.decider}`, href: `/servicos/pedir/${x.slug}` }));
-  documents.filter((d) => okScope(d.scopes) && (!f.ficheiro || d.format === f.ficheiro)).forEach((d) => add({ id: d.id, group: "documents", rawTitle: d.title, body: `${d.collection} ${d.type}`, detail: `${d.collection} · ${d.format} ${d.size} · ${dateShort(d.updatedAt)}`, href: `/documentos/ficheiro/${d.id}`, date: d.updatedAt, format: d.format }));
+  documents.filter((d) => canReadDoc(s, d) && okScope(d.scopes) && (!f.ficheiro || d.format === f.ficheiro)).forEach((d) => add({ id: d.id, group: "documents", rawTitle: d.title, body: `${d.collection} ${d.type} ${d.text}`, detail: `${d.collection} · ${d.format} ${d.size} · ${dateShort(d.updatedAt)}`, href: `/documentos/ficheiro/${d.id}`, date: d.updatedAt, format: d.format }));
   if (!f.ficheiro) {
     news.filter((n) => okScope(n.scopes)).forEach((n) => add({ id: n.id, group: "news", rawTitle: n.title, body: `${n.summary} ${(n.body ?? []).map((b) => ("text" in b ? b.text : "")).join(" ")}`, tags: n.tags, detail: `${scopeLabel(n)} · ${dateShort(n.publishedAt)}`, href: `/comunicacao/noticias/${n.slug}`, date: n.publishedAt }));
     notices.filter((n) => okScope(n.scopes)).forEach((n) => add({ id: n.id, group: "news", rawTitle: n.number ? `${n.number} · ${n.title}` : n.title, body: n.body.join(" "), detail: `Aviso · ${scopeLabel(n)} · ${dateShort(n.publishedAt)}`, href: `/comunicacao/avisos/${n.id}`, date: n.publishedAt }));

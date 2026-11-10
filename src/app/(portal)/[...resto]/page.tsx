@@ -23,7 +23,7 @@ export function generateStaticParams() {
     "/painel", "/painel/noticias/nova", "/painel/eventos/novo", "/painel/paginas/inicio/editar", "/painel/noticias/n1",
   ]);
   services.forEach(() => undefined);
-  return [...paths].map((p) => p.split("?")[0]).filter((p) => !built.has(p) && !p.startsWith("/servicos/pedir/")).map((p) => ({ resto: p.split("/").filter(Boolean) }));
+  return [...new Set([...paths].map((p) => p.split("?")[0]))].filter((p) => !built.has(p) && (p.startsWith("/ajuda") || p.startsWith("/painel"))).map((p) => ({ resto: p.split("/").filter(Boolean) }));
 }
 
 export default async function Page({ params }: { params: Promise<{ resto: string[] }> }) {

@@ -10,6 +10,8 @@ import { inScope } from "./scope";
 import { currentSession } from "./session";
 import { db, extra, resetStore, stateOf } from "./store";
 import { writePrefs } from "./prefs";
+import { favoriteKeys } from "./api-documentos";
+import { mySuggestionsSeed } from "@/data/institution";
 
 export class ApiError extends Error {
   constructor(message: string, public status = 400) { super(message); }
@@ -30,7 +32,15 @@ export type ActionBody =
   | { action: "reaction.set"; id: string; kind: string | null }
   | { action: "saved.toggle"; id: string }
   | { action: "poll.vote"; id: string; option: string }
-  | { action: "comment.add"; id: string; text: string; replyTo?: string };
+  | { action: "comment.add"; id: string; text: string; replyTo?: string }
+  | { action: "fav.toggle"; key: string }
+  | { action: "fav.order"; keys: string[] }
+  | { action: "climate.save"; answers: Record<string, string>; submit: boolean }
+  | { action: "suggestion.add"; theme: string; text: string; anonymous: boolean }
+  | { action: "welcome"; slug: string; text: string }
+  | { action: "notif.pref"; key: string; value: boolean }
+  | { action: "profile.save"; fields: Record<string, string> }
+  | { action: "session.end"; id: string };
 
 const stamp = () => new Intl.DateTimeFormat("pt-PT", { dateStyle: "short", timeStyle: "short", timeZone: "Africa/Luanda" }).format(new Date());
 
@@ -72,6 +82,29 @@ export function handleAction(body: ActionBody) {
       st.votes.set(body.id, body.option);
       st.doneTasks.add(body.id);
       break;
+    case "fav.toggle": {
+      const keys = favoriteKeys(s);
+      st.favorites = keys.includes(body.key) ? keys.filter((k) => k !== body.key) : [...keys, body.key];
+      break;
+    }
+    case "fav.order": st.favorites = body.keys; break;
+    case "climate.save":
+      st.climate = { answers: body.answers, submitted: body.submit };
+      if (body.submit) st.doneTasks.add("t-clima");
+      break;
+    case "suggestion.add": {
+      if (!body.text.trim()) fail("Escreva a sua sugestão.");
+      const list = st.suggestions ?? [...(mySuggestionsSeed[s.person.id] ?? [])];
+      st.suggestions = [{ id: `s${Date.now()}`, theme: body.theme, text: body.text.trim(), status: "Recebida", at: new Date().toISOString(), anonymous: body.anonymous }, ...list];
+      break;
+    }
+    case "welcome":
+      if (!body.text.trim()) fail("Escreva a sua mensagem de boas-vindas.");
+      if (!st.welcomes.includes(body.slug)) st.welcomes.push(body.slug);
+      break;
+    case "notif.pref": st.notifPrefs[body.key] = body.value; break;
+    case "profile.save": st.profile = { ...st.profile, ...body.fields }; break;
+    case "session.end": st.endedSessions.push(body.id); break;
     case "comment.add": {
       const text = body.text.trim();
       if (!text) fail("Escreva o comentário.");
