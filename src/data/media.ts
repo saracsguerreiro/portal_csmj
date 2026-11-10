@@ -13,13 +13,27 @@ export const albums: Album[] = [
 const sizes: [number, number][] = [[1200, 800], [800, 800], [1280, 720], [900, 1200], [1200, 800], [1000, 750]];
 const labels = ["Vista da sala", "Chegada dos participantes", "Sessão de abertura", "Mesa da presidência", "Momento de assinatura", "Fotografia de grupo"];
 
-export function photosOf(album: Album): Photo[] {
-  return Array.from({ length: Math.min(album.total, 18) }, (_, k) => {
-    const i = k + 1;
+export type PhotoMeta = { caption?: string; alt?: string; credit?: string; removed?: boolean };
+/** Alterações feitas no painel (legendas, ordem, fotografias retiradas ou enviadas). */
+export const mediaState: { meta: Record<string, PhotoMeta>; order: Record<string, string[]> } = { meta: {}, order: {} };
+export const SEED_ALBUM_IDS = new Set(albums.map((a) => a.id));
+
+export const baseKeys = (album: Album) => (SEED_ALBUM_IDS.has(album.id) ? Array.from({ length: Math.min(album.total, 18) }, (_, k) => `${album.id}:${k + 1}`) : []);
+
+/** Fotografias de um álbum, já com as alterações do painel. As últimas do primeiro álbum vêm sem texto alternativo. */
+export function photosOf(album: Album, withRemoved = false): Photo[] {
+  const keys = mediaState.order[album.id] ?? baseKeys(album);
+  return keys.map((key, k) => {
+    const part = key.split(":")[1];
+    const uploaded = part.startsWith("u");
+    const i = uploaded ? (Number(part.slice(1)) % 18) + 1 : Number(part);
     const [w, h] = sizes[i % 6];
-    const caption = `${labels[k % labels.length]} · ${album.title}`;
-    return { src: asset(`/album/f${i}.svg`), alt: caption, caption, w, h, credit: "Gabinete de comunicação" };
-  });
+    const caption = uploaded ? "" : `${labels[(i - 1) % labels.length]} · ${album.title}`;
+    const seedAlt = uploaded || (album.id === "a1" && i > 12) ? "" : caption;
+    const m = mediaState.meta[key] ?? {};
+    void k;
+    return { key, src: asset(`/album/f${i}.svg`), alt: m.alt ?? seedAlt, caption: m.caption ?? caption, w, h, credit: m.credit ?? "Gabinete de comunicação", removed: !!m.removed };
+  }).filter((p) => withRemoved || !p.removed);
 }
 
 export const videos: VideoItem[] = [

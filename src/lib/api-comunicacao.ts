@@ -119,7 +119,7 @@ export function getArticle(s: Session, slug: string) {
   if (!inScope(n, s.unit.id)) return { status: "denied" as const };
   const st = stateOf(s.person.id);
   const author = people.find((p) => p.id === n.authorId);
-  const blocks = (n.body ?? [{ t: "p", text: n.summary } as Block]).map((b) => resolveBlock(b, s)).filter(Boolean) as ResolvedBlock[];
+  const blocks = n.html ? [] : ((n.body ?? [{ t: "p", text: n.summary } as Block]).map((b) => resolveBlock(b, s)).filter(Boolean) as ResolvedBlock[]);
   const toc = blocks.filter((b) => b.t === "h2").map((b) => ({ id: (b as { id: string }).id, text: (b as { text: string }).text }));
   const all = [...seedComments, ...extra.comments].filter((c) => c.newsId === n.id);
   const related = news.filter((x) => x.id !== n.id && inScope(x, s.unit.id) && x.tags.some((v) => n.tags.includes(v))).slice(0, 3).map((x) => ({ ...withScope(x), dateLabel: dateLong(x.publishedAt) }));

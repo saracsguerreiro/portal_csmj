@@ -2,7 +2,7 @@
 
 import { SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button, Segmented, SelectField, Switch, useToast } from "@/design-system";
 import { t } from "@/i18n";
@@ -16,6 +16,7 @@ const p = t.prototype;
 export function PrototypeSwitcher() {
   const { data } = useShell();
   const router = useRouter();
+  const pathname = usePathname();
   const { show } = useToast();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -38,7 +39,7 @@ export function PrototypeSwitcher() {
           <p className="text-label font-semibold text-ink">{p.title}</p>
           <div className="flex flex-col gap-1">
             <span className="field-label">{p.area}</span>
-            <Segmented legend={p.area} value="portal" onChange={(v) => { if (v === "admin") router.push("/painel"); else router.push("/"); setOpen(false); }} options={[{ value: "portal", label: p.portal }, { value: "admin", label: p.admin }]} />
+            <Segmented legend={p.area} value={pathname.startsWith("/painel") ? "admin" : "portal"} onChange={(v) => { if (v === "admin") router.push("/painel"); else router.push("/"); setOpen(false); }} options={[{ value: "portal", label: p.portal }, { value: "admin", label: p.admin }]} />
           </div>
           <SelectField label={p.profile} options={data.profiles} value={data.profileId} onChange={(e) => save({ [COOKIE.profile]: e.target.value, [COOKIE.unit]: null })} />
           <SelectField label={p.unit} options={data.units} value={data.unit.value} onChange={(e) => save({ [COOKIE.unit]: e.target.value })} />

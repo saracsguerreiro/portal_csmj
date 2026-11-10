@@ -7,6 +7,7 @@ import { Comments, Reactions, Toc } from "@/features/comunicacao/discussion";
 import { ArticleActions } from "@/features/comunicacao/interactive";
 import { t } from "@/i18n";
 import { getArticle } from "@/lib/api-comunicacao";
+import { sanitize } from "@/lib/sanitize";
 import { useSession } from "@/lib/client";
 import { useQuery } from "@/lib/use-query";
 import { news } from "@/data/news";
@@ -41,7 +42,7 @@ export function ArticleView({ slug }: { slug: string }) {
             <NewsCover slug={a.slug} src={a.cover} alt={a.coverAlt} className="aspect-video rounded-[24px]" eager />
             {a.caption && <figcaption className="mt-2 text-label text-subtle">{a.caption}</figcaption>}
           </figure>
-          <RichContent blocks={data.blocks} visibleSlugs={data.visibleSlugs} />
+          {a.html ? <div className="prose-read" dangerouslySetInnerHTML={{ __html: sanitize(a.html) }} /> : <RichContent blocks={data.blocks} visibleSlugs={data.visibleSlugs} />}
           <div className="no-print mt-10 flex flex-col gap-10 border-t border-line pt-8">
             <Reactions id={a.id} base={data.reactions} mine={data.myReaction} />
             <Comments newsId={a.id} initial={data.comments} people={data.people} me={data.me} />
@@ -50,12 +51,12 @@ export function ArticleView({ slug }: { slug: string }) {
         <aside className="no-print hidden xl:block">
           <div className="sticky top-24 flex flex-col gap-8">
             {data.toc.length >= 3 && <Toc items={data.toc} />}
-            <ArticleActions id={a.id} saved={data.saved} canEdit={data.canEdit} editHref={`/painel/noticias/${a.id}`} layout="column" />
+            <ArticleActions id={a.id} saved={data.saved} canEdit={data.canEdit} editHref={`/painel/noticias/editar?id=${a.id}`} layout="column" />
           </div>
         </aside>
       </article>
       <div className="no-print sticky bottom-[calc(56px+env(safe-area-inset-bottom))] z-30 -mx-4 mt-8 border-t border-line bg-surface md:bottom-0 md:mx-0 xl:hidden">
-        <ArticleActions id={a.id} saved={data.saved} canEdit={data.canEdit} editHref={`/painel/noticias/${a.id}`} layout="bar" />
+        <ArticleActions id={a.id} saved={data.saved} canEdit={data.canEdit} editHref={`/painel/noticias/editar?id=${a.id}`} layout="bar" />
       </div>
       {data.related.length > 0 && (
         <section aria-labelledby="leia-tambem" className="no-print mt-12 border-t border-line pt-8">

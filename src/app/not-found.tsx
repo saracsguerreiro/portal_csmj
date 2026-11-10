@@ -1,6 +1,6 @@
 import { PortalShell } from "@/features/shell/PortalShell";
-import { ErrorPage } from "@/features/erros/ErrorPage";
+import { SmartNotFound } from "@/features/erros/SmartNotFound";
 
 export default function NotFound() {
-  return <PortalShell><ErrorPage kind="404" /></PortalShell>;
+  return <PortalShell><SmartNotFound /></PortalShell>;
 }

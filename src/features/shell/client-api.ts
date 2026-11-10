@@ -1,7 +1,8 @@
 import { COOKIE } from "@/lib/cookies";
 import { handleAction, handlePrefs, handleService, type ActionBody, type ServiceBody } from "@/lib/handlers";
 import { bump } from "@/lib/prefs";
-import { persist } from "@/lib/store";
+import { db, persist } from "@/lib/store";
+import { syncPublic } from "@/lib/content-sync";
 
 const latency = () => new Promise((r) => setTimeout(r, 120));
 const GENERIC = "Não foi possível guardar. Verifique a ligação e tente outra vez.";
@@ -11,6 +12,7 @@ async function call<T>(fn: () => T): Promise<T> {
   await latency();
   try {
     const out = fn();
+    syncPublic(db());
     persist();
     bump();
     return out;
@@ -73,4 +75,10 @@ export function downloadIcs(slug?: string) {
   a.download = `${slug ?? "eventos-csmj"}.ics`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+import { handleAdmin, type AdminBody } from "@/lib/admin-handlers";
+
+export async function postAdmin<T = Record<string, unknown>>(body: AdminBody): Promise<T> {
+  return call(() => handleAdmin(body) as T);
 }

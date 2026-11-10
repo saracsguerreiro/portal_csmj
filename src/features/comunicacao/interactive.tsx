@@ -1,6 +1,7 @@
 "use client";
 
 import { Bookmark, BookmarkCheck, Link2, Pencil, Play, Printer, X } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, ButtonLink, IconButton, Radio, StatusBadge, useToast } from "@/design-system";
@@ -133,7 +134,7 @@ export function ArticleActions({ id, saved, canEdit, editHref, layout }: { id: s
       <li className={layout === "bar" ? "flex flex-1" : ""}><button type="button" className={cls} onClick={share}><Link2 size={20} aria-hidden />{n.share}</button></li>
       <li className={layout === "bar" ? "flex flex-1" : ""}><button type="button" className={cls} aria-pressed={isSaved} onClick={toggle}>{isSaved ? <BookmarkCheck size={20} aria-hidden /> : <Bookmark size={20} aria-hidden />}{isSaved ? n.saved : n.save}</button></li>
       <li className={layout === "bar" ? "flex flex-1" : ""}><button type="button" className={cls} onClick={() => window.print()}><Printer size={20} aria-hidden />{n.print}</button></li>
-      {canEdit && <li className={layout === "bar" ? "flex flex-1" : ""}><a className={cls} href={editHref}><Pencil size={20} aria-hidden />{n.edit}</a></li>}
+      {canEdit && <li className={layout === "bar" ? "flex flex-1" : ""}><Link className={cls} href={editHref}><Pencil size={20} aria-hidden />{n.edit}</Link></li>}
     </ul>
   );
 }

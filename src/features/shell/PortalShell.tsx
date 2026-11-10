@@ -3,10 +3,9 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import type { ReactNode } from "react";
-import { profiles } from "@/data/profiles";
-import { units } from "@/data/units";
 import { t } from "@/i18n";
-import { getNavigation, getNotifications, getPendingNoticesSync } from "@/lib/api";
+import { getNavigation } from "@/lib/api";
+import { shellData } from "./shell-data";
 import { useSession, useVersion } from "@/lib/client";
 import { Footer } from "./Footer";
 import { ShellClient } from "./ShellClient";
@@ -36,24 +35,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
       { id: "g-inicio", label: t.shell.home, href: "/", group: "goto" },
       ...nav.sections.flatMap((m) => m.items.map((i) => ({ id: `g-${m.id}-${i.id}`, label: i.label, detail: m.label, href: i.href, group: "goto" as const }))),
     ];
-    return {
-      person: { name: s.person.name, initials: s.person.initials, role: s.person.role },
-      unit: { value: s.unit.id, label: s.unit.short },
-      myUnits: s.myUnits.map((u) => ({ value: u.id, label: u.short })),
-      sections: nav.sections,
-      highlight: nav.highlight,
-      notifications: getNotifications(s).map((n) => ({ id: n.id, kind: n.kind, text: n.text, atLabel: n.atLabel, href: n.href, mention: n.mention, read: n.read })),
-      pendingNotices: getPendingNoticesSync(s).map((n) => ({ id: n.id, title: n.title, number: n.number, body: n.body, version: n.version, publishedLabel: n.publishedLabel, scopeLabel: n.scopeLabel, scopeKind: n.scopeKind })),
-      canUseAdmin: s.canUseAdmin,
-      theme: s.theme,
-      density: s.density,
-      blockingNotice: s.blockingNotice,
-      failing: s.failing,
-      profileId: s.profile.id,
-      profiles: profiles.map((p) => ({ value: p.id, label: p.label })),
-      units: units.map((u) => ({ value: u.id, label: u.short })),
-      palette,
-    };
+    return shellData(s, palette);
   }, [s, v]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <ShellClient key={`${s.person.id}-${s.unit.id}`} data={data} footer={<Footer />} skipLabel={t.shell.skip}>{children}</ShellClient>;

@@ -20,7 +20,7 @@ export type Block =
   | { t: "video"; title: string; poster: string; duration: string } | { t: "details"; title: string; text: string }
   | { t: "columns"; cols: [string, string] } | { t: "file"; name: string; format: string; size: string } | { t: "button"; label: string; href: string }
   | { t: "live-poll"; taskId: string } | { t: "live-person"; personId: string } | { t: "live-event"; eventId: string } | { t: "live-service"; serviceId: string };
-export type NewsItem = Scoped & { id: string; slug: string; title: string; summary: string; publishedAt: string; cover: string; coverAlt: string; tags: string[]; authorId: string; caption?: string; body?: Block[] };
+export type NewsItem = Scoped & { id: string; slug: string; title: string; summary: string; publishedAt: string; cover: string; coverAlt: string; tags: string[]; authorId: string; caption?: string; body?: Block[]; html?: string };
 export type Comment = { id: string; newsId: string; authorId: string; text: string; at: string; replyTo?: string };
 export type EventMode = "online" | "presencial" | "hibrido";
 export type EventItem = Scoped & { id: string; slug: string; title: string; startsAt: string; endsAt: string; mode: EventMode; place?: string; address?: string; capacity?: number; taken?: number; deadline?: string; needsApproval?: boolean; publishedAt: string; organizer: string; tags: string[]; description: string[]; programme?: { time: string; title: string }[]; speakers?: string[]; showAttendees?: boolean };
@@ -61,10 +61,16 @@ export type Holiday = { date: string; name: string };
 export type ApiList<T> = { data: T[]; meta: { total: number } };
 
 export type Album = Scoped & { id: string; slug: string; title: string; happenedAt: string; description: string; tags: string[]; cover: string; coverAlt: string; total: number };
-export type Photo = { src: string; alt: string; caption: string; w: number; h: number; credit: string };
+export type Photo = { src: string; alt: string; caption: string; w: number; h: number; credit: string; key?: string; removed?: boolean };
 export type VideoItem = Scoped & { id: string; title: string; poster: string; duration: string; publishedAt: string; tags: string[] };
 export type Edition = { id: string; number: number; sentAt: string; intro: string; sections: { title: string; items: { title: string; href: string; scopes: string[] }[] }[] };
 export type Poll = Scoped & { id: string; taskId?: string; question: string; description: string; closesAt: string; anonymous: boolean; options: string[]; results?: number[]; closed?: boolean; live?: boolean };
 export type ClimateQuestion = { id: string; text: string; kind: "scale5" | "scale10" | "single" | "multi" | "text"; options?: string[] };
 export type ClimateTheme = { id: string; title: string; questions: ClimateQuestion[] };
 export type Suggestion = { id: string; theme: string; text: string; status: "Recebida" | "Em análise" | "Respondida"; at: string; answer?: string; anonymous: boolean };
+export type ContentStatus = "rascunho" | "espera" | "agendado" | "publicado" | "despublicado" | "lixeira";
+export type ContentMeta = {
+  status: ContentStatus; authorId: string; langs: string[]; featured: boolean; comments: boolean; aiAssisted: boolean;
+  lockedBy?: string; scheduledAt?: string; updatedAt: string; returnedComment?: string;
+  history: { at: string; byId: string; label: string; title: string }[];
+};

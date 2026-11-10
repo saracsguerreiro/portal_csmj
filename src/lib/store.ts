@@ -1,13 +1,16 @@
 /** Estado do protótipo: substitui o que uma API real guardaria. No browser fica guardado em localStorage. */
+import type { Album, VideoItem } from "@/data/types";
 import { requests as seedRequests } from "@/data/services";
 import { absences as seedAbsences, bookings as seedBookings } from "@/data/rooms";
 import type { Absence, Booking, Comment, RequestItem, Suggestion } from "@/data/types";
+import { seedAdminEvents, seedAdminNews, seedAdminNotices, type AdminEvent, type AdminNews, type AdminNotice } from "@/data/content";
+import { syncPublic } from "./content-sync";
 
 type PersonState = { doneTasks: Set<string>; postponed: Set<string>; confirmed: Map<string, string>; readAll: boolean; read: Set<string>; shortcuts?: string[]; rsvp: Map<string, "going" | "waitlist" | "pending">; reacted: Map<string, string>; saved: Set<string>; votes: Map<string, string>; favorites?: string[]; climate?: { answers: Record<string, string>; submitted: boolean }; suggestions?: Suggestion[]; welcomes: string[]; notifPrefs: Record<string, boolean>; profile: Record<string, string>; endedSessions: string[] };
 type Extra = { comments: Comment[] };
-type Db = { requests: RequestItem[]; bookings: Booking[]; absences: Absence[]; seq: number; trash: Record<string, Booking> };
+type Db = { requests: RequestItem[]; bookings: Booking[]; absences: Absence[]; seq: number; trash: Record<string, Booking>; news: AdminNews[]; events: AdminEvent[]; notices: AdminNotice[]; photoMeta: Record<string, { caption?: string; alt?: string; credit?: string; removed?: boolean }>; albumOrder: Record<string, string[]>; extraAlbums: Album[]; extraVideos: VideoItem[]; editions: { id: string; status: "rascunho" | "enviada" | "cancelada"; intro: string; removed: string[]; order: string[]; sentAt?: string }[] };
 
-const fresh = (): Db => ({ requests: structuredClone(seedRequests), bookings: structuredClone(seedBookings), absences: structuredClone(seedAbsences), seq: 30, trash: {} });
+const fresh = (): Db => ({ requests: structuredClone(seedRequests), bookings: structuredClone(seedBookings), absences: structuredClone(seedAbsences), seq: 30, trash: {}, news: seedAdminNews(), events: seedAdminEvents(), notices: seedAdminNotices(), photoMeta: {}, albumOrder: {}, extraAlbums: [], extraVideos: [], editions: [{ id: "ed-45", status: "rascunho", intro: "Esta semana: a nova sala de audiências em Benguela, a sessão sobre justiça digital e as datas a reter até ao fim do mês.", removed: [], order: [] }] });
 const emptyPerson = (): PersonState => ({ doneTasks: new Set(), postponed: new Set(), confirmed: new Map(), readAll: false, read: new Set(), rsvp: new Map(), reacted: new Map(), saved: new Set(), votes: new Map(), welcomes: [], notifPrefs: {}, profile: {}, endedSessions: [] });
 
 let people = new Map<string, PersonState>();
@@ -28,6 +31,7 @@ export function resetStore() {
   database = fresh();
   people = new Map();
   extra.comments = [];
+  syncPublic(database);
   persist();
 }
 
@@ -51,5 +55,6 @@ export function restore() {
     }));
     extra.comments = data.comments ?? [];
     database = { ...fresh(), ...data.db };
+    syncPublic(database);
   } catch { /* dados antigos ou corrompidos: começa de novo */ }
 }
