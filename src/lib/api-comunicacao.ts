@@ -2,7 +2,7 @@ import { prototypeLastVisit, prototypeToday, holidays } from "@/data/calendar";
 import { comments as seedComments, seedReactions } from "@/data/comments";
 import { events } from "@/data/events";
 import { albums, editions, photosOf, videos } from "@/data/media";
-import { mediaPhotoOf } from "@/data/photos";
+import { eventPhotoOf, mediaPhotoOf } from "@/data/photos";
 import { news } from "@/data/news";
 import { notices } from "@/data/notices";
 import { people } from "@/data/people";
@@ -223,13 +223,25 @@ export function getAlbum(s: Session, slug: string) {
 
 export function listEditions(s: Session, f: { q?: string; edicao?: string }) {
   if (s.failing) throw new Error("falha simulada");
+  /** Cada peça leva a imagem e os dados da notícia ou do evento a que aponta. */
+  const enrich = (i: { title: string; href: string; scopes: string[] }) => {
+    const slug = i.href.split("/").pop() ?? "";
+    const nw = i.href.includes("/noticias/") ? news.find((x) => x.slug === slug) : undefined;
+    const evt = i.href.includes("/eventos/") ? events.find((x) => x.slug === slug) : undefined;
+    return {
+      ...i, scopeLabel: scopeLabel(i), scopeKind: scopeKind(i), kind: evt ? ("evento" as const) : ("noticia" as const),
+      cover: nw?.cover ?? (evt ? eventPhotoOf(evt.id)?.src : undefined), summary: nw?.summary ?? evt?.description[0] ?? "",
+      day: evt ? dayOfMonth(evt.startsAt) : undefined, month: evt ? monthShort(evt.startsAt) : undefined, time: evt ? timeOf(evt.startsAt) : undefined,
+    };
+  };
   const scoped = editions.map((e) => ({
     ...e, dateLabel: dateLong(e.sentAt), monthGroup: `${monthLong(e.sentAt)} de ${e.sentAt.slice(0, 4)}`,
-    sections: e.sections.map((x) => ({ ...x, items: x.items.filter((i) => inScope(i, s.unit.id)).map((i) => ({ ...i, scopeLabel: scopeLabel(i), scopeKind: scopeKind(i) })) })).filter((x) => x.items.length),
+    sections: e.sections.map((x) => ({ ...x, items: x.items.filter((i) => inScope(i, s.unit.id)).map(enrich) })).filter((x) => x.items.length),
   }));
-  const withCount = scoped.map((e) => ({ ...e, count: e.sections.reduce((a, x) => a + x.items.length, 0) }));
+  const withCount = scoped.map((e) => ({ ...e, count: e.sections.reduce((a, x) => a + x.items.length, 0), covers: e.sections.flatMap((x) => x.items.map((i) => i.cover)).filter(Boolean).slice(0, 3) as string[] }));
   const latest = withCount[0];
-  const archive = withCount.slice(1).filter((e) => has(f.q, e.intro, String(e.number), ...e.sections.flatMap((x) => x.items.map((i) => i.title))));
+  const current = withCount.find((e) => e.id === f.edicao) ?? latest;
+  const archive = withCount.filter((e) => has(f.q, e.intro, String(e.number), ...e.sections.flatMap((x) => x.items.map((i) => i.title))));
   const groups = Array.from(new Set(archive.map((e) => e.monthGroup))).map((label) => ({ label, items: archive.filter((e) => e.monthGroup === label) }));
-  return { latest, groups, open: withCount.find((e) => e.id === f.edicao) };
+  return { latest, current, isLatest: current?.id === latest?.id, groups, total: withCount.length, open: withCount.find((e) => e.id === f.edicao) };
 }

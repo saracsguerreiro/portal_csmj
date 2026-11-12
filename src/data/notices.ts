@@ -2,6 +2,20 @@ import type { Notice } from "./types";
 
 export const notices: Notice[] = [
   {
+    id: "circular-15-2026", title: "Actualização do regulamento de férias e faltas", number: "Circular n.º 15/2026", kind: "circular", mandatory: true, publishedAt: "2026-11-07T10:00:00+01:00", version: 1, scopes: ["nacional"],
+    attachments: [{ name: "Regulamento de férias e faltas (versão 2026)", format: "PDF", size: "420 KB" }],
+    body: ["O regulamento de férias e faltas foi actualizado. Os pedidos de férias passam a ser feitos só pela intranet, com 15 dias de antecedência.", "As faltas justificadas são comunicadas no próprio dia à chefia directa e registadas no serviço «Ausência justificada»."],
+  },
+  {
+    id: "circular-16-2026", title: "Plano de contingência para a época das chuvas", number: "Circular n.º 16/2026", kind: "circular", mandatory: true, publishedAt: "2026-11-06T09:00:00+01:00", version: 1, scopes: ["nacional"],
+    body: ["Até 31 de Março, cada comarca mantém actualizado o plano de contingência para cortes de energia e acessos condicionados.", "Os prazos processuais afectados por encerramento de instalações são comunicados à Secretaria-Geral no próprio dia."],
+  },
+  {
+    id: "circular-17-2026", title: "Protecção de dados pessoais nos processos electrónicos", number: "Circular n.º 17/2026", kind: "circular", mandatory: true, publishedAt: "2026-11-04T09:00:00+01:00", version: 1, scopes: ["nacional"],
+    attachments: [{ name: "Guia de protecção de dados", format: "PDF", size: "310 KB" }],
+    body: ["Os documentos com dados pessoais sensíveis são marcados como reservados no sistema JURIS e só podem ser consultados pelas partes e pelos intervenientes autorizados.", "As cópias em papel destes documentos são guardadas em armário fechado."],
+  },
+  {
     id: "circular-12-2026", title: "Horário de funcionamento no período festivo", number: "Circular n.º 12/2026", kind: "circular", mandatory: true, publishedAt: "2026-11-03T09:00:00+01:00", version: 1, attachments: [{ name: "Modelo de escala de turno", format: "DOCX", size: "36 KB" }], scopes: ["nacional"],
     body: [
       "Entre 24 de Dezembro e 2 de Janeiro, as secretarias judiciais funcionam em horário reduzido, das 8h às 13h, salvo nos dias de feriado nacional.",

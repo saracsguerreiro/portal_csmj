@@ -19,7 +19,7 @@ export function ShellClient({ data, children, footer, skipLabel }: { data: Shell
   const pathname = usePathname();
   const home = pathname === "/";
   /** Páginas que desenham os seus próprios painéis (como a Início). */
-  const bare = home || /^\/comunicacao\/noticias\/[^/]+\/?$/.test(pathname);
+  const bare = home || /^\/comunicacao\/noticias\/[^/]+\/?$/.test(pathname) || /^\/comunicacao\/newsletter\/?$/.test(pathname);
   return (
     <ShellProvider data={data}>
       <ToastProvider>

@@ -187,6 +187,11 @@ td[data-out="true"] .mini-day { background: transparent; color: var(--ds-content
 .mini-mark { display: inline-block; width: 6px; height: 6px; background: var(--ds-color-brand-700); }
 .mini-day[data-today="true"] .mini-mark { background: #fff; }
 .mini-day:focus-visible { outline: 3px solid var(--ds-accent-gold); outline-offset: 1px; }
+.ed-card { display: flex; gap: 14px; padding: 12px; border: 1px solid var(--ds-border-default); background: var(--ds-surface-default); transition: border-color var(--ds-duration-fast) var(--ds-ease), transform 220ms var(--ds-ease); }
+.ed-card:hover { border-color: var(--ds-content-strong); transform: translateX(3px); }
+.ed-card.is-on { border-color: var(--ds-color-brand-700); box-shadow: inset 4px 0 0 var(--ds-color-brand-700); }
+.ed-num { display: grid; place-items: center; width: 56px; height: 56px; flex: none; background: var(--ds-surface-2); color: var(--ds-content-strong); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ed-card.is-on .ed-num { background: var(--ds-color-brand-700); color: #fff; }
 .sq-arrow { flex: none; display: grid; place-items: center; width: 48px; height: 48px; background: var(--ds-color-brand-700); color: #fff; transition: background var(--ds-duration-fast) var(--ds-ease); }
 .sq-arrow:hover { background: var(--ds-color-brand-800); }
 .sq-arrow svg { transition: transform 260ms cubic-bezier(.2,.7,.2,1); }

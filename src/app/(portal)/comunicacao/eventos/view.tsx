@@ -38,7 +38,7 @@ export function EventsView() {
         />
       )}
       {!data ? <LoadError what={ev.what}><BlockRetry /></LoadError> : (
-        <div className="grid items-start gap-8 lg:grid-cols-[minmax(384px,504px)_minmax(0,1fr)] lg:gap-10">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(420px,554px)_minmax(0,1fr)] lg:gap-10">
           <section aria-labelledby="cal-mes" className="border border-line p-4 md:p-5 lg:sticky lg:top-4">
             <div className="mb-4 flex items-center justify-between gap-2">
               <Link href={withParams(BASE, f, { mes: data.calendar.prev, dia: undefined })} className="icbtn" aria-label={ev.prevMonth}><ChevronLeft size={20} aria-hidden /></Link>

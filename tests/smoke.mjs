@@ -77,13 +77,22 @@ await axeRun("eventos");
 await go("/comunicacao/eventos");
 ok("eventos: «A decorrer» a vermelho com o dia em quadrado vermelho", await p.locator("#a-decorrer").evaluate((e) => getComputedStyle(e).color) === "rgb(133, 36, 24)" && await p.locator('section[aria-labelledby="a-decorrer"] article > span').first().evaluate((e) => getComputedStyle(e).backgroundColor) === "rgb(133, 36, 24)");
 const calW = await p.locator('section[aria-labelledby="cal-mes"]').evaluate((e) => e.getBoundingClientRect().width);
-ok("eventos: calendário maior (≥ 480 px a 1440)", calW >= 480, String(Math.round(calW)));
+ok("eventos: calendário maior (≥ 528 px a 1440)", calW >= 528, String(Math.round(calW)));
 if (OUT) await p.screenshot({ path: `${OUT}/eventos-1440.png` });
+await go("/comunicacao/avisos"); ok("avisos: circulares por confirmar visíveis ao abrir", (await p.locator("main").getByText(/Circular n\.º 1[5-7]\/2026/).count()) >= 3);
+if (OUT) await p.screenshot({ path: `${OUT}/avisos-por-confirmar-1440.png`, fullPage: true });
 await go("/comunicacao/avisos?separador=circulares"); ok("avisos: mais circulares", (await p.getByText(/Circular n\.º/).count()) >= 8); await axeRun("avisos");
 if (OUT) await p.screenshot({ path: `${OUT}/avisos-1440.png`, fullPage: true });
 await go("/comunicacao/multimedia"); ok("multimédia: mosaico com galerias e vídeos", await p.getByText("Galeria de fotografias").count() >= 2 && await p.locator("main ul.grid li button").count() >= 2);
 await axeRun("multimédia");
 if (OUT) await p.screenshot({ path: `${OUT}/multimedia-1440.png`, fullPage: true });
+await go("/comunicacao/newsletter");
+ok("newsletter: edição com cabeçalho grená e destaque em fotografia", await p.getByRole("heading", { name: /Edição n\.º 44/ }).count() >= 1 && await p.locator("article .sq-arrow").count() >= 1);
+ok("newsletter: arquivo em cartões com miniaturas", await p.locator(".ed-card").count() >= 4 && await p.locator(".ed-card img").count() >= 3);
+await axeRun("newsletter");
+if (OUT) await p.screenshot({ path: `${OUT}/newsletter-1440.png`, fullPage: true });
+await p.locator(".ed-card", { hasText: "Edição n.º 43" }).click(); await p.waitForURL(/edicao=ed-43/);
+ok("newsletter: escolher uma edição mostra-a à esquerda", await p.locator("#edicao-titulo").innerText() === "Edição n.º 43" && await p.getByRole("link", { name: "Ver a última edição" }).count() === 1);
 await go("/servicos"); if (OUT) await p.screenshot({ path: `${OUT}/servicos-1440.png` });
 
 /* Painel */
@@ -96,7 +105,7 @@ await prefs({ csmj_tema: "dark", csmj_perfil: null }); await go("/"); await axeR
 /* Telemóvel */
 const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const g = await m.newPage(); g.on("pageerror", (e) => errs.push(`PE m ${e.message.slice(0, 120)}`));
-for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/servicos", "/documentos", "/pessoas", "/painel/noticias"]) {
+for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/comunicacao/newsletter", "/servicos", "/documentos", "/pessoas", "/painel/noticias"]) {
   await g.goto(U + u, { waitUntil: "networkidle" }); await g.waitForTimeout(400);
   const o = await g.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
   ok(`390 sem deslocamento lateral ${u}`, o[0] <= o[1], o.join("/"));
