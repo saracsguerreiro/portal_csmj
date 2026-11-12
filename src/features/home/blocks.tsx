@@ -106,46 +106,41 @@ export function AgendaBlock({ session }: { session: Session }) {
   return (
     <section aria-label={h.agenda.title}>
       <BlockTitle title={h.agenda.title} href="/comunicacao/eventos" link={h.agenda.seeAll} />
-      <article className="grid gap-5 sm:grid-cols-2 sm:items-center">
-        <Link href={`/comunicacao/eventos/${main.slug}`} className="group relative block overflow-hidden bg-surface-2" tabIndex={-1} aria-hidden>
-          {main.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={main.photo.src} alt="" className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />}
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Link href={`/comunicacao/eventos/${main.slug}`} className="group relative block min-h-[220px] overflow-hidden bg-surface-2" tabIndex={-1} aria-hidden>
+          {main.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={main.photo.src} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />}
           <span className="absolute left-0 top-0 flex flex-col items-center bg-[var(--ds-color-brand-700)] px-4 py-2.5 text-white">
             <span className="text-[30px] font-semibold leading-8 tabular-nums">{main.day}</span>
             <span className="text-label font-semibold uppercase tracking-[0.06em]">{main.month}</span>
           </span>
         </Link>
-        <div className="flex flex-col gap-3">
-          <p className="text-label font-semibold uppercase tracking-[0.06em] text-brand">{h.agenda.next}</p>
-          <h3 className="text-[22px] font-semibold leading-7 tracking-[-0.01em]"><Link href={`/comunicacao/eventos/${main.slug}`} className="hover:underline">{main.title}</Link></h3>
-          <ul className="flex flex-col gap-1.5 text-ui text-copy">
-            <li className="flex items-center gap-2"><CalendarDays size={16} aria-hidden className="text-subtle" /><span className="first-letter:uppercase">{main.weekday}</span></li>
-            <li className="flex items-center gap-2"><Clock size={16} aria-hidden className="text-subtle" />{main.time}</li>
-            <li className="flex items-center gap-2"><MainIcon size={16} aria-hidden className="text-subtle" />{h.agenda[main.mode]}</li>
-          </ul>
-        </div>
-      </article>
-      {rest.length > 0 && (
-        <ul className="mt-6 flex flex-col divide-y divide-[var(--ds-border-default)] border-t border-[var(--ds-border-default)]">
-          {rest.map((e) => {
-            const Icon = modeIcon[e.mode];
-            return (
-              <li key={e.id}>
-                <Link href={`/comunicacao/eventos/${e.slug}`} className="row-link flex items-center gap-4 py-3.5">
-                  <DateMark day={e.day} month={e.month} />
-                  <span className="min-w-0">
-                    <span className="row-title block font-semibold text-ink">{e.title}</span>
-                    <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-caption text-subtle">
-                      <span>{e.time}</span>
-                      <span className="scope"><Icon size={14} aria-hidden />{h.agenda[e.mode]}</span>
-                      <ScopeTag kind={e.scopeKind}>{e.scopeLabel}</ScopeTag>
+        <div className="flex min-w-0 flex-col">
+          <article className="flex flex-col gap-2">
+            <p className="text-label font-semibold uppercase tracking-[0.06em] text-brand">{h.agenda.next}</p>
+            <h3 className="text-[20px] font-semibold leading-7 tracking-[-0.01em]"><Link href={`/comunicacao/eventos/${main.slug}`} className="hover:underline">{main.title}</Link></h3>
+            <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-ui text-copy">
+              <span className="inline-flex items-center gap-1.5"><CalendarDays size={16} aria-hidden className="text-subtle" /><span className="first-letter:uppercase">{main.weekday}</span></span>
+              <span className="inline-flex items-center gap-1.5"><Clock size={16} aria-hidden className="text-subtle" />{main.time}</span>
+              <span className="inline-flex items-center gap-1.5"><MainIcon size={16} aria-hidden className="text-subtle" />{h.agenda[main.mode]}</span>
+            </p>
+          </article>
+          {rest.length > 0 && (
+            <ul className="mt-5 flex flex-col divide-y divide-[var(--ds-border-default)] border-t border-[var(--ds-border-default)]" aria-label={h.agenda.following}>
+              {rest.slice(0, 2).map((e) => (
+                <li key={e.id}>
+                  <Link href={`/comunicacao/eventos/${e.slug}`} className="row-link flex items-center gap-3 py-3">
+                    <DateMark day={e.day} month={e.month} />
+                    <span className="min-w-0">
+                      <span className="row-title block font-semibold leading-5 text-ink">{e.title}</span>
+                      <span className="mt-0.5 block text-caption text-subtle">{e.time} · {h.agenda[e.mode]}</span>
                     </span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </section>
   );
 }

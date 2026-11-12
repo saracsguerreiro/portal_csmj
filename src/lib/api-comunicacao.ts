@@ -2,6 +2,7 @@ import { prototypeLastVisit, prototypeToday, holidays } from "@/data/calendar";
 import { comments as seedComments, seedReactions } from "@/data/comments";
 import { events } from "@/data/events";
 import { albums, editions, photosOf, videos } from "@/data/media";
+import { mediaPhotoOf } from "@/data/photos";
 import { news } from "@/data/news";
 import { notices } from "@/data/notices";
 import { people } from "@/data/people";
@@ -207,9 +208,9 @@ export function listMedia(s: Session, f: { etiqueta?: string; ano?: string; sepa
   const tags = Array.from(new Set([...vis, ...vids].flatMap((x) => x.tags))).sort();
   const years = Array.from(new Set(vis.map((a) => a.happenedAt.slice(0, 4)))).sort().reverse();
   return {
-    tab: f.separador === "videos" ? "videos" : "fotografias", tags, years,
-    albums: vis.filter((a) => (!f.etiqueta || a.tags.includes(f.etiqueta)) && (!f.ano || a.happenedAt.startsWith(f.ano))).map((a) => ({ ...withScope(a), dateLabel: dateLong(a.happenedAt) })),
-    videos: vids.filter((v) => (!f.etiqueta || v.tags.includes(f.etiqueta)) && (!f.ano || v.publishedAt.startsWith(f.ano))).map((v) => ({ ...withScope(v), dateLabel: dateShort(v.publishedAt) })),
+    tab: f.separador === "videos" ? "videos" : f.separador === "fotografias" ? "fotografias" : "todos", tags, years,
+    albums: vis.filter((a) => (!f.etiqueta || a.tags.includes(f.etiqueta)) && (!f.ano || a.happenedAt.startsWith(f.ano))).map((a) => ({ ...withScope(a), dateLabel: dateLong(a.happenedAt), photo: mediaPhotoOf(a.id), count: photosOf(a).length || a.total })),
+    videos: vids.filter((v) => (!f.etiqueta || v.tags.includes(f.etiqueta)) && (!f.ano || v.publishedAt.startsWith(f.ano))).map((v) => ({ ...withScope(v), dateLabel: dateLong(v.publishedAt), photo: mediaPhotoOf(v.id) })),
   };
 }
 

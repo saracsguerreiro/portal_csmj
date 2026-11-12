@@ -37,11 +37,11 @@ export function NewsCard({ item }: { item: CardNews }) {
   );
 }
 
-export function EventRow({ e, showRsvp = true }: { e: EventView; showRsvp?: boolean }) {
+export function EventRow({ e, showRsvp = true, live }: { e: EventView; showRsvp?: boolean; live?: boolean }) {
   const Icon = modeIcon[e.mode];
   return (
     <article className="@container flex gap-4 py-4">
-      <DateMark day={e.day} month={e.month} />
+      {live ? <span className="flex w-14 flex-none flex-col items-center justify-center self-start bg-[var(--ds-color-brand-700)] py-2 text-white"><span className="text-[26px] font-semibold leading-7 tabular-nums">{e.day}</span><span className="text-[11px] font-semibold uppercase tracking-[0.06em]">{e.month}</span></span> : <DateMark day={e.day} month={e.month} />}
       <div className="flex min-w-0 flex-1 flex-col gap-3 @2xl:flex-row @2xl:items-center">
         <div className="min-w-0 flex-1">
           <Link href={`/comunicacao/eventos/${e.slug}`} className="row-link"><h3 className="row-title text-ui font-semibold text-ink">{e.title}</h3></Link>

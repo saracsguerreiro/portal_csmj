@@ -38,7 +38,7 @@ export function EventsView() {
         />
       )}
       {!data ? <LoadError what={ev.what}><BlockRetry /></LoadError> : (
-        <div className="grid items-start gap-8 lg:grid-cols-[minmax(320px,420px)_minmax(0,1fr)] lg:gap-10">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(384px,504px)_minmax(0,1fr)] lg:gap-10">
           <section aria-labelledby="cal-mes" className="border border-line p-4 md:p-5 lg:sticky lg:top-4">
             <div className="mb-4 flex items-center justify-between gap-2">
               <Link href={withParams(BASE, f, { mes: data.calendar.prev, dia: undefined })} className="icbtn" aria-label={ev.prevMonth}><ChevronLeft size={20} aria-hidden /></Link>
@@ -95,8 +95,8 @@ export function EventsView() {
               <>
                 {data.running.length > 0 && (
                   <section aria-labelledby="a-decorrer" className="mb-10">
-                    <h2 id="a-decorrer" className="panel-title border-b-2 border-[var(--ds-content-strong)] pb-3">{ev.running}</h2>
-                    <ul className="divide-y divide-[var(--ds-border-default)]">{data.running.map((e) => <li key={e.id}><EventRow e={e} /></li>)}</ul>
+                    <h2 id="a-decorrer" className="panel-title border-b-2 border-[var(--ds-color-brand-700)] pb-3 !text-[var(--ds-color-brand-700)]">{ev.running}</h2>
+                    <ul className="divide-y divide-[var(--ds-border-default)]">{data.running.map((e) => <li key={e.id}><EventRow e={e} live /></li>)}</ul>
                   </section>
                 )}
                 {data.months.map((m) => (

@@ -7,12 +7,12 @@ const list: Record<string, { alt: string; source: string }> = {
   n3: { alt: "Pessoa de fato perante três membros sentados a uma mesa de madeira", source: "https://unsplash.com/photos/1596574027151-2ce81d85af3e" },
   n4: { alt: "Grupo reunido à volta de uma mesa com computadores", source: "https://unsplash.com/photos/1573164574572-cb89e39749b4" },
   n5: { alt: "Mãos a usar o telemóvel e o computador portátil", source: "https://unsplash.com/photos/1573164574230-db1d5e960238" },
-  n6: { alt: "Pessoas reunidas à volta de uma mesa comprida", source: "https://unsplash.com/photos/1744973055006-a1c7dd30da62" },
+  n6: { alt: "Pessoa a preencher um formulário em papel", source: "https://unsplash.com/photos/1603796846097-bee99e4a601f" },
   n7: { alt: "Edifício com colunas e relógio na fachada", source: "https://unsplash.com/photos/1636652966850-5ac4d02370e9" },
   n8: { alt: "Três colegas sentadas à mesa numa sala de trabalho", source: "https://unsplash.com/photos/1573164574397-dd250bc8a598" },
   n9: { alt: "Livros numa estante de madeira escura", source: "https://unsplash.com/photos/1505664194779-8beaceb93744" },
   n10: { alt: "Vista da cidade sob um céu azul com nuvens", source: "https://unsplash.com/photos/1743172140481-5c7044dd23d6" },
-  n11: { alt: "Grupo de mulheres com livros nas mãos", source: "https://unsplash.com/photos/1666281269793-da06484657e8" },
+  n11: { alt: "Livros numa estante de vidro", source: "https://unsplash.com/photos/1479142506502-19b3a3b7ff33" },
   n12: { alt: "Sala de tribunal vazia com painéis de madeira", source: "https://unsplash.com/photos/1711003596872-aa68f08a4b8e" },
   n13: { alt: "Homem a escrever num documento", source: "https://unsplash.com/photos/1450101499163-c8848c66ca85" },
   n14: { alt: "Funcionária a trabalhar ao computador", source: "https://unsplash.com/photos/1573164574144-649081e9421a" },
@@ -37,3 +37,7 @@ export const eventPhotoOf = (id: string) => photoOf(eventPhotos[id] ?? "n12");
 /** Retratos fictícios (licença Unsplash) para os novos colegas. */
 const personPhotos = new Set(["rui-lumbo", "natalia-wanga", "albertina-mussungo"]);
 export const personPhotoOf = (id: string) => (personPhotos.has(id) ? asset(`/people/${id}.jpg`) : null);
+
+/** Capas com fotografia para álbuns e vídeos de exemplo. */
+const mediaPhotos: Record<string, string> = { a1: "n3", a2: "n2", a3: "n4", a4: "n12", a5: "n6", a6: "n11", v1: "n1", v2: "n5", v3: "n14", v4: "n7" };
+export const mediaPhotoOf = (id: string) => (mediaPhotos[id] ? photoOf(mediaPhotos[id]) : null);

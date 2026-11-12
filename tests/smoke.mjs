@@ -34,15 +34,14 @@ await go("/"); await prefs({ csmj_perfil: null, csmj_unidade: null, csmj_falha: 
 ok("pendentes com circular no topo", await p.locator('section[aria-label="Pendentes"] section[aria-label="Avisos por confirmar"]').count() === 1);
 const search = p.locator(".band-search .search-box");
 const sb = await search.evaluate((e) => { const c = getComputedStyle(e); return { h: e.getBoundingClientRect().height, bg: c.backgroundColor, line: c.borderBottomWidth, top: c.borderTopWidth }; });
-ok("pesquisa do topo com linha, sem caixa cinzenta", sb.h >= 48 && sb.bg === "rgba(0, 0, 0, 0)" && sb.line === "2px" && sb.top === "0px", JSON.stringify(sb));
+ok("pesquisa do topo sem caixa nem traço", sb.h >= 48 && sb.bg === "rgba(0, 0, 0, 0)" && sb.line === "0px" && sb.top === "0px", JSON.stringify(sb));
 const radius = await p.evaluate(() => [...document.querySelectorAll(".btn, .bdg, .chip, .count, .search-box, .card, .seg")].filter((e) => e.offsetParent).map((e) => getComputedStyle(e).borderTopLeftRadius).filter((r) => r !== "0px"));
 ok("botões e etiquetas de cantos rectos", radius.length === 0, radius.slice(0, 5).join(","));
 const bday = await p.locator(".bday-box").evaluate((e) => getComputedStyle(e).backgroundColor);
 ok("aniversários em fundo branco (sem caixa)", bday === "rgba(0, 0, 0, 0)", bday);
 ok("novos colegas com fotografia", await p.locator(".newbie-portrait img").count() >= 3);
 const agenda = p.locator('section[aria-label="Agenda"]');
-ok("agenda: próximo evento ao lado da foto, só data, hora e modalidade", await agenda.locator("article img").count() === 1 && await agenda.locator("article li").count() === 3 && await agenda.getByText("Próximo evento").count() === 1);
-ok("agenda: próximos eventos por baixo", await agenda.locator(":scope > ul > li").count() >= 2);
+ok("agenda: imagem à esquerda; à direita o próximo evento numa linha e 2 eventos seguintes", await agenda.locator("img").count() === 1 && await agenda.getByText("Próximo evento").count() === 1 && await agenda.locator('ul[aria-label="Eventos seguintes"] > li').count() === 2);
 const warn = await p.evaluate(() => { const e = document.querySelector(".bdg-warn"); return e ? getComputedStyle(e).backgroundColor : "sem"; });
 ok("etiquetas de aviso sem fundo amarelo", warn === "sem" || warn === "rgb(240, 240, 240)", warn);
 await axeRun("início");
@@ -75,6 +74,16 @@ ok("eventos: dias com eventos assinalados", await p.locator(".mini-day.has-ev").
 await p.locator(".mini-day.has-ev", { hasText: "13" }).first().click(); await p.waitForURL(/dia=2026-11-13/);
 ok("eventos: escolher um dia filtra a lista", await p.getByRole("heading", { name: /Eventos a 13 de Novembro/ }).count() === 1 && await p.getByText("Jornadas de Direito Penal").count() >= 1);
 await axeRun("eventos");
+await go("/comunicacao/eventos");
+ok("eventos: «A decorrer» a vermelho com o dia em quadrado vermelho", await p.locator("#a-decorrer").evaluate((e) => getComputedStyle(e).color) === "rgb(133, 36, 24)" && await p.locator('section[aria-labelledby="a-decorrer"] article > span').first().evaluate((e) => getComputedStyle(e).backgroundColor) === "rgb(133, 36, 24)");
+const calW = await p.locator('section[aria-labelledby="cal-mes"]').evaluate((e) => e.getBoundingClientRect().width);
+ok("eventos: calendário maior (≥ 480 px a 1440)", calW >= 480, String(Math.round(calW)));
+if (OUT) await p.screenshot({ path: `${OUT}/eventos-1440.png` });
+await go("/comunicacao/avisos?separador=circulares"); ok("avisos: mais circulares", (await p.getByText(/Circular n\.º/).count()) >= 8); await axeRun("avisos");
+if (OUT) await p.screenshot({ path: `${OUT}/avisos-1440.png`, fullPage: true });
+await go("/comunicacao/multimedia"); ok("multimédia: mosaico com galerias e vídeos", await p.getByText("Galeria de fotografias").count() >= 2 && await p.locator("main ul.grid li button").count() >= 2);
+await axeRun("multimédia");
+if (OUT) await p.screenshot({ path: `${OUT}/multimedia-1440.png`, fullPage: true });
 await go("/servicos"); if (OUT) await p.screenshot({ path: `${OUT}/servicos-1440.png` });
 
 /* Painel */
@@ -87,7 +96,7 @@ await prefs({ csmj_tema: "dark", csmj_perfil: null }); await go("/"); await axeR
 /* Telemóvel */
 const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const g = await m.newPage(); g.on("pageerror", (e) => errs.push(`PE m ${e.message.slice(0, 120)}`));
-for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/servicos", "/documentos", "/pessoas", "/painel/noticias"]) {
+for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/servicos", "/documentos", "/pessoas", "/painel/noticias"]) {
   await g.goto(U + u, { waitUntil: "networkidle" }); await g.waitForTimeout(400);
   const o = await g.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
   ok(`390 sem deslocamento lateral ${u}`, o[0] <= o[1], o.join("/"));
