@@ -69,7 +69,8 @@
   /* Estados: fundo, texto e contorno */
   --ds-status-ok-bg: #262626;
   --ds-status-ok-fg: #ffffff;
-  --ds-status-warn-bg: #ffe3b5;
+  --ds-status-warn-bg: #f0f0f0;
+  --ds-status-warn-icon: #8d6d11;
   --ds-status-warn-fg: #000000;
   --ds-status-err-bg: #fbe5e5;
   --ds-status-err-fg: #8b1414;
@@ -125,8 +126,9 @@
     --ds-danger-content: #2d0a06;
     --ds-status-ok-bg: #404040;
     --ds-status-ok-fg: #ffffff;
-    --ds-status-warn-bg: #2e2405;
-    --ds-status-warn-fg: #f5e4b2;
+    --ds-status-warn-bg: #2b2b2b;
+    --ds-status-warn-fg: #ffffff;
+    --ds-status-warn-icon: #e1b229;
     --ds-status-err-bg: #4f140d;
     --ds-status-err-fg: #f0c7c2;
     --ds-status-info-bg: #262626;
@@ -172,8 +174,9 @@
   --ds-danger-content: #2d0a06;
   --ds-status-ok-bg: #404040;
   --ds-status-ok-fg: #ffffff;
-  --ds-status-warn-bg: #2e2405;
-  --ds-status-warn-fg: #f5e4b2;
+  --ds-status-warn-bg: #2b2b2b;
+  --ds-status-warn-fg: #ffffff;
+  --ds-status-warn-icon: #e1b229;
   --ds-status-err-bg: #4f140d;
   --ds-status-err-fg: #f0c7c2;
   --ds-status-info-bg: #262626;

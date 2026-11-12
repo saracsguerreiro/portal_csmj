@@ -185,7 +185,7 @@ export function TopBand({ searchRef }: { searchRef?: React.RefObject<HTMLInputEl
   const date = `${day.charAt(0).toUpperCase()}${day.slice(1)}, ${dateLong(iso)}`;
   return (
     <div className={`panel flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 md:min-h-[72px] md:flex-nowrap md:px-8 ${home ? "max-md:hidden" : ""}`}>
-      <div className="search-plain min-w-0 max-w-[640px] flex-1 max-md:hidden">
+      <div className="band-search min-w-0 max-w-[720px] flex-1 max-md:hidden">
         <SearchCombobox variant="bar" placeholder={a.searchOnly} label={a.searchLabel} inputRef={searchRef} shortcutHint={<kbd className="kbd">/</kbd>} />
       </div>
       {!home && <NoticeBanner compact />}
