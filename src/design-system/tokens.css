@@ -79,7 +79,7 @@
   --ds-status-neu-bg: #ffffff;
   --ds-status-neu-fg: #404040;
   --ds-status-neu-line: #d4d4d4;
-  --ds-status-brand-bg: #faf1d6;
+  --ds-status-brand-bg: #fcf4f3;
   --ds-status-brand-fg: #000000;
 
   --ds-avatar-bg: #faf1d6;
@@ -136,8 +136,8 @@
     --ds-status-neu-bg: #1e1e1e;
     --ds-status-neu-fg: #c8c8c8;
     --ds-status-neu-line: #404040;
-    --ds-status-brand-bg: #2e2405;
-    --ds-status-brand-fg: #f5e4b2;
+    --ds-status-brand-bg: #3a1a16;
+    --ds-status-brand-fg: #f8e5e2;
     --ds-avatar-bg: #2e2405;
     --ds-avatar-fg: #f5e4b2;
     --ds-pattern-soft: url("../../public/brand/engrenagem-ouro-30.svg");
@@ -184,8 +184,8 @@
   --ds-status-neu-bg: #1e1e1e;
   --ds-status-neu-fg: #c8c8c8;
   --ds-status-neu-line: #404040;
-  --ds-status-brand-bg: #2e2405;
-  --ds-status-brand-fg: #f5e4b2;
+  --ds-status-brand-bg: #3a1a16;
+  --ds-status-brand-fg: #f8e5e2;
   --ds-avatar-bg: #2e2405;
   --ds-avatar-fg: #f5e4b2;
   --ds-pattern-soft: url("../../public/brand/engrenagem-ouro-30.svg");

@@ -172,6 +172,19 @@ h1, h2, h3, h4 { color: var(--ds-content-strong); text-wrap: balance; }
 .newbie-portrait { display: grid; place-items: center; aspect-ratio: 4 / 3; background: var(--ds-color-brand-700); }
 .newbie-portrait span { font-size: 40px; font-weight: 600; letter-spacing: 0.02em; color: #fff; }
 @media (max-width: 639px) { .newbie { flex-direction: row; } .newbie-portrait { aspect-ratio: 1; width: 96px; flex: none; } .newbie-portrait span { font-size: 28px; } }
+.mini-cal { border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+.mini-day { position: relative; display: flex; aspect-ratio: 1; width: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: var(--ds-surface-2); color: var(--ds-content-strong); font-weight: 600; font-size: 15px; text-decoration: none; transition: background var(--ds-duration-fast) var(--ds-ease), color var(--ds-duration-fast) var(--ds-ease); }
+td[data-out="true"] .mini-day { background: transparent; color: var(--ds-content-disabled); font-weight: 400; }
+.mini-day[data-holiday="true"] { box-shadow: inset 0 -3px 0 var(--ds-accent-gold); }
+.mini-day[data-today="true"] { background: var(--ds-color-brand-700); color: #fff; }
+.mini-day.has-ev { background: var(--ds-surface-default); box-shadow: inset 0 0 0 1px var(--ds-border-default); }
+.mini-day.has-ev:hover { background: var(--ds-toned-background); }
+.mini-day.has-ev[data-today="true"] { background: var(--ds-color-brand-700); color: #fff; box-shadow: none; }
+.mini-day.has-ev[aria-current="true"] { box-shadow: inset 0 0 0 2px var(--ds-color-brand-700); background: var(--ds-toned-background); }
+.mini-marks { display: flex; gap: 3px; height: 6px; }
+.mini-mark { display: inline-block; width: 6px; height: 6px; background: var(--ds-color-brand-700); }
+.mini-day[data-today="true"] .mini-mark { background: #fff; }
+.mini-day:focus-visible { outline: 3px solid var(--ds-accent-gold); outline-offset: 1px; }
 .sq-arrow { flex: none; display: grid; place-items: center; width: 48px; height: 48px; background: var(--ds-color-brand-700); color: #fff; transition: background var(--ds-duration-fast) var(--ds-ease); }
 .sq-arrow:hover { background: var(--ds-color-brand-800); }
 .sq-arrow svg { transition: transform 260ms cubic-bezier(.2,.7,.2,1); }

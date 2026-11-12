@@ -60,6 +60,18 @@ for (const u of ["/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/
 }
 await go("/comunicacao/noticias"); await p.waitForTimeout(900); ok("mosaico de notícias", await p.locator("li.mosaic-tile.is-in").count() >= 4);
 if (OUT) await p.screenshot({ path: `${OUT}/noticias-1440.png` });
+ok("grelha: seta em quadrado vermelho, sem «Ver notícia»", await p.locator("li.mosaic-tile .sq-arrow").count() >= 4 && await p.locator("li.mosaic-tile").getByText("Ver notícia").count() === 0);
+await go("/comunicacao/noticias/plano-formacao-2027");
+ok("notícia em painéis: texto, reacções e comentários separados", await p.locator("main .panel").count() >= 4);
+ok("notícia: fim marcado", await p.getByText("Fim da notícia").count() === 1);
+ok("notícia: coluna de recentes", await p.locator('section[aria-labelledby="recentes"] li').count() >= 4);
+await axeRun("notícia");
+await go("/comunicacao/eventos");
+ok("eventos: calendário do mês", await p.locator("table.mini-cal td").count() >= 35);
+ok("eventos: dias com eventos assinalados", await p.locator(".mini-day.has-ev").count() >= 3);
+await p.locator(".mini-day.has-ev", { hasText: "13" }).first().click(); await p.waitForURL(/dia=2026-11-13/);
+ok("eventos: escolher um dia filtra a lista", await p.getByRole("heading", { name: /Eventos a 13 de Novembro/ }).count() === 1 && await p.getByText("Jornadas de Direito Penal").count() >= 1);
+await axeRun("eventos");
 await go("/servicos"); if (OUT) await p.screenshot({ path: `${OUT}/servicos-1440.png` });
 
 /* Painel */
@@ -72,7 +84,7 @@ await prefs({ csmj_tema: "dark", csmj_perfil: null }); await go("/"); await axeR
 /* Telemóvel */
 const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const g = await m.newPage(); g.on("pageerror", (e) => errs.push(`PE m ${e.message.slice(0, 120)}`));
-for (const u of ["/", "/comunicacao/noticias", "/servicos", "/documentos", "/pessoas", "/painel/noticias"]) {
+for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/servicos", "/documentos", "/pessoas", "/painel/noticias"]) {
   await g.goto(U + u, { waitUntil: "networkidle" }); await g.waitForTimeout(400);
   const o = await g.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
   ok(`390 sem deslocamento lateral ${u}`, o[0] <= o[1], o.join("/"));

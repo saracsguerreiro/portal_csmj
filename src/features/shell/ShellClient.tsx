@@ -16,7 +16,10 @@ import type { ShellData } from "./types";
 
 export function ShellClient({ data, children, footer, skipLabel }: { data: ShellData; children: ReactNode; footer: ReactNode; skipLabel: string }) {
   const searchRef = useRef<HTMLInputElement>(null);
-  const home = usePathname() === "/";
+  const pathname = usePathname();
+  const home = pathname === "/";
+  /** Páginas que desenham os seus próprios painéis (como a Início). */
+  const bare = home || /^\/comunicacao\/noticias\/[^/]+\/?$/.test(pathname);
   return (
     <ShellProvider data={data}>
       <ToastProvider>
@@ -27,7 +30,7 @@ export function ShellClient({ data, children, footer, skipLabel }: { data: Shell
             <MobileTop />
             <OfflineBanner />
             <TopBand searchRef={searchRef} />
-            <main id="conteudo" tabIndex={-1} className={`flex-1 outline-none ${home ? "" : "panel"}`}>{children}</main>
+            <main id="conteudo" tabIndex={-1} className={`flex-1 outline-none ${bare ? "" : "panel"}`}>{children}</main>
             <div>{footer}</div>
           </div>
         </div>

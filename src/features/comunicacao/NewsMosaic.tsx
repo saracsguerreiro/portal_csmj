@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { t } from "@/i18n";
@@ -30,11 +30,11 @@ function Tile({ item, index }: { item: Item; index: number }) {
       <Link href={`/comunicacao/noticias/${item.slug}`} className="group relative block h-full w-full overflow-hidden bg-surface-2">
         <NewsCover slug={item.slug} src={item.cover} alt={item.coverAlt} eager={index < 4} className="absolute inset-0 !h-full transition-transform duration-700 group-hover:scale-105 group-focus-visible:scale-105" />
         <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-colors duration-300 group-hover:bg-black/70 group-focus-visible:bg-black/70" />
+        <span className="sq-arrow absolute right-0 top-0" aria-hidden><ArrowUpRight size={22} strokeWidth={1.75} /></span>
         <span className="absolute inset-x-0 bottom-0 flex flex-col gap-2 p-5 text-white md:p-6">
           <span className="mosaic-more text-label font-semibold uppercase tracking-[0.06em] text-white/85">{item.scopeLabel} · {item.dateLabel}</span>
           <span className={`font-semibold tracking-[-0.01em] ${big ? "text-[24px] leading-8 md:text-[32px] md:leading-10" : "text-[18px] leading-6"}`}>{item.title}</span>
           <span className="mosaic-more line-clamp-3 text-[15px] leading-6 text-white/90">{item.summary}</span>
-          <span className="mosaic-more inline-flex items-center gap-2 pt-1 text-ui font-semibold">{n.seeNews}<ArrowRight size={18} aria-hidden /></span>
         </span>
       </Link>
     </li>

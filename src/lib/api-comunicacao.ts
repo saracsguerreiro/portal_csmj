@@ -123,12 +123,13 @@ export function getArticle(s: Session, slug: string) {
   const toc = blocks.filter((b) => b.t === "h2").map((b) => ({ id: (b as { id: string }).id, text: (b as { text: string }).text }));
   const all = [...seedComments, ...extra.comments].filter((c) => c.newsId === n.id);
   const related = news.filter((x) => x.id !== n.id && inScope(x, s.unit.id) && x.tags.some((v) => n.tags.includes(v))).slice(0, 3).map((x) => ({ ...withScope(x), dateLabel: dateLong(x.publishedAt) }));
+  const recent = news.filter((x) => x.id !== n.id && inScope(x, s.unit.id)).slice(0, 6).map((x) => ({ ...withScope(x), dateLabel: dateLong(x.publishedAt) }));
   const base = seedReactions[n.id] ?? { gosto: 0, aplauso: 0, importante: 0 };
   const visibleSlugs = news.filter((x) => inScope(x, s.unit.id)).map((x) => x.slug);
   return {
     status: "ok" as const,
     article: { ...withScope(n), dateLabel: dateLong(n.publishedAt), minutes: readMinutes(n), authorName: author?.name ?? "" },
-    blocks, toc, related, visibleSlugs,
+    blocks, toc, related, recent, visibleSlugs,
     comments: all.filter((c) => !c.replyTo).map((c) => commentView(c, all)),
     reactions: base, myReaction: st.reacted.get(n.id) ?? null, saved: st.saved.has(n.id),
     me: { name: s.person.name, initials: s.person.initials, slug: s.person.slug, role: s.person.role },

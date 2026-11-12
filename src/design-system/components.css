@@ -347,10 +347,13 @@
   .prose-read details[open] summary { margin-bottom: 8px; }
   @media (max-width: 767px) { .prose-read { font-size: 16px; line-height: 26px; } .prose-read h2 { font-size: 20px; line-height: 28px; } }
 
-  .prose-read aside.callout { border-radius: 16px; padding: 16px 20px; background: var(--ds-status-brand-bg); color: var(--ds-status-brand-fg); }
+  .prose-read aside.callout { border-radius: 16px; padding: 16px 20px; background: var(--ds-surface-2); color: var(--ds-content-strong); border-left: 4px solid var(--ds-color-brand-700); }
   .prose-read h3 { font-size: 20px; line-height: 28px; font-weight: 600; margin-top: 28px; }
   .prose-read ol { list-style: decimal; padding-left: 24px; }
   .prose-read a { color: var(--ds-content-brand); text-decoration: underline; text-underline-offset: 3px; }
+  .prose-read a.btn { text-decoration: none; }
+  .prose-read a.btn-pri { color: var(--ds-brand-content); }
+  .prose-read a.btn-sec { color: var(--ds-content-strong); }
   .prose-read hr { border: 0; border-top: 1px solid var(--ds-border-default); }
   .prose-editor { max-width: none; font-size: 16px; line-height: 26px; }
   .prose-editor > * + * { margin-top: 14px; }
