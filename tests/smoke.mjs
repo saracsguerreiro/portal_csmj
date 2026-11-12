@@ -33,13 +33,16 @@ await go("/"); await prefs({ csmj_perfil: null, csmj_unidade: null, csmj_falha: 
 /* Início */
 ok("pendentes com circular no topo", await p.locator('section[aria-label="Pendentes"] section[aria-label="Avisos por confirmar"]').count() === 1);
 const search = p.locator(".band-search .search-box");
-const sb = await search.evaluate((e) => { const c = getComputedStyle(e); return { h: e.getBoundingClientRect().height, bg: c.backgroundColor, border: c.borderTopColor }; });
-ok("pesquisa do topo visível (caixa com fundo e contorno)", sb.h >= 48 && sb.bg !== "rgba(0, 0, 0, 0)", JSON.stringify(sb));
+const sb = await search.evaluate((e) => { const c = getComputedStyle(e); return { h: e.getBoundingClientRect().height, bg: c.backgroundColor, line: c.borderBottomWidth, top: c.borderTopWidth }; });
+ok("pesquisa do topo com linha, sem caixa cinzenta", sb.h >= 48 && sb.bg === "rgba(0, 0, 0, 0)" && sb.line === "2px" && sb.top === "0px", JSON.stringify(sb));
 const radius = await p.evaluate(() => [...document.querySelectorAll(".btn, .bdg, .chip, .count, .search-box, .card, .seg")].filter((e) => e.offsetParent).map((e) => getComputedStyle(e).borderTopLeftRadius).filter((r) => r !== "0px"));
 ok("botões e etiquetas de cantos rectos", radius.length === 0, radius.slice(0, 5).join(","));
 const bday = await p.locator(".bday-box").evaluate((e) => getComputedStyle(e).backgroundColor);
-const newbie = await p.locator(".newbie").first().evaluate((e) => getComputedStyle(e).backgroundColor);
-ok("aniversários em cinza claro como os novos colegas", bday === newbie, `${bday} / ${newbie}`);
+ok("aniversários em fundo branco (sem caixa)", bday === "rgba(0, 0, 0, 0)", bday);
+ok("novos colegas com fotografia", await p.locator(".newbie-portrait img").count() >= 3);
+const agenda = p.locator('section[aria-label="Agenda"]');
+ok("agenda: próximo evento ao lado da foto, só data, hora e modalidade", await agenda.locator("article img").count() === 1 && await agenda.locator("article li").count() === 3 && await agenda.getByText("Próximo evento").count() === 1);
+ok("agenda: próximos eventos por baixo", await agenda.locator(":scope > ul > li").count() >= 2);
 const warn = await p.evaluate(() => { const e = document.querySelector(".bdg-warn"); return e ? getComputedStyle(e).backgroundColor : "sem"; });
 ok("etiquetas de aviso sem fundo amarelo", warn === "sem" || warn === "rgb(240, 240, 240)", warn);
 await axeRun("início");

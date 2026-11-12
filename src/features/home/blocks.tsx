@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Cake, CloudOff, FileSpreadsheet, FileText, MapPin, MonitorPlay, Shuffle, UserPlus } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Clock, Cake, CloudOff, FileSpreadsheet, FileText, MapPin, MonitorPlay, Shuffle, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { DateMark, ScopeTag, Skeleton, StatusBadge } from "@/design-system";
 import { t } from "@/i18n";
@@ -10,6 +10,7 @@ import { useLoad } from "@/lib/client";
 import { BlockRetry } from "./BlockRetry";
 import { NeedsYou } from "./NeedsYou";
 import { NewsCover } from "@/features/comunicacao/content";
+import { personPhotoOf } from "@/data/photos";
 import { QuickAccess } from "./QuickAccess";
 
 const h = t.home;
@@ -105,46 +106,46 @@ export function AgendaBlock({ session }: { session: Session }) {
   return (
     <section aria-label={h.agenda.title}>
       <BlockTitle title={h.agenda.title} href="/comunicacao/eventos" link={h.agenda.seeAll} />
-      <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr]">
-        <article>
-          <Link href={`/comunicacao/eventos/${main.slug}`} className="group relative block overflow-hidden bg-surface-2">
-            {main.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={main.photo.src} alt={main.photo.alt} className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />}
-            <span className="absolute left-0 top-0 flex flex-col items-center bg-[var(--ds-color-brand-700)] px-4 py-2.5 text-white">
-              <span className="text-[30px] font-semibold leading-8 tabular-nums">{main.day}</span>
-              <span className="text-label font-semibold uppercase tracking-[0.06em]">{main.month}</span>
-            </span>
-          </Link>
-          <p className="mt-4 text-label font-semibold uppercase tracking-[0.06em] text-brand">{h.agenda.next}</p>
-          <h3 className="mt-1 text-[20px] font-semibold leading-7 tracking-[-0.01em]"><Link href={`/comunicacao/eventos/${main.slug}`} className="hover:underline">{main.title}</Link></h3>
-          <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-ui text-subtle">
-            <span className="capitalize">{main.weekday}</span><span>{main.time}</span>
-            <span className="scope"><MainIcon size={14} aria-hidden />{h.agenda[main.mode]}{main.place ? ` · ${main.place}` : ""}</span>
-          </p>
-          {main.summary && <p className="mt-2 line-clamp-2 text-ui text-copy">{main.summary}</p>}
-        </article>
-        {rest.length > 0 && (
-          <ul className="flex flex-col divide-y divide-[var(--ds-border-default)] self-start border-t border-[var(--ds-border-default)] lg:border-t-0">
-            {rest.map((e) => {
-              const Icon = modeIcon[e.mode];
-              return (
-                <li key={e.id}>
-                  <Link href={`/comunicacao/eventos/${e.slug}`} className="row-link flex items-start gap-4 py-4 first:pt-4 lg:first:pt-0">
-                    <DateMark day={e.day} month={e.month} />
-                    <span className="min-w-0">
-                      <span className="row-title block font-semibold text-ink">{e.title}</span>
-                      <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-caption text-subtle">
-                        <span>{e.time}</span>
-                        <span className="scope"><Icon size={14} aria-hidden />{h.agenda[e.mode]}</span>
-                        <ScopeTag kind={e.scopeKind}>{e.scopeLabel}</ScopeTag>
-                      </span>
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
+      <article className="grid gap-5 sm:grid-cols-2 sm:items-center">
+        <Link href={`/comunicacao/eventos/${main.slug}`} className="group relative block overflow-hidden bg-surface-2" tabIndex={-1} aria-hidden>
+          {main.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={main.photo.src} alt="" className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />}
+          <span className="absolute left-0 top-0 flex flex-col items-center bg-[var(--ds-color-brand-700)] px-4 py-2.5 text-white">
+            <span className="text-[30px] font-semibold leading-8 tabular-nums">{main.day}</span>
+            <span className="text-label font-semibold uppercase tracking-[0.06em]">{main.month}</span>
+          </span>
+        </Link>
+        <div className="flex flex-col gap-3">
+          <p className="text-label font-semibold uppercase tracking-[0.06em] text-brand">{h.agenda.next}</p>
+          <h3 className="text-[22px] font-semibold leading-7 tracking-[-0.01em]"><Link href={`/comunicacao/eventos/${main.slug}`} className="hover:underline">{main.title}</Link></h3>
+          <ul className="flex flex-col gap-1.5 text-ui text-copy">
+            <li className="flex items-center gap-2"><CalendarDays size={16} aria-hidden className="text-subtle" /><span className="first-letter:uppercase">{main.weekday}</span></li>
+            <li className="flex items-center gap-2"><Clock size={16} aria-hidden className="text-subtle" />{main.time}</li>
+            <li className="flex items-center gap-2"><MainIcon size={16} aria-hidden className="text-subtle" />{h.agenda[main.mode]}</li>
           </ul>
-        )}
-      </div>
+        </div>
+      </article>
+      {rest.length > 0 && (
+        <ul className="mt-6 flex flex-col divide-y divide-[var(--ds-border-default)] border-t border-[var(--ds-border-default)]">
+          {rest.map((e) => {
+            const Icon = modeIcon[e.mode];
+            return (
+              <li key={e.id}>
+                <Link href={`/comunicacao/eventos/${e.slug}`} className="row-link flex items-center gap-4 py-3.5">
+                  <DateMark day={e.day} month={e.month} />
+                  <span className="min-w-0">
+                    <span className="row-title block font-semibold text-ink">{e.title}</span>
+                    <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-caption text-subtle">
+                      <span>{e.time}</span>
+                      <span className="scope"><Icon size={14} aria-hidden />{h.agenda[e.mode]}</span>
+                      <ScopeTag kind={e.scopeKind}>{e.scopeLabel}</ScopeTag>
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </section>
   );
 }
@@ -194,7 +195,7 @@ export function PeopleBlock({ session }: { session: Session }) {
         {birthdays.length > 0 && (
           <div className="bday-box">
             <h3 className="flex items-center gap-2 text-[18px] font-semibold text-ink"><Cake size={22} aria-hidden className="text-[var(--ds-accent-gold-strong,#9a7410)]" />{h.people.birthdays}<span className="text-subtle">· {birthdays.length}</span></h3>
-            <ul className="mt-4 flex flex-col gap-2">
+            <ul className="mt-2 flex flex-col border-t border-[var(--ds-border-default)]">
               {birthdays.map((p) => (
                 <li key={p.id}>
                   <Link href={`/pessoas/${p.slug}`} className={`bday-row group ${p.isToday ? "is-today" : ""}`}>
@@ -217,7 +218,7 @@ export function PeopleBlock({ session }: { session: Session }) {
               {newcomers.map((p) => (
                 <li key={p.id}>
                   <Link href={`/pessoas/${p.slug}`} className="newbie group">
-                    <span className="newbie-portrait" aria-hidden><span>{p.initials}</span></span>
+                    <span className="newbie-portrait" aria-hidden>{personPhotoOf(p.id) ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={personPhotoOf(p.id)!} alt="" loading="lazy" className="h-full w-full object-cover" /> : <span>{p.initials}</span>}</span>
                     <span className="flex flex-col gap-0.5 p-4">
                       <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-brand">{h.people.welcome}</span>
                       <span className="font-semibold text-ink group-hover:underline">{p.name}</span>

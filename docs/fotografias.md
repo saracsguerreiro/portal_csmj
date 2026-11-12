@@ -27,3 +27,11 @@ Fotografias do Unsplash, com a licença Unsplash (uso livre, sem atribuição ob
 | public/photos/d2.jpg | Pilha de livros sobre uma mesa | https://unsplash.com/photos/1491841573634-28140fc7ced7 |
 | public/photos/d3.jpg | Sala de tribunal com bancada de madeira | https://unsplash.com/photos/1660784670019-33a36fd82515 |
 | public/photos/d4.jpg | Livros numa estante de vidro | https://unsplash.com/photos/1479142506502-19b3a3b7ff33 |
+
+## Retratos fictícios (novos colegas)
+
+| Ficheiro | Pessoa fictícia | Origem |
+|---|---|---|
+| public/people/rui-lumbo.jpg | Rui Lumbo | https://unsplash.com/photos/1645736593731-4eef033ac37a |
+| public/people/natalia-wanga.jpg | Natália Wanga | https://unsplash.com/photos/1573497019418-b400bb3ab074 |
+| public/people/albertina-mussungo.jpg | Albertina Mussungo | https://unsplash.com/photos/1573497491306-c8a68afac6f2 |

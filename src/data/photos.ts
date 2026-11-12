@@ -33,3 +33,7 @@ export const photoLibrary = Object.keys(list).map((id) => ({ id, src: asset(`/ph
 /** Fotografia de cada evento (reaproveita a biblioteca de exemplo). */
 const eventPhotos: Record<string, string> = { e1: "n5", e2: "d3", e3: "n18", e4: "n4", e5: "n12", e6: "n15", e7: "n2", e8: "n7" };
 export const eventPhotoOf = (id: string) => photoOf(eventPhotos[id] ?? "n12");
+
+/** Retratos fictícios (licença Unsplash) para os novos colegas. */
+const personPhotos = new Set(["rui-lumbo", "natalia-wanga", "albertina-mussungo"]);
+export const personPhotoOf = (id: string) => (personPhotos.has(id) ? asset(`/people/${id}.jpg`) : null);
