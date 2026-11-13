@@ -120,7 +120,7 @@ export function getNavigation(s: Session) {
   const newcomer = people.find((p) => p.joinedAt);
   const highlight: Record<string, HighlightCard | undefined> = {
     comunicacao: nextEvent && { label: "Próximo evento", title: nextEvent.title, detail: `${dayOfMonth(nextEvent.startsAt)} ${monthShort(nextEvent.startsAt)} · ${timeOf(nextEvent.startsAt)}`, href: `/comunicacao/eventos/${nextEvent.slug}` },
-    servicos: req ? { label: "O seu último pedido", title: `${services.find((x) => x.id === req.serviceId)?.name} n.º ${req.number}`, detail: statusLabel(req), href: `/servicos/meus-pedidos?pedido=${req.id}` } : { label: "Mais pedido", title: "Pedido de férias", detail: "Decide a chefia directa", href: "/servicos/pedir/ferias" },
+    servicos: req ? { label: "O seu último pedido", title: `${services.find((x) => x.id === req.serviceId)?.name} n.º ${req.number}`, detail: statusLabel(req), href: `/servicos?pedido=${req.id}` } : { label: "Mais pedido", title: "Pedido de férias", detail: "Decide a chefia directa", href: "/servicos/pedir/ferias" },
     documentos: doc && { label: doc.isNew ? "Novo" : "Actualizado", title: doc.title, detail: `${doc.collection} · ${doc.format}`, href: `/documentos/ficheiro/${doc.id}` },
     pessoas: newcomer && { label: "Novo colega", title: newcomer.name, detail: newcomer.role, href: `/pessoas/${newcomer.slug}` },
     participar: { label: "Enquete aberta", title: "Formação no primeiro trimestre de 2027", detail: "Vota-se até 28 de Novembro", href: "/participar/enquetes" },

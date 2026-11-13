@@ -49,7 +49,7 @@ export function RequestActions({ id, status, canCancel, answers }: { id: string;
           ? <Button variant="pri" loading={busy} onClick={async () => { const r = await run({ action: "request.resubmit", id, answers: edits }, v.resubmitted); if (r) setFixing(false); }}>{v.resubmit}</Button>
           : <Button variant="pri" onClick={() => setFixing(true)}>{v.fix}</Button>)}
         {canCancel && <Button variant="gh" onClick={() => setConfirm(true)}>{v.cancel}</Button>}
-        <Button variant="gh" loading={busy && !fixing} onClick={async () => { const r = await run({ action: "request.duplicate", id }, v.duplicated); if (r?.id) router.push(`/servicos/meus-pedidos?separador=rascunhos`); }}>{v.duplicate}</Button>
+        <Button variant="gh" loading={busy && !fixing} onClick={async () => { const r = await run({ action: "request.duplicate", id }, v.duplicated); if (r?.id) router.push(`/servicos?separador=rascunhos`); }}>{v.duplicate}</Button>
       </div>
       <ConfirmDialog open={confirm} onClose={() => setConfirm(false)} title={v.cancelTitle} verb={v.cancel} danger onConfirm={async () => { setConfirm(false); await run({ action: "request.cancel", id }, v.cancelled); }}>
         {v.cancelBody}

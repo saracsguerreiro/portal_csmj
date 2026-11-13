@@ -21,7 +21,7 @@ export function RequestDetailView() {
   return (
     <div className="wrap py-6 md:py-8">
       <div className="mx-auto flex max-w-[880px] flex-col gap-6">
-        <PageHeader crumbs={[{ label: v.title, href: "/servicos" }, { label: v.myRequests, href: "/servicos/meus-pedidos" }, { label: v.number(r.number) }]} title={`${r.service.name} · ${v.number(r.number)}`}>
+        <PageHeader crumbs={[{ label: v.title, href: "/servicos" }, { label: v.page.title, href: "/servicos" }, { label: v.number(r.number) }]} title={`${r.service.name} · ${v.number(r.number)}`}>
           <div className="flex flex-wrap items-center gap-2"><RequestHeaderStatus r={r} /></div>
         </PageHeader>
         <div className="card"><RequestDetail r={r} mine={data.mine} /></div>

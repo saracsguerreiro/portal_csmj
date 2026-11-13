@@ -118,7 +118,7 @@ export function RequestForm({ serviceId, serviceName, fields, people, units, dra
         <p className="text-ui">{v.sentLead(sent.number)}</p>
         {sent.next && who && <p className="text-body">{v.nextStep(sent.next.step, who)}</p>}
         <div className="mt-2 flex flex-wrap gap-2">
-          <ButtonLink variant="pri" href={`/servicos/meus-pedidos?pedido=${sent.id}`}>{v.seeMine}</ButtonLink>
+          <ButtonLink variant="pri" href={`/servicos?pedido=${sent.id}`}>{v.seeMine}</ButtonLink>
           <ButtonLink href="/servicos">{v.another}</ButtonLink>
         </div>
       </section>

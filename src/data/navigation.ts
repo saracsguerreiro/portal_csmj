@@ -9,8 +9,7 @@ export const menu: MenuSection[] = [
     { id: "newsletter", label: "Newsletter", description: "Edições anteriores e subscrição", icon: "Mail", href: "/comunicacao/newsletter" },
   ]},
   { id: "servicos", label: "Serviços", href: "/servicos", items: [
-    { id: "pedir", label: "Fazer um pedido", description: "Férias, salas, material, apoio e outros", icon: "SquarePen", href: "/servicos" },
-    { id: "meus", label: "Os meus pedidos", description: "Em que ponto está cada pedido", icon: "ClipboardList", href: "/servicos/meus-pedidos" },
+    { id: "pedidos", label: "Pedidos", description: "Faça um pedido novo e acompanhe cada decisão", icon: "ClipboardList", href: "/servicos" },
     { id: "aprovacoes", label: "Aprovações", description: "Pedidos à espera da sua decisão", icon: "Stamp", href: "/servicos/aprovacoes", requires: "approver" },
     { id: "salas", label: "Reserva de salas", description: "Disponibilidade por sala e por hora", icon: "DoorOpen", href: "/servicos/salas" },
     { id: "ausencias", label: "Ausências", description: "Marque ausências e indique substituto", icon: "CalendarOff", href: "/servicos/ausencias" },

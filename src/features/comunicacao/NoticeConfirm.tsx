@@ -9,7 +9,7 @@ import { t } from "@/i18n";
 const b = t.banner;
 
 /** Barra fixa de confirmação: "Tomei conhecimento" só fica activo depois de marcar. */
-export function NoticeConfirm({ id }: { id: string }) {
+export function NoticeConfirm({ id, inline }: { id: string; inline?: boolean }) {
   const router = useRouter();
   const { show } = useToast();
   const [checked, setChecked] = useState(false);
@@ -26,7 +26,7 @@ export function NoticeConfirm({ id }: { id: string }) {
     }
   };
   return (
-    <div className="sticky bottom-[calc(56px+env(safe-area-inset-bottom))] z-30 -mx-4 mt-8 border-t border-line bg-surface px-4 py-3 md:bottom-0 md:mx-0 md:rounded-[16px] md:border md:px-5" style={{ boxShadow: "var(--ds-shadow-md)" }}>
+    <div className={inline ? "border-l-4 border-[var(--ds-color-brand-700)] bg-[var(--ds-toned-background)] px-5 py-4" : "sticky bottom-[calc(56px+env(safe-area-inset-bottom))] z-30 -mx-4 mt-8 border-t border-line bg-surface px-4 py-3 md:bottom-0 md:mx-0 md:border md:px-5"} style={inline ? undefined : { boxShadow: "var(--ds-shadow-md)" }}>
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)}>{b.understood}</Checkbox>
         <Button variant="pri" disabled={!checked} loading={busy} onClick={confirm}>{b.confirm}</Button>

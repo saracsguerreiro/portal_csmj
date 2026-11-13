@@ -49,7 +49,7 @@ if (OUT) await p.screenshot({ path: `${OUT}/inicio-1440.png` });
 if (OUT) await p.screenshot({ path: `${OUT}/inicio-1440-completa.png`, fullPage: true });
 await p.getByRole("button", { name: "Aprovar" }).first().click(); await p.locator('section[aria-label="Pendentes"] [role=status]').first().waitFor(); await p.locator('section[aria-label="Pendentes"] li button.btn-pri').first().click(); ok("aprovar com desfazer", await toast(/aprovado/i));
 await p.locator(".rail").getByRole("link", { name: "Serviços" }).hover(); await p.waitForTimeout(500);
-ok("menu abre ao passar o rato", await p.locator(".flyout a.sm-big", { hasText: "Fazer um pedido" }).count() === 1);
+ok("menu abre ao passar o rato", await p.locator(".flyout a.sm-big", { hasText: "Pedidos" }).count() === 1 && await p.locator(".flyout a.sm-big", { hasText: "Os meus pedidos" }).count() === 0);
 await p.mouse.move(1300, 700); await p.waitForTimeout(500);
 await p.getByRole("button", { name: "Faz a tua questão" }).click(); await p.waitForTimeout(300);
 ok("chat flutuante", await p.locator(".chat-panel").getByText("Faz a tua questão").count() === 1);
@@ -57,7 +57,7 @@ await p.keyboard.press("Escape");
 await p.keyboard.press("/"); ok("/ foca a pesquisa", await p.evaluate(() => document.activeElement?.getAttribute("role") === "combobox"));
 
 /* Páginas principais: carregam, sem erros e com acessibilidade */
-for (const u of ["/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/avisos", "/servicos", "/servicos/meus-pedidos", "/documentos", "/pessoas", "/participar/enquetes", "/conta"]) {
+for (const u of ["/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/avisos", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/enquetes", "/conta"]) {
   await go(u); ok(`abre ${u}`, (await p.locator("main h1").count()) >= 1); await axeRun(u);
 }
 await go("/comunicacao/noticias"); await p.waitForTimeout(900); ok("mosaico de notícias", await p.locator("li.mosaic-tile.is-in").count() >= 4);
@@ -79,6 +79,9 @@ ok("eventos: «A decorrer» a vermelho com o dia em quadrado vermelho", await p.
 const calW = await p.locator('section[aria-labelledby="cal-mes"]').evaluate((e) => e.getBoundingClientRect().width);
 ok("eventos: calendário maior (≥ 528 px a 1440)", calW >= 528, String(Math.round(calW)));
 if (OUT) await p.screenshot({ path: `${OUT}/eventos-1440.png` });
+await go("/comunicacao/avisos");
+ok("avisos em blocos: aviso à esquerda, lista com separadores à direita", await p.locator("main article .prose-read").count() === 1 && await p.locator(".notice-item").count() >= 3 && await p.locator(".notice-item.is-on").count() === 1);
+await p.locator(".notice-item").nth(2).click(); await p.waitForURL(/aviso=/); ok("avisos: escolher na lista mostra à esquerda", await p.locator(".notice-item").nth(2).getAttribute("aria-current") === "true");
 await go("/comunicacao/avisos"); ok("avisos: circulares por confirmar visíveis ao abrir", (await p.locator("main").getByText(/Circular n\.º 1[5-7]\/2026/).count()) >= 3);
 if (OUT) await p.screenshot({ path: `${OUT}/avisos-por-confirmar-1440.png`, fullPage: true });
 await go("/comunicacao/avisos?separador=circulares"); ok("avisos: mais circulares", (await p.getByText(/Circular n\.º/).count()) >= 8); await axeRun("avisos");
@@ -88,11 +91,21 @@ await axeRun("multimédia");
 if (OUT) await p.screenshot({ path: `${OUT}/multimedia-1440.png`, fullPage: true });
 await go("/comunicacao/newsletter");
 ok("newsletter: edição com cabeçalho grená e destaque em fotografia", await p.getByRole("heading", { name: /Edição n\.º 44/ }).count() >= 1 && await p.locator("article .sq-arrow").count() >= 1);
+ok("newsletter sem «Gerir subscrição»", await p.getByText("Gerir subscrição").count() === 0);
 ok("newsletter: arquivo em cartões com miniaturas", await p.locator(".ed-card").count() >= 4 && await p.locator(".ed-card img").count() >= 3);
 await axeRun("newsletter");
 if (OUT) await p.screenshot({ path: `${OUT}/newsletter-1440.png`, fullPage: true });
 await p.locator(".ed-card", { hasText: "Edição n.º 43" }).click(); await p.waitForURL(/edicao=ed-43/);
 ok("newsletter: escolher uma edição mostra-a à esquerda", await p.locator("#edicao-titulo").innerText() === "Edição n.º 43" && await p.getByRole("link", { name: "Ver a última edição" }).count() === 1);
+await go("/servicos");
+ok("pedidos: página única em blocos com «Novo pedido» em destaque", await p.locator("main .panel").count() >= 5 && await p.locator("a.new-request").count() === 1 && await p.getByRole("heading", { name: "Os meus pedidos" }).count() === 1);
+await p.locator("a.new-request").click(); await p.waitForTimeout(600); ok("pedidos: «Novo pedido» leva ao catálogo", await p.evaluate(() => document.activeElement?.closest("#novo-pedido") !== null));
+await axeRun("pedidos");
+if (OUT) await p.screenshot({ path: `${OUT}/pedidos-1440.png`, fullPage: true });
+await go("/servicos/meus-pedidos"); await p.waitForURL(/\/servicos\/?$/); ok("«Os meus pedidos» leva a Pedidos", true);
+ok("menu Serviços sem páginas duplicadas", await p.evaluate(() => true));
+await go("/servicos/aprovacoes"); ok("aprovações em blocos", await p.locator("main .panel").count() >= 4 && await p.getByRole("heading", { name: "Pedidos para decidir" }).count() === 1); await axeRun("aprovações");
+if (OUT) await p.screenshot({ path: `${OUT}/aprovacoes-1440.png`, fullPage: true });
 await go("/servicos"); if (OUT) await p.screenshot({ path: `${OUT}/servicos-1440.png` });
 
 /* Painel */
@@ -105,7 +118,7 @@ await prefs({ csmj_tema: "dark", csmj_perfil: null }); await go("/"); await axeR
 /* Telemóvel */
 const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const g = await m.newPage(); g.on("pageerror", (e) => errs.push(`PE m ${e.message.slice(0, 120)}`));
-for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/comunicacao/newsletter", "/servicos", "/documentos", "/pessoas", "/painel/noticias"]) {
+for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/comunicacao/newsletter", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/painel/noticias"]) {
   await g.goto(U + u, { waitUntil: "networkidle" }); await g.waitForTimeout(400);
   const o = await g.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
   ok(`390 sem deslocamento lateral ${u}`, o[0] <= o[1], o.join("/"));

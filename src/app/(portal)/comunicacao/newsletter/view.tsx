@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowUpRight, CalendarClock, Mail } from "lucide-react";
+import { ArrowUpRight, CalendarClock } from "lucide-react";
 import Link from "next/link";
 import { entity } from "@/config/entity";
-import { Breadcrumbs, ButtonLink, FilterBar, LoadError, ScopeTag } from "@/design-system";
+import { Breadcrumbs, FilterBar, LoadError, ScopeTag } from "@/design-system";
 import { BlockRetry } from "@/features/home/BlockRetry";
 import { t } from "@/i18n";
 import { listEditions } from "@/lib/api-comunicacao";
@@ -122,7 +122,6 @@ export function NewsletterView() {
           <h1 className="text-page font-bold tracking-[-0.02em]">{nl.title}</h1>
           <p className="max-w-[70ch] text-ui text-subtle">{nl.lead}</p>
         </div>
-        <ButtonLink href="/conta?separador=notificacoes" icon={<Mail size={16} aria-hidden />}>{nl.manage}</ButtonLink>
       </header>
       {!data ? <div className="panel p-6 xl:col-span-12"><LoadError what={nl.what}><BlockRetry /></LoadError></div> : (
         <>
