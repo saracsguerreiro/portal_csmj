@@ -19,8 +19,6 @@
   --ds-color-brand-950: #2d0a06;
 
   /* Ouro CSMJ */
-  --ds-color-gold-100: #faf1d6;
-  --ds-color-gold-200: #f5e4b2;
   --ds-color-gold-400: #e1b229;
   --ds-color-gold-700: #8d6d11;
   --ds-color-gold-950: #2e2405;
@@ -82,8 +80,8 @@
   --ds-status-brand-bg: #fcf4f3;
   --ds-status-brand-fg: #000000;
 
-  --ds-avatar-bg: #faf1d6;
-  --ds-avatar-fg: #000000;
+  --ds-avatar-bg: var(--ds-color-gold-400);
+  --ds-avatar-fg: #1f1702;
 
   --ds-pattern-soft: url("../../public/brand/engrenagem-grena-8.svg");
   --ds-pattern-brand: url("../../public/brand/engrenagem-ouro-20.svg");
@@ -138,8 +136,8 @@
     --ds-status-neu-line: #404040;
     --ds-status-brand-bg: #3a1a16;
     --ds-status-brand-fg: #f8e5e2;
-    --ds-avatar-bg: #2e2405;
-    --ds-avatar-fg: #f5e4b2;
+    --ds-avatar-bg: #e1b229;
+    --ds-avatar-fg: #1f1702;
     --ds-pattern-soft: url("../../public/brand/engrenagem-ouro-30.svg");
   }
 }
@@ -186,8 +184,8 @@
   --ds-status-neu-line: #404040;
   --ds-status-brand-bg: #3a1a16;
   --ds-status-brand-fg: #f8e5e2;
-  --ds-avatar-bg: #2e2405;
-  --ds-avatar-fg: #f5e4b2;
+  --ds-avatar-bg: #e1b229;
+  --ds-avatar-fg: #1f1702;
   --ds-pattern-soft: url("../../public/brand/engrenagem-ouro-30.svg");
 }
 

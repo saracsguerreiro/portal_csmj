@@ -38,7 +38,7 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 
 const people = [{ value: "a", label: "Marta Kiala", detail: "Juíza de Direito" }, { value: "b", label: "Domingos Tchipa", detail: "Juiz Presidente" }, { value: "c", label: "Isabel Ngola", detail: "Oficial de Justiça" }];
 const tree = [{ id: "n", label: "Nacional", children: [{ id: "rl", label: "Relação de Luanda", children: [{ id: "b", label: "Comarca de Belas" }, { id: "l", label: "Comarca de Luanda" }] }, { id: "rb", label: "Relação de Benguela", children: [{ id: "be", label: "Comarca de Benguela" }] }] }];
-const swatches = [["Grená 700", "#852418"], ["Grená 800", "#6C1D13"], ["Grená 50", "#FCF4F3"], ["Ouro 400", "#E1B229"], ["Ouro 100", "#FAF1D6"], ["Preto", "#000000"], ["Cinza 700", "#404040"], ["Cinza 600", "#5C5C5C"], ["Cinza 500", "#737373"], ["Cinza 200", "#E6E6E6"], ["Cinza 100", "#F4F4F4"]];
+const swatches = [["Grená 700", "#852418"], ["Grená 800", "#6C1D13"], ["Grená 50", "#FCF4F3"], ["Ouro 400", "#E1B229"], ["Preto", "#000000"], ["Cinza 700", "#404040"], ["Cinza 600", "#5C5C5C"], ["Cinza 500", "#737373"], ["Cinza 200", "#E6E6E6"], ["Cinza 100", "#F4F4F4"]];
 
 function Gallery() {
   const { show } = useToast();

@@ -60,6 +60,10 @@ await p.keyboard.press("/"); ok("/ foca a pesquisa", await p.evaluate(() => docu
 for (const u of ["/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/avisos", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/enquetes", "/conta"]) {
   await go(u); ok(`abre ${u}`, (await p.locator("main h1").count()) >= 1); await axeRun(u);
 }
+await go("/documentos");
+ok("biblioteca em blocos: colecções em quadrados vermelhos, recentes, favoritos e mais consultados", await p.locator("main .panel").count() >= 4 && await p.locator("#coleccoes ~ ul .quick-tile").count() >= 4);
+await p.locator("#doc-q").fill("competência"); await p.keyboard.press("Enter"); await p.waitForURL(/q=/); ok("biblioteca: pesquisa mostra resultados num bloco", await p.locator("#resultados").count() === 1);
+if (OUT) { await go("/documentos"); await p.screenshot({ path: `${OUT}/biblioteca-1440.png`, fullPage: true }); }
 await go("/comunicacao/noticias"); await p.waitForTimeout(900); ok("mosaico de notícias", await p.locator("li.mosaic-tile.is-in").count() >= 4);
 if (OUT) await p.screenshot({ path: `${OUT}/noticias-1440.png` });
 ok("grelha: seta em quadrado vermelho, sem «Ver notícia»", await p.locator("li.mosaic-tile .sq-arrow").count() >= 4 && await p.locator("li.mosaic-tile").getByText("Ver notícia").count() === 0);
