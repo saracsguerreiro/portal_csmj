@@ -81,7 +81,7 @@
   --ds-status-brand-fg: #000000;
 
   --ds-avatar-bg: var(--ds-color-gold-400);
-  --ds-avatar-fg: #1f1702;
+  --ds-avatar-fg: #ffffff;
 
   --ds-pattern-soft: url("../../public/brand/engrenagem-grena-8.svg");
   --ds-pattern-brand: url("../../public/brand/engrenagem-ouro-20.svg");
@@ -137,7 +137,7 @@
     --ds-status-brand-bg: #3a1a16;
     --ds-status-brand-fg: #f8e5e2;
     --ds-avatar-bg: #e1b229;
-    --ds-avatar-fg: #1f1702;
+    --ds-avatar-fg: #ffffff;
     --ds-pattern-soft: url("../../public/brand/engrenagem-ouro-30.svg");
   }
 }
@@ -185,7 +185,7 @@
   --ds-status-brand-bg: #3a1a16;
   --ds-status-brand-fg: #f8e5e2;
   --ds-avatar-bg: #e1b229;
-  --ds-avatar-fg: #1f1702;
+  --ds-avatar-fg: #ffffff;
   --ds-pattern-soft: url("../../public/brand/engrenagem-ouro-30.svg");
 }
 

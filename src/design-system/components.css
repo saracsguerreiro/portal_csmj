@@ -275,7 +275,7 @@
   .brand-bar { background: var(--ds-surface-brand); color: #ffffff; }
   .brand-bar .icbtn { color: #ffffff; }
   .brand-bar .icbtn:hover { background: rgba(255, 255, 255, 0.12); }
-  .brand-bar .count { background: var(--ds-accent-gold); color: #000000; }
+  .brand-bar .count { background: var(--ds-accent-gold); color: #ffffff; }
   .brand-bar :focus-visible { outline-color: #ffffff; }
   .brand-bar .menu, .brand-bar [role="group"] { color: var(--ds-content-default); }
   .brand-bar .menu :focus-visible, .brand-bar [role="group"] :focus-visible { outline-color: var(--ds-border-focus); }
