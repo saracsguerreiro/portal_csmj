@@ -70,7 +70,7 @@ ok("órgãos em linhas alinhadas: conselho com números e uma linha por Relaçã
 await p.getByPlaceholder("Procurar órgão ou responsável").fill("Sumbe"); await p.waitForTimeout(200);
 ok("órgãos: pesquisa filtra as comarcas", await p.locator("main [role=row]", { hasText: "Comarca do Sumbe" }).count() === 1 && await p.locator("main [role=row]", { hasText: "Comarca de Belas" }).count() === 0);
 await go("/instituicao/sobre");
-ok("sobre em blocos: cabeçalho igual às outras páginas, números, missão, visão, valores, composição, organização, percurso, vídeo e documentos", await p.locator("main .panel").count() >= 10 && await p.locator("main .panel #visao").count() === 1 && await p.locator("main header img").count() === 0);
+ok("sobre em blocos: cabeçalho igual às outras páginas, números, missão, visão, valores, composição, organização, percurso, vídeo e documentos", await p.locator("main .panel").count() >= 10 && await p.locator("main .panel #visao").count() === 1 && await p.locator("main header img").count() === 0 && await p.locator("main header ul a").count() === 4);
 ok("sobre: sem contacto do secretariado nos documentos", await p.locator("main").getByText("Contacte o secretariado").count() === 0);
 { const prev = p.getByRole("button", { name: "Anos anteriores" }), next = p.getByRole("button", { name: "Anos seguintes" });
   ok("percurso: setas com mais de 5 anos, anterior desactivada no início", await next.count() === 1 && await prev.isDisabled());

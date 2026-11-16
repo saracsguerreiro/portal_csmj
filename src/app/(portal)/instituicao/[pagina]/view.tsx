@@ -89,27 +89,23 @@ export function AboutView() {
 
   return (
     <div className="grid grid-cols-1 gap-[var(--gap)] xl:grid-cols-12">
-      <header className="panel flex flex-col gap-2 p-6 md:px-10 md:py-8 xl:col-span-12">
-        <Breadcrumbs items={[{ label: t.peoplePage.title, href: "/pessoas" }, { label: a.title }]} label={t.shell.crumbs} />
-        <h1 className="text-page font-bold tracking-[-0.02em]">{a.title}</h1>
-        <p className="max-w-[70ch] text-ui text-subtle">{a.tagline}</p>
-      </header>
-
-      {/* Números: faixa compacta */}
-      <section aria-labelledby="numeros" className="panel flex min-w-0 flex-col gap-4 p-6 md:flex-row md:items-center md:gap-8 md:px-10 xl:col-span-12">
-        <h2 id="numeros" className="panel-title flex-none md:w-40">{a.numbers}</h2>
-        <ul className="grid flex-1 grid-cols-2 gap-[var(--gap)] lg:grid-cols-4">
+      <header className="panel flex flex-col gap-6 p-6 md:px-10 md:py-8 lg:flex-row lg:items-center lg:justify-between xl:col-span-12">
+        <div className="flex min-w-0 flex-col gap-2">
+          <Breadcrumbs items={[{ label: t.peoplePage.title, href: "/pessoas" }, { label: a.title }]} label={t.shell.crumbs} />
+          <h1 className="text-page font-bold tracking-[-0.02em]">{a.title}</h1>
+          <p className="max-w-[60ch] text-ui text-subtle">{a.tagline}</p>
+        </div>
+        <ul className="grid flex-none grid-cols-2 gap-1 sm:grid-cols-4" aria-label={a.numbers}>
           {stats.map(({ icon: Icon, n, label, href: h }) => (
             <li key={label}>
-              <Link href={h} className="flex h-full items-center gap-4 bg-[var(--ds-color-brand-700)] px-4 py-3 text-white transition-colors hover:bg-[var(--ds-color-brand-800)]">
-                <span className="text-[30px] font-semibold leading-9 tabular-nums">{n}</span>
-                <span className="min-w-0 flex-1 text-label font-semibold leading-5">{label}</span>
-                <Icon size={20} aria-hidden className="flex-none opacity-80" />
+              <Link href={h} className="flex aspect-square w-full flex-col justify-between bg-[var(--ds-color-brand-700)] p-3 text-white transition-colors hover:bg-[var(--ds-color-brand-800)] sm:w-[120px]">
+                <Icon size={18} aria-hidden className="opacity-80" />
+                <span><span className="block text-[30px] font-semibold leading-8 tabular-nums">{n}</span><span className="block min-h-8 text-[12px] font-semibold leading-4">{label}</span></span>
               </Link>
             </li>
           ))}
         </ul>
-      </section>
+      </header>
 
       {/* Missão + visão, com o mesmo destaque */}
       <section aria-labelledby="missao" className="panel flex min-w-0 flex-col gap-5 p-6 md:p-10 xl:col-span-6">
@@ -191,9 +187,9 @@ export function AboutView() {
       {/* Vídeo + documentos */}
       <section aria-labelledby="video" className="panel flex min-w-0 flex-col gap-5 p-6 md:p-10 xl:col-span-7">
         <h2 id="video" className="panel-title">{a.video}</h2>
-        <button type="button" onClick={() => setVideo(true)} className="group relative block flex-1 overflow-hidden bg-surface-2 text-left" aria-label={t.news.playVideo(a.videoTitle)}>
+        <button type="button" onClick={() => setVideo(true)} className="group relative block min-h-[240px] flex-1 overflow-hidden bg-surface-2 text-left" aria-label={t.news.playVideo(a.videoTitle)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {poster && <img src={poster.src} alt="" className="aspect-video h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />}
+          {poster && <img src={poster.src} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />}
           <span aria-hidden className="absolute inset-0 bg-black/35" />
           <span className="absolute inset-0 grid place-items-center"><span className="grid h-16 w-16 place-items-center bg-[var(--ds-color-brand-700)] text-white transition-transform group-hover:scale-110"><Play size={28} aria-hidden /></span></span>
           <span className="absolute bottom-0 left-0 bg-black/70 px-3 py-1.5 text-label font-semibold text-white">{a.videoTitle} · 3:05</span>
