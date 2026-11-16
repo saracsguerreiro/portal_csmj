@@ -58,7 +58,7 @@ await p.keyboard.press("Escape");
 await p.keyboard.press("/"); ok("/ foca a pesquisa", await p.evaluate(() => document.activeElement?.getAttribute("role") === "combobox"));
 
 /* Páginas principais: carregam, sem erros e com acessibilidade */
-for (const u of ["/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/avisos", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/enquetes", "/participar/clima/2026", "/participar/sugestoes", "/instituicao/orgaos", "/conta"]) {
+for (const u of ["/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/avisos", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/enquetes", "/participar/clima/2026", "/participar/sugestoes", "/instituicao/orgaos", "/instituicao/sobre", "/conta"]) {
   await go(u); ok(`abre ${u}`, (await p.locator("main h1").count()) >= 1); await axeRun(u);
 }
 await go("/participar/clima/2026");
@@ -69,6 +69,9 @@ await go("/instituicao/orgaos");
 ok("órgãos em blocos: conselho, números e uma linha por Relação", await p.locator("main .panel").count() >= 5 && await p.locator("main .panel #numeros").count() === 1);
 await p.getByPlaceholder("Procurar órgão ou responsável").fill("Sumbe"); await p.waitForTimeout(200);
 ok("órgãos: pesquisa filtra as comarcas", await p.getByRole("heading", { name: "Comarca do Sumbe" }).count() === 1 && await p.getByRole("heading", { name: "Comarca de Belas" }).count() === 0);
+await go("/instituicao/sobre");
+ok("sobre em blocos: abertura, missão, números, valores, composição, organização, percurso, vídeo e documentos", await p.locator("main .panel").count() >= 10 && await p.locator("main .panel #historia").count() === 1);
+await p.getByRole("button", { name: /Ver vídeo/ }).click(); await p.waitForTimeout(200); ok("sobre: vídeo abre", await p.getByRole("dialog").count() === 1); await p.keyboard.press("Escape");
 await go("/participar/sugestoes");
 ok("sugestões em blocos: caixa à esquerda, implementadas à direita", await p.locator("main .panel #caixa").count() === 1 && await p.locator("main .panel #implementadas").count() === 1);
 await go("/documentos");
@@ -155,7 +158,7 @@ await prefs({ csmj_tema: "dark", csmj_perfil: null }); await go("/"); await axeR
 /* Telemóvel */
 const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const g = await m.newPage(); g.on("pageerror", (e) => errs.push(`PE m ${e.message.slice(0, 120)}`));
-for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/comunicacao/newsletter", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/clima/2026", "/participar/sugestoes", "/instituicao/orgaos", "/painel/noticias"]) {
+for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/comunicacao/newsletter", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/clima/2026", "/participar/sugestoes", "/instituicao/orgaos", "/instituicao/sobre", "/painel/noticias"]) {
   await g.goto(U + u, { waitUntil: "networkidle" }); await g.waitForTimeout(400);
   const o = await g.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
   ok(`390 sem deslocamento lateral ${u}`, o[0] <= o[1], o.join("/"));
