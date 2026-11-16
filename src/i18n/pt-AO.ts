@@ -853,6 +853,13 @@ export const ptAO = {
     events: (n: number) => (n === 1 ? "1 evento" : `${n} eventos`),
     courts: "Comarcas",
     empty: "Nenhum órgão com esse nome.",
+    national: "Órgão de gestão e disciplina",
+    relation: "Tribunal da Relação",
+    numbers: "Em números",
+    numbersNote: "Jurisdição comum: os tribunais da Relação e as comarcas que dependem de cada um.",
+    statRelations: "Tribunais da Relação",
+    statCourts: "Comarcas",
+    statPeople: "Pessoas",
   },
   about: {
     title: "Sobre a instituição",
