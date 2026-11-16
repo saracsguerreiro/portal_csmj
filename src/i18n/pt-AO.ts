@@ -860,10 +860,12 @@ export const ptAO = {
     toc: "Nesta página",
   },
   pollsPage: {
+    noClosed: "Ainda não há enquetes fechadas.",
+    closedOn: (d: string) => `Fechou a ${d}`,
     title: "Enquetes",
     lead: "Dê a sua opinião em votações curtas.",
     open: "Abertas",
-    closed: "Encerradas",
+    closed: "Fechadas",
     until: (d: string) => `Vota-se até ${d}`,
     anonymous: "Anónima",
     nominal: "Nominal",

@@ -72,6 +72,9 @@ for (const [u, name] of [["/documentos/legislacao", "legislacao"], ["/documentos
   if (OUT) await p.screenshot({ path: `${OUT}/${name}-1440.png`, fullPage: true });
 }
 await go("/documentos/legislacao"); await p.locator("section:has(#atalhos-docs) .quick-tile").first().click(); await p.waitForURL(/documento=/); ok("atalho rápido abre a ficha do documento", await p.locator("dialog.sheet[open]").count() === 1); await p.keyboard.press("Escape");
+await go("/participar/enquetes");
+ok("enquetes em blocos: abertas à esquerda, fechadas à direita", await p.locator("main .panel").count() >= 3 && await p.locator("section:has(#abertas)").count() === 1 && await p.locator("section:has(#encerradas)").count() === 1);
+if (OUT) await p.screenshot({ path: `${OUT}/enquetes-1440.png`, fullPage: true });
 await go("/comunicacao/noticias"); await p.waitForTimeout(900); ok("mosaico de notícias", await p.locator("li.mosaic-tile.is-in").count() >= 4);
 if (OUT) await p.screenshot({ path: `${OUT}/noticias-1440.png` });
 ok("grelha: seta em quadrado vermelho, sem «Ver notícia»", await p.locator("li.mosaic-tile .sq-arrow").count() >= 4 && await p.locator("li.mosaic-tile").getByText("Ver notícia").count() === 0);
