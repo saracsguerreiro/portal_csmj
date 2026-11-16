@@ -192,6 +192,10 @@ td[data-out="true"] .mini-day { background: transparent; color: var(--ds-content
 .new-request:focus-visible { outline: 3px solid var(--ds-accent-gold); outline-offset: 3px; }
 .new-request svg { transition: transform 300ms cubic-bezier(.2,.7,.2,1); }
 .new-request:hover svg { transform: rotate(90deg); }
+.folder-link { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; color: var(--ds-content-strong); font-size: 14px; border-left: 3px solid transparent; }
+.folder-link:hover { background: var(--ds-surface-2); }
+.folder-link .text-caption { color: var(--ds-content-subtle); }
+.folder-link[aria-current="page"] { background: var(--ds-toned-background); border-left-color: var(--ds-color-brand-700); font-weight: 700; color: var(--ds-content-brand); }
 .notice-item { display: flex; gap: 12px; padding: 14px; border: 1px solid var(--ds-border-default); background: var(--ds-surface-default); transition: border-color var(--ds-duration-fast) var(--ds-ease); }
 .notice-item:hover { border-color: var(--ds-content-strong); }
 .notice-item.is-on { border-color: var(--ds-color-brand-700); box-shadow: inset 4px 0 0 var(--ds-color-brand-700); background: var(--ds-toned-background); }

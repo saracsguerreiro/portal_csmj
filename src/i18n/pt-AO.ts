@@ -711,6 +711,11 @@ export const ptAO = {
     what: "as ausências",
   },
   docs: {
+    shortcuts: "Atalhos rápidos",
+    shortcutsLead: (c: string) => `Os documentos mais usados em ${c}.`,
+    shortcutsLeadAll: "Os documentos mais usados na biblioteca.",
+    otherCollections: "Outras colecções",
+    favList: "Guardados por si",
     title: "Documentos",
     lead: "Documentos oficiais e de trabalho, sempre na versão em vigor.",
     search: "Pesquisar nos documentos",

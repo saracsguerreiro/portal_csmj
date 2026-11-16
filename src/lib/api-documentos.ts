@@ -60,6 +60,16 @@ export function collectionView(s: Session, slug: string, f: { q?: string; tipo?:
   };
 }
 
+/** Documentos importantes para os atalhos rápidos: os mais consultados e em vigor, de uma colecção ou de toda a biblioteca. */
+export function importantDocs(s: Session, collectionId?: string, limit = 6) {
+  return documents.filter((d) => (!collectionId || d.collectionId === collectionId) && canReadDoc(s, d) && !d.outOfDate).sort((a, b) => b.views - a.views).slice(0, limit).map((d) => docRow(d, s));
+}
+
+/** Outras colecções da biblioteca, para mudar de colecção sem voltar atrás. */
+export function otherCollections(slug?: string) {
+  return collections.filter((c) => c.slug !== slug).map((c) => ({ slug: c.slug, name: c.name, icon: c.icon }));
+}
+
 export function docDetail(s: Session, id: string) {
   const d = documents.find((x) => x.id === id);
   if (!d) return { status: "missing" as const };
