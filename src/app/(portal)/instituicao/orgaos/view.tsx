@@ -4,7 +4,6 @@ import { Landmark, Mail, MapPin, Phone, Scale, Search, Users } from "lucide-reac
 import Link from "next/link";
 import { useState } from "react";
 import { Avatar, Breadcrumbs, EmptyState } from "@/design-system";
-import { photoOf } from "@/data/photos";
 import { usePersonHref } from "@/features/pessoas/parts";
 import { PersonSheet } from "@/features/pessoas/PersonSheet";
 import { t } from "@/i18n";
@@ -14,16 +13,18 @@ import { useSession } from "@/lib/client";
 const g = t.organs;
 type Organ = OrgNode & { info?: { address: string; phone: string; email: string }; newsCount: number; eventsCount: number };
 
-/** Fotografia de cada órgão (biblioteca de exemplo). */
-const PHOTO: Record<string, string> = { nacional: "n7", "rel-luanda": "n12", "rel-benguela": "d3" };
+/** Todas as linhas usam a mesma grelha: identificação do órgão à esquerda (largura fixa) e conteúdo à direita. */
+const ROW = "panel grid min-w-0 xl:col-span-12 lg:grid-cols-[380px_minmax(0,1fr)]";
+/** Colunas da tabela de comarcas. */
+const COLS = "md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1.3fr)_120px]";
 
-function Head({ n }: { n: Organ }) {
+function Head({ n, bare }: { n: Organ; bare?: boolean }) {
   const href = usePersonHref();
   if (!n.head) return null;
   return (
     <Link href={href(n.head.slug)} scroll={false} className="row-link flex items-center gap-3">
       <Avatar initials={n.head.initials} size="sm" />
-      <span><span className="block text-caption text-subtle">{g.president}</span><span className="row-title block font-semibold text-ink">{n.head.name}</span></span>
+      <span className="min-w-0">{!bare && <span className="block text-caption text-subtle">{g.president}</span>}<span className="row-title block font-semibold text-ink">{n.head.name}</span></span>
     </Link>
   );
 }
@@ -39,57 +40,30 @@ function Contacts({ n }: { n: Organ }) {
   );
 }
 
-function Links({ n }: { n: Organ }) {
-  if (!n.newsCount && !n.eventsCount) return null;
+function Links({ n, column }: { n: Organ; column?: boolean }) {
+  if (!n.newsCount && !n.eventsCount) return column ? <span className="text-label text-subtle">—</span> : null;
   return (
-    <p className="mt-auto flex flex-wrap gap-x-4 gap-y-1 border-t border-line pt-3 text-label">
+    <p className={`flex gap-x-4 text-label ${column ? "flex-col gap-y-3" : "flex-wrap gap-y-1"}`}>
       {n.newsCount > 0 && <Link className="link-quiet" href={`/comunicacao/noticias?quem=${n.id}`}>{g.news(n.newsCount)}</Link>}
       {n.eventsCount > 0 && <Link className="link-quiet" href={`/comunicacao/eventos?quem=${n.id}`}>{g.events(n.eventsCount)}</Link>}
     </p>
   );
 }
 
-function Photo({ id, className = "" }: { id: string; className?: string }) {
-  const p = photoOf(PHOTO[id] ?? "n12");
-  // eslint-disable-next-line @next/next/no-img-element
-  return p ? <img src={p.src} alt="" loading="lazy" className={`object-cover ${className}`} /> : null;
-}
-
-/** Tribunal da Relação: a fotografia ocupa a coluna toda e os dados ficam por cima, para a linha ter a altura das comarcas. */
-function RelationCover({ r }: { r: Organ }) {
-  const href = usePersonHref();
+/** Coluna esquerda de cada linha: tipo, nome, responsável, contactos e ligações. */
+function Identity({ n, kind, id }: { n: Organ; kind: string; id: string }) {
   return (
-    <div className="relative min-h-[360px] overflow-hidden bg-[var(--ds-content-strong)] text-white">
-      <Photo id={r.id} className="absolute inset-0 h-full w-full" />
-      <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/10" />
-      <div className="relative flex h-full flex-col justify-end gap-4 p-6 md:p-8">
-        <p className="text-label font-semibold uppercase tracking-[0.06em] text-white/85">{g.relation}</p>
-        <h2 id={`t-${r.id}`} className="text-section font-bold !text-white">{r.name}</h2>
-        {r.head && (
-          <Link href={href(r.head.slug)} scroll={false} className="flex items-center gap-3 hover:underline">
-            <Avatar initials={r.head.initials} size="sm" />
-            <span><span className="block text-caption text-white/80">{g.president}</span><span className="block font-semibold">{r.head.name}</span></span>
-          </Link>
-        )}
-        {r.info && (
-          <ul className="flex flex-col gap-1.5 text-label text-white/90">
-            <li className="flex items-center gap-2"><MapPin size={14} aria-hidden className="flex-none" />{r.info.address}</li>
-            <li className="flex items-center gap-2"><Phone size={14} aria-hidden className="flex-none" /><a className="hover:underline" href={`tel:${r.info.phone.replaceAll(" ", "")}`}>{r.info.phone}</a></li>
-            <li className="flex min-w-0 items-center gap-2"><Mail size={14} aria-hidden className="flex-none" /><a className="truncate hover:underline" href={`mailto:${r.info.email}`}>{r.info.email}</a></li>
-          </ul>
-        )}
-        {(r.newsCount > 0 || r.eventsCount > 0) && (
-          <p className="flex flex-wrap gap-x-4 border-t border-white/30 pt-3 text-label font-semibold">
-            {r.newsCount > 0 && <Link className="hover:underline" href={`/comunicacao/noticias?quem=${r.id}`}>{g.news(r.newsCount)}</Link>}
-            {r.eventsCount > 0 && <Link className="hover:underline" href={`/comunicacao/eventos?quem=${r.id}`}>{g.events(r.eventsCount)}</Link>}
-          </p>
-        )}
-      </div>
+    <div className="flex flex-col gap-4 border-b border-line p-6 md:p-8 lg:border-b-0 lg:border-r">
+      <p className="eyebrow">{kind}</p>
+      <h2 id={id} className="text-[22px] font-bold leading-7 tracking-[-0.01em] text-ink">{n.name}</h2>
+      <Head n={n} />
+      <Contacts n={n} />
+      {(n.newsCount > 0 || n.eventsCount > 0) && <div className="border-t border-line pt-3"><Links n={n} /></div>}
     </div>
   );
 }
 
-/** Órgãos em blocos: o Conselho e os números na primeira linha; cada Tribunal da Relação numa linha inteira, com as comarcas a ocupar a largura. */
+/** Órgãos do sistema judicial: cada órgão numa linha com a mesma grelha, para tudo ficar alinhado. */
 export function OrgansView() {
   const s = useSession();
   const [q, setQ] = useState("");
@@ -97,9 +71,9 @@ export function OrgansView() {
   const courts = data.relations.reduce((n, r) => n + r.courts.length, 0);
   const people = (n: OrgNode): number => n.members.length + n.children.reduce((a, c) => a + people(c), 0);
   const stats = [
-    { icon: Landmark, n: data.relations.length, label: g.statRelations, href: `#${data.relations[0]?.id ?? ""}` },
-    { icon: Scale, n: courts, label: g.statCourts, href: `#${data.relations[0]?.id ?? ""}` },
-    { icon: Users, n: people(data.national), label: g.statPeople, href: "/pessoas" },
+    { icon: Landmark, n: data.relations.length, label: g.statRelations },
+    { icon: Scale, n: courts, label: g.statCourts },
+    { icon: Users, n: people(data.national), label: g.statPeople },
   ];
 
   return (
@@ -114,54 +88,41 @@ export function OrgansView() {
       </header>
 
       {!q && (
-        <>
-          <section aria-labelledby="conselho" className="panel grid min-w-0 overflow-hidden md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] xl:col-span-7">
-            <Photo id="nacional" className="h-56 w-full md:h-full" />
-            <div className="flex flex-col gap-4 p-6 md:p-8">
-              <p className="eyebrow">{g.national}</p>
-              <h2 id="conselho" className="text-section font-bold">{data.national.name}</h2>
-              <Head n={data.national} />
-              <Contacts n={data.national} />
-              <Links n={data.national} />
-            </div>
-          </section>
-          <section aria-labelledby="numeros" className="panel flex min-w-0 flex-col gap-5 p-6 md:p-8 xl:col-span-5">
-            <h2 id="numeros" className="panel-title">{g.numbers}</h2>
-            <ul className="grid flex-1 grid-cols-3 gap-[var(--gap)]">
-              {stats.map(({ icon: Icon, n, label, href }) => (
-                <li key={label}>
-                  <Link href={href} className="quick-tile flex h-full min-h-[150px] flex-col justify-between bg-[var(--ds-color-brand-700)] p-4 text-white">
-                    <Icon size={22} aria-hidden />
-                    <span><span className="block text-[36px] font-semibold leading-10 tabular-nums">{n}</span><span className="block min-h-[40px] text-label font-semibold">{label}</span></span>
-                  </Link>
+        <section aria-labelledby="conselho" className={ROW}>
+          <Identity n={data.national} kind={g.national} id="conselho" />
+          <div className="flex min-w-0 flex-col gap-5 p-6 md:p-8">
+            <h3 id="numeros" className="panel-title">{g.numbers}</h3>
+            <ul className="grid flex-1 grid-cols-1 gap-[var(--gap)] sm:grid-cols-3">
+              {stats.map(({ icon: Icon, n, label }) => (
+                <li key={label} className="flex min-h-[130px] flex-col justify-between bg-[var(--ds-color-brand-700)] p-5 text-white">
+                  <Icon size={22} aria-hidden />
+                  <span><span className="block text-[40px] font-semibold leading-[44px] tabular-nums">{n}</span><span className="block text-label font-semibold">{label}</span></span>
                 </li>
               ))}
             </ul>
             <p className="text-ui text-subtle">{g.numbersNote}</p>
-          </section>
-        </>
+          </div>
+        </section>
       )}
 
       {data.relations.length === 0 ? <div className="panel p-6 xl:col-span-12"><EmptyState title={g.empty} /></div> : data.relations.map((r) => (
-        <section key={r.id} id={r.id} aria-labelledby={`t-${r.id}`} className="panel grid min-w-0 scroll-mt-4 overflow-hidden lg:grid-cols-[minmax(300px,4fr)_minmax(0,8fr)] xl:col-span-12">
-          <RelationCover r={r} />
+        <section key={r.id} id={r.id} aria-labelledby={`t-${r.id}`} className={ROW}>
+          <Identity n={r} kind={g.relation} id={`t-${r.id}`} />
           <div className="flex min-w-0 flex-col gap-4 p-6 md:p-8">
             <h3 className="panel-title flex items-center gap-2">{g.courts}<span className="count">{r.courts.length}</span></h3>
-            <ul className="grid flex-1 gap-[var(--gap)] [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
+            <div role="table" aria-label={`${g.courts}: ${r.name}`} className="flex flex-col">
+              <div role="row" className={`hidden gap-6 border-b-2 border-[var(--ds-content-strong)] pb-2 text-caption font-semibold uppercase tracking-[0.06em] text-subtle md:grid ${COLS}`}>
+                <span role="columnheader">{g.colCourt}</span><span role="columnheader">{g.president}</span><span role="columnheader">{g.colContacts}</span><span role="columnheader">{g.colComms}</span>
+              </div>
               {r.courts.map((c) => (
-                <li key={c.id}>
-                  <article className="flex h-full flex-col gap-4 border border-line p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <h4 className="text-[17px] font-semibold leading-6 text-ink">{c.name}</h4>
-                      <span className="grid h-9 w-9 flex-none place-items-center bg-[var(--ds-color-brand-700)] text-white" aria-hidden><Scale size={18} /></span>
-                    </div>
-                    <Head n={c} />
-                    <Contacts n={c} />
-                    <Links n={c} />
-                  </article>
-                </li>
+                <div key={c.id} role="row" className={`grid gap-3 border-b border-line py-4 last:border-b-0 md:items-center md:gap-6 ${COLS}`}>
+                  <span role="cell" className="flex items-center gap-3"><span className="grid h-9 w-9 flex-none place-items-center bg-[var(--ds-color-brand-700)] text-white" aria-hidden><Scale size={18} /></span><span className="font-semibold text-ink">{c.name}</span></span>
+                  <span role="cell"><span className="md:hidden block text-caption text-subtle">{g.president}</span><Head n={c} bare /></span>
+                  <span role="cell"><Contacts n={c} /></span>
+                  <span role="cell"><Links n={c} column /></span>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </section>
       ))}

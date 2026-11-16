@@ -66,9 +66,9 @@ await p.getByRole("button", { name: "Começar" }).click(); await p.waitForTimeou
 ok("inquéritos: perguntas na coluna esquerda, resultados à direita", await p.locator("section[aria-labelledby=disponivel] #tema").count() === 1 && await p.locator("#resultados").count() === 1);
 await axeRun("inquérito perguntas");
 await go("/instituicao/orgaos");
-ok("órgãos em blocos: conselho, números e uma linha por Relação", await p.locator("main .panel").count() >= 5 && await p.locator("main .panel #numeros").count() === 1);
+ok("órgãos em linhas alinhadas: conselho com números e uma linha por Relação com tabela de comarcas", await p.locator("main .panel").count() >= 4 && await p.locator("main [role=table]").count() >= 2 && await p.locator("main .panel #numeros").count() === 1);
 await p.getByPlaceholder("Procurar órgão ou responsável").fill("Sumbe"); await p.waitForTimeout(200);
-ok("órgãos: pesquisa filtra as comarcas", await p.getByRole("heading", { name: "Comarca do Sumbe" }).count() === 1 && await p.getByRole("heading", { name: "Comarca de Belas" }).count() === 0);
+ok("órgãos: pesquisa filtra as comarcas", await p.locator("main [role=row]", { hasText: "Comarca do Sumbe" }).count() === 1 && await p.locator("main [role=row]", { hasText: "Comarca de Belas" }).count() === 0);
 await go("/instituicao/sobre");
 ok("sobre em blocos: abertura, missão, números, valores, composição, organização, percurso, vídeo e documentos", await p.locator("main .panel").count() >= 10 && await p.locator("main .panel #historia").count() === 1);
 await p.getByRole("button", { name: /Ver vídeo/ }).click(); await p.waitForTimeout(200); ok("sobre: vídeo abre", await p.getByRole("dialog").count() === 1); await p.keyboard.press("Escape");

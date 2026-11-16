@@ -860,6 +860,9 @@ export const ptAO = {
     statRelations: "Tribunais da Relação",
     statCourts: "Comarcas",
     statPeople: "Pessoas",
+    colCourt: "Comarca",
+    colContacts: "Contactos",
+    colComms: "Comunicação",
   },
   about: {
     title: "Sobre a instituição",
