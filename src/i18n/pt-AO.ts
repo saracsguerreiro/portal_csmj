@@ -605,7 +605,8 @@ export const ptAO = {
   approvals: {
     title: "Aprovações",
     lead: "Pedidos à espera da sua decisão.",
-    tabs: { waiting: "À minha espera", decided: "Decididos por mim" },
+    tabs: { waiting: "Em espera", analysing: "Em análise", approved: "Aprovados" },
+    emptyTab: { "em-espera": "Não tem pedidos novos à sua espera.", "em-analise": "Não tem pedidos em análise.", aprovados: "Ainda não aprovou nenhum pedido." },
     page: { list: "Pedidos para decidir", summary: "Resumo", awayTitle: "Vai estar ausente?", awayLink: "Marcar ausência e substituto", awayText: "Marque a ausência e indique quem decide por si. Os pedidos passam para o substituto enquanto estiver fora." },
     deciding: (n: string, d: string) => `Está a decidir em nome de ${n} até ${d}.`,
     decidingFor: (n: string) => `Está a decidir em nome de ${n}, que está ausente. O pedido chegou-lhe por ser o substituto.`,
@@ -616,7 +617,7 @@ export const ptAO = {
     confirm: "Confirmar aprovação",
     keep: "Agora não",
     approved: "Pedido aprovado",
-    open: "Ver e decidir",
+    open: "Analisar",
     what: "as aprovações",
     decide: "Decisão",
     comment: "Comentário para quem pediu",

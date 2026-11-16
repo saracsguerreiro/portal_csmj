@@ -71,10 +71,10 @@ export function ServicesView() {
             {appr && (
               <section className="panel flex flex-col gap-4 p-6 md:p-8" aria-labelledby="aprov">
                 <div className="flex items-start justify-between gap-3">
-                  <h2 id="aprov" className="panel-title flex items-center gap-2">{v.approvalsWaiting}{appr.counts.waiting > 0 && <span className="count">{appr.counts.waiting}</span>}</h2>
+                  <h2 id="aprov" className="panel-title flex items-center gap-2">{v.approvalsWaiting}{appr.counts.toDecide > 0 && <span className="count">{appr.counts.toDecide}</span>}</h2>
                   <Link href="/servicos/aprovacoes" className="sq-arrow" aria-label={t.approvals.title} title={t.approvals.title}><ArrowUpRight size={22} strokeWidth={1.75} aria-hidden /></Link>
                 </div>
-                <p className="flex items-start gap-2 text-ui text-copy"><Stamp size={18} aria-hidden className="mt-0.5 flex-none text-brand" />{appr.counts.waiting > 0 ? v.oldest(appr.items.map((r) => r.waitingLabel).at(-1) ?? "") : t.approvals.empty}</p>
+                <p className="flex items-start gap-2 text-ui text-copy"><Stamp size={18} aria-hidden className="mt-0.5 flex-none text-brand" />{appr.counts.toDecide > 0 ? v.oldest(appr.oldest ?? "") : t.approvals.empty}</p>
               </section>
             )}
             <section className="panel flex flex-col gap-3 p-6 md:p-8" aria-labelledby="atalhos">

@@ -31,6 +31,7 @@ export type ActionBody =
   | { action: "event.set"; id: string; value: "none" | "going" | "waitlist" | "pending" }
   | { action: "reaction.set"; id: string; kind: string | null }
   | { action: "saved.toggle"; id: string }
+  | { action: "approval.open"; id: string }
   | { action: "poll.vote"; id: string; option: string }
   | { action: "comment.add"; id: string; text: string; replyTo?: string }
   | { action: "fav.toggle"; key: string }
@@ -75,6 +76,11 @@ export function handleAction(body: ActionBody) {
     case "reaction.set":
       if (body.kind) st.reacted.set(body.id, body.kind); else st.reacted.delete(body.id);
       break;
+    case "approval.open": {
+      const list = (db().opened[s.person.id] ??= []);
+      if (!list.includes(body.id)) list.push(body.id);
+      break;
+    }
     case "saved.toggle":
       if (st.saved.has(body.id)) st.saved.delete(body.id); else st.saved.add(body.id);
       break;

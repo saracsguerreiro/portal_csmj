@@ -94,14 +94,26 @@ export function getRequest(s: Session, id: string) {
   return { status: "ok" as const, request: requestView(r), mine: r.personId === s.person.id };
 }
 
-export function approvals(s: Session, tab = "a-minha-espera") {
+/** Aprovações em três separadores: Em espera (ainda não aberto), Em análise (aberto e por decidir, ou devolvido e ainda em curso) e Aprovados. */
+export function approvals(s: Session, tab = "em-espera") {
   if (s.failing) throw new Error("falha simulada");
   const all = db().requests.filter((r) => r.personId !== s.person.id);
-  const waiting = all.filter((r) => r.status === "em-analise" && r.steps.some((x) => x.state === "current" && effectiveDecider(x.deciderId, r.personId).id === s.person.id));
-  const decided = all.filter((r) => r.steps.some((x) => x.byId === s.person.id && (x.state === "done" || x.state === "refused" || x.state === "returned")));
+  const opened = new Set(db().opened?.[s.person.id] ?? []);
+  const mine = all.filter((r) => r.status === "em-analise" && r.steps.some((x) => x.state === "current" && effectiveDecider(x.deciderId, r.personId).id === s.person.id));
+  const actedOpen = all.filter((r) => ["devolvido", "em-analise"].includes(r.status) && !mine.includes(r) && r.steps.some((x) => x.byId === s.person.id && (x.state === "returned" || x.state === "done")));
+  const groups = {
+    "em-espera": mine.filter((r) => !opened.has(r.id)),
+    "em-analise": [...mine.filter((r) => opened.has(r.id)), ...actedOpen],
+    aprovados: all.filter((r) => r.steps.some((x) => x.byId === s.person.id && x.state === "done") && !actedOpen.includes(r)),
+  };
   const delegations = db().absences.filter((a) => a.substituteId === s.person.id && a.start <= prototypeToday && a.end >= prototypeToday).map((a) => ({ for: pv(a.personId), until: dateLong(`${a.end}T12:00:00+01:00`) }));
-  const key = tab === "decididos" ? "decididos" : "a-minha-espera";
-  return { tab: key, delegations, counts: { waiting: waiting.length, decided: decided.length }, items: (key === "decididos" ? decided : waiting).map(requestView) };
+  const key = (tab in groups ? tab : "em-espera") as keyof typeof groups;
+  return {
+    tab: key, delegations,
+    counts: { waiting: groups["em-espera"].length, analysing: groups["em-analise"].length, approved: groups.aprovados.length, toDecide: mine.length },
+    items: groups[key].map(requestView),
+    oldest: mine.map(requestView).map((r) => r.waitingLabel).at(-1),
+  };
 }
 
 export function decisionContext(s: Session, id: string) {

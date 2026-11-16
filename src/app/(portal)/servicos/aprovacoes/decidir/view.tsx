@@ -1,6 +1,8 @@
 "use client";
 
 import { notFound } from "next/navigation";
+import { useEffect } from "react";
+import { postAction } from "@/features/shell/client-api";
 import { Alert, Avatar, ButtonLink, PageHeader } from "@/design-system";
 import { Denied } from "@/features/comunicacao/content";
 import { DecisionPanel } from "@/features/servicos/DecisionPanel";
@@ -18,6 +20,9 @@ export function DecisionView() {
   const id = useQuery().id ?? "";
   const s = useSession();
   const data = decisionContext(s, id);
+  const canDecide = data.status === "ok" && data.canDecide;
+  /* Abrir o pedido para decidir passa-o de «Em espera» para «Em análise». */
+  useEffect(() => { if (canDecide && id) void postAction({ action: "approval.open", id }); }, [canDecide, id]);
   if (data.status === "missing") notFound();
   if (data.status === "denied") return <Denied />;
   const r = data.request;

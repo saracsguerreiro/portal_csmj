@@ -17,9 +17,9 @@ const P = a.page;
 export function ApprovalsView() {
   const s = useSession();
   const f = useQuery();
-  let data, waiting;
-  try { data = approvals(s, f.separador); waiting = approvals(s); } catch { data = null; }
-  const oldest = waiting?.items.map((r) => r.waitingLabel).at(-1);
+  let data;
+  try { data = approvals(s, f.separador); } catch { data = null; }
+  const oldest = data?.oldest;
   return (
     <div className="grid grid-cols-1 gap-[var(--gap)] xl:grid-cols-12">
       <header className="panel flex flex-col gap-2 p-6 md:px-10 md:py-8 xl:col-span-12">
@@ -36,19 +36,24 @@ export function ApprovalsView() {
           ))}
           <section aria-labelledby="lista-aprov" className="panel flex min-w-0 flex-col gap-4 p-6 md:p-10 xl:col-span-8">
             <h2 id="lista-aprov" className="panel-title">{P.list}</h2>
-            <LinkTabs label={a.title} tabs={[{ href: "/servicos/aprovacoes", label: a.tabs.waiting, current: data.tab === "a-minha-espera", count: data.counts.waiting }, { href: "/servicos/aprovacoes?separador=decididos", label: a.tabs.decided, current: data.tab === "decididos", count: data.counts.decided }]} />
+            <LinkTabs label={a.title} tabs={[
+              { href: "/servicos/aprovacoes", label: a.tabs.waiting, current: data.tab === "em-espera", count: data.counts.waiting },
+              { href: "/servicos/aprovacoes?separador=em-analise", label: a.tabs.analysing, current: data.tab === "em-analise", count: data.counts.analysing },
+              { href: "/servicos/aprovacoes?separador=aprovados", label: a.tabs.approved, current: data.tab === "aprovados", count: data.counts.approved },
+            ]} />
             {data.items.length === 0 ? (
-              <EmptyState plain icon={<UserRoundCheck size={24} aria-hidden />} title={data.tab === "decididos" ? a.emptyDecided : a.empty} />
+              <EmptyState plain icon={<UserRoundCheck size={24} aria-hidden />} title={a.emptyTab[data.tab]} />
             ) : (
-              <ul className="divide-y divide-[var(--ds-border-subtle)]">{data.items.map((r) => <ApprovalRow key={r.id} r={r} decided={data.tab === "decididos"} />)}</ul>
+              <ul className="divide-y divide-[var(--ds-border-subtle)]">{data.items.map((r) => <ApprovalRow key={r.id} r={r} decided={data.tab === "aprovados" || !r.steps.some((x) => x.state === "current" && x.effective?.id === s.person.id)} />)}</ul>
             )}
           </section>
           <aside className="flex min-w-0 flex-col gap-[var(--gap)] xl:col-span-4" aria-label={P.summary}>
             <section className="panel" aria-labelledby="resumo-aprov">
               <h2 id="resumo-aprov" className="panel-title px-6 pt-6 md:px-8 md:pt-8">{P.summary}</h2>
-              <div className="mt-2 grid grid-cols-2 divide-x divide-[var(--ds-border-default)] border-t border-line">
-                <Link href="/servicos/aprovacoes" className="block p-5 hover:bg-surface-2"><span className="text-[40px] font-semibold leading-none tabular-nums text-ink">{data.counts.waiting}</span><span className="mt-2 block text-ui text-subtle">{a.tabs.waiting}</span></Link>
-                <Link href="/servicos/aprovacoes?separador=decididos" className="block p-5 hover:bg-surface-2"><span className="text-[40px] font-semibold leading-none tabular-nums text-ink">{data.counts.decided}</span><span className="mt-2 block text-ui text-subtle">{a.tabs.decided}</span></Link>
+              <div className="mt-2 grid grid-cols-3 divide-x divide-[var(--ds-border-default)] border-t border-line">
+                {([["em-espera", data.counts.waiting, a.tabs.waiting], ["em-analise", data.counts.analysing, a.tabs.analysing], ["aprovados", data.counts.approved, a.tabs.approved]] as const).map(([k, n, label]) => (
+                  <Link key={k} href={k === "em-espera" ? "/servicos/aprovacoes" : `/servicos/aprovacoes?separador=${k}`} scroll={false} className="block p-5 hover:bg-surface-2"><span className="text-[40px] font-semibold leading-none tabular-nums text-ink">{n}</span><span className="mt-2 block text-ui text-subtle">{label}</span></Link>
+                ))}
               </div>
               {oldest && <p className="border-t border-line px-6 py-4 text-ui text-copy md:px-8">{t.services.oldest(oldest)}</p>}
             </section>
