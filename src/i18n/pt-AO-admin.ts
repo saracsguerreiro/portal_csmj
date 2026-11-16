@@ -18,7 +18,7 @@ export const admin = {
   groups: { trabalho: "O meu trabalho", conteudos: "Conteúdos", portal: "Portal", documentos: "Documentos", participacao: "Participação", servicos: "Serviços", pessoas: "Pessoas", instituicao: "Instituição", analise: "Análise", sistema: "Sistema" },
   items: {
     trabalho: "O meu trabalho", noticias: "Notícias", eventos: "Eventos", avisos: "Avisos", multimedia: "Multimédia", newsletter: "Newsletter",
-    paginas: "Páginas e modelos", menus: "Menus", etiquetas: "Etiquetas", documentos: "Biblioteca", enquetes: "Enquetes", clima: "Pesquisas de clima", comentarios: "Comentários",
+    paginas: "Páginas e modelos", menus: "Menus", etiquetas: "Etiquetas", documentos: "Biblioteca", enquetes: "Enquetes", clima: "Inquéritos", comentarios: "Comentários",
     servicos: "Serviços e fluxos", ausencias: "Ausências", pessoas: "Pessoas, sectores e cargos", importar: "Importar pessoal", acessos: "Acessos",
     unidades: "Unidades", salas: "Salas e material", indicadores: "Indicadores", envios: "Envios", definicoes: "Definições e marca", integracoes: "Integrações", auditoria: "Auditoria", saude: "Saúde do sistema",
   },
@@ -33,7 +33,7 @@ export const admin = {
       caducam: () => "documentos caducam em 30 dias",
       semAcesso: (n: number) => (n === 1 ? "pessoa sem acesso" : "pessoas sem acesso"),
       confirmacoes: () => "avisos com confirmações em falta",
-      clima: () => "pesquisa de clima fecha em 21 dias",
+      clima: () => "inquérito de clima fecha em 21 dias",
       alertas: () => "alerta do sistema",
     },
     actions: { rever: "Rever", moderar: "Moderar", ver: "Ver", dar: "Dar acesso", corrigir: "Corrigir" },

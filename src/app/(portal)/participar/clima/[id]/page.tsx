@@ -9,7 +9,7 @@ export function generateStaticParams() {
   return [{ id: climate.id }];
 }
 
-export const metadata = { title: climate.title };
+export const metadata = { title: "Inquéritos" };
 
 export default function Page() {
   return <Suspense><Booted><ClimateView /></Booted></Suspense>;

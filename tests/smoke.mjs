@@ -58,9 +58,15 @@ await p.keyboard.press("Escape");
 await p.keyboard.press("/"); ok("/ foca a pesquisa", await p.evaluate(() => document.activeElement?.getAttribute("role") === "combobox"));
 
 /* Páginas principais: carregam, sem erros e com acessibilidade */
-for (const u of ["/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/avisos", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/enquetes", "/conta"]) {
+for (const u of ["/comunicacao/noticias", "/comunicacao/eventos", "/comunicacao/avisos", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/enquetes", "/participar/clima/2026", "/participar/sugestoes", "/conta"]) {
   await go(u); ok(`abre ${u}`, (await p.locator("main h1").count()) >= 1); await axeRun(u);
 }
+await go("/participar/clima/2026");
+await p.getByRole("button", { name: "Começar" }).click(); await p.waitForTimeout(300);
+ok("inquéritos: perguntas na coluna esquerda, resultados à direita", await p.locator("section[aria-labelledby=disponivel] #tema").count() === 1 && await p.locator("#resultados").count() === 1);
+await axeRun("inquérito perguntas");
+await go("/participar/sugestoes");
+ok("sugestões em blocos: caixa à esquerda, implementadas à direita", await p.locator("main .panel #caixa").count() === 1 && await p.locator("main .panel #implementadas").count() === 1);
 await go("/documentos");
 ok("biblioteca em blocos: colecções em quadrados vermelhos, recentes, favoritos e mais consultados", await p.locator("main .panel").count() >= 4 && await p.locator("#coleccoes ~ ul .quick-tile").count() >= 4);
 await p.locator("#doc-q").fill("competência"); await p.keyboard.press("Enter"); await p.waitForURL(/q=/); ok("biblioteca: pesquisa mostra resultados num bloco", await p.locator("#resultados").count() === 1);
@@ -145,7 +151,7 @@ await prefs({ csmj_tema: "dark", csmj_perfil: null }); await go("/"); await axeR
 /* Telemóvel */
 const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const g = await m.newPage(); g.on("pageerror", (e) => errs.push(`PE m ${e.message.slice(0, 120)}`));
-for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/comunicacao/newsletter", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/painel/noticias"]) {
+for (const u of ["/", "/comunicacao/noticias", "/comunicacao/noticias/plano-formacao-2027", "/comunicacao/eventos", "/comunicacao/multimedia", "/comunicacao/avisos", "/comunicacao/newsletter", "/servicos", "/servicos/aprovacoes", "/documentos", "/pessoas", "/participar/clima/2026", "/participar/sugestoes", "/painel/noticias"]) {
   await g.goto(U + u, { waitUntil: "networkidle" }); await g.waitForTimeout(400);
   const o = await g.evaluate(() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]);
   ok(`390 sem deslocamento lateral ${u}`, o[0] <= o[1], o.join("/"));

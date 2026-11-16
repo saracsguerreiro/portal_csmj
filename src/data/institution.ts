@@ -27,7 +27,7 @@ export const polls: Poll[] = [
 ];
 
 export const climate = {
-  id: "2026", title: "Pesquisa de clima 2026", objective: "Perceber como as pessoas se sentem no trabalho e o que a instituição deve melhorar em 2027.",
+  id: "2026", title: "Inquérito de clima 2026", objective: "Perceber como as pessoas se sentem no trabalho e o que a instituição deve melhorar em 2027.",
   minutes: 8, closesAt: "2026-11-30T23:59:00+01:00", resultsOn: "Fevereiro de 2027",
   themes: [
     { id: "trabalho", title: "O seu trabalho", questions: [
@@ -51,6 +51,19 @@ export const climate = {
   ],
 };
 
+/** Resultados dos últimos inquéritos: média de 1 a 5 por tema, com a participação. */
+export const pastSurveys = [
+  { id: "clima-2025", title: "Inquérito de clima 2025", closedAt: "2025-11-30T23:59:00+01:00", responses: 412, participation: 68,
+    themes: [{ theme: "O seu trabalho", value: 3.6 }, { theme: "A sua chefia", value: 3.9 }, { theme: "A instituição", value: 3.4 }],
+    highlight: "A chefia é o tema mais bem avaliado. Os meios de trabalho e o equipamento informático são o que mais falta faz." },
+  { id: "teletrabalho-2025", title: "Inquérito sobre trabalho remoto", closedAt: "2025-06-15T23:59:00+01:00", responses: 287, participation: 47,
+    themes: [{ theme: "Ligação e equipamento", value: 3.1 }, { theme: "Comunicação com a equipa", value: 3.8 }, { theme: "Equilíbrio pessoal", value: 4.2 }],
+    highlight: "A maioria quer manter um dia por semana em trabalho remoto quando a função o permite." },
+  { id: "formacao-2024", title: "Inquérito à formação 2024", closedAt: "2024-12-10T23:59:00+01:00", responses: 356, participation: 59,
+    themes: [{ theme: "Utilidade dos cursos", value: 4.0 }, { theme: "Horários", value: 3.2 }, { theme: "Formação online", value: 3.7 }],
+    highlight: "Deu origem às sessões online de duas horas e ao módulo de justiça digital." },
+];
+
 export const suggestionThemes = ["Atendimento", "Instalações", "Tecnologia", "Formação", "Comunicação interna", "Outro"];
 
 export const mySuggestionsSeed: Record<string, Suggestion[]> = {
@@ -64,4 +77,7 @@ export const implementedSuggestions = [
   { title: "Senha única no balcão de atendimento de Belas", detail: "Sugerida por um oficial de justiça da comarca. Em funcionamento desde Novembro." },
   { title: "Newsletter também em versão para telemóvel", detail: "Sugestão anónima. Disponível desde a edição n.º 40." },
   { title: "Reserva de salas na intranet", detail: "Sugerida pela Secretaria-Geral. Substitui os pedidos em papel." },
+  { title: "Modelos de requerimento actualizados", detail: "Sugerida por uma escrivã da Relação de Benguela. Disponíveis na Biblioteca desde Outubro." },
+  { title: "Sessões de formação online ao fim da tarde", detail: "Resultado de várias sugestões e da enquete sobre horários." },
+  { title: "Bebedouros nos corredores do Palácio", detail: "Sugestão anónima. Instalados no primeiro e no segundo piso em Setembro." },
 ];

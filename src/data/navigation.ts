@@ -30,7 +30,7 @@ export const menu: MenuSection[] = [
   ]},
   { id: "participar", label: "Participar", href: "/participar/enquetes", items: [
     { id: "enquetes", label: "Enquetes", description: "Dê a sua opinião em votações curtas", icon: "Vote", href: "/participar/enquetes" },
-    { id: "clima", label: "Pesquisa de clima", description: "Questionário anónimo sobre o trabalho", icon: "HeartPulse", href: "/participar/clima/2026" },
+    { id: "clima", label: "Inquéritos", description: "Questionários anónimos sobre o trabalho", icon: "HeartPulse", href: "/participar/clima/2026" },
     { id: "sugestoes", label: "Caixa de sugestões", description: "Proponha melhorias à instituição", icon: "Lightbulb", href: "/participar/sugestoes" },
   ]},
 ];

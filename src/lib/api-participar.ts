@@ -1,4 +1,4 @@
-import { climate, implementedSuggestions, mySuggestionsSeed, polls } from "@/data/institution";
+import { climate, implementedSuggestions, mySuggestionsSeed, pastSurveys, polls } from "@/data/institution";
 import { notifications } from "@/data/notifications";
 import { dateLong, dateShort, relative } from "./format";
 import { inScope } from "./scope";
@@ -21,7 +21,8 @@ export function pollsView(s: Session) {
 
 export function climateView(s: Session) {
   const st = stateOf(s.person.id);
-  return { ...climate, closesLabel: dateLong(climate.closesAt), submitted: !!st.climate?.submitted, answers: st.climate?.answers ?? {} };
+  const daysLeft = Math.max(0, Math.ceil((new Date(climate.closesAt).getTime() - new Date("2026-11-09T14:00:00+01:00").getTime()) / 86400000));
+  return { ...climate, closesLabel: dateLong(climate.closesAt), daysLeft, submitted: !!st.climate?.submitted, answers: st.climate?.answers ?? {}, past: pastSurveys.map((x) => ({ ...x, closedLabel: dateLong(x.closedAt) })) };
 }
 
 export function suggestionsView(s: Session) {
