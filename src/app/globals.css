@@ -247,3 +247,26 @@ td[data-out="true"] .mini-day { background: transparent; color: var(--ds-content
   body { background: #fff; }
   .wrap { max-width: none; padding: 0; }
 }
+
+/* Percurso (Sobre a instituição): cartões com animação ao passar o rato; desliza na horizontal com mais de 5 anos */
+.timeline { scrollbar-width: none; }
+.timeline::-webkit-scrollbar { display: none; }
+.timeline-item {
+  width: calc((100% - 4 * var(--gap)) / 5); min-width: 200px;
+  display: flex; flex-direction: column; gap: 12px; padding: 16px 16px 20px;
+  border-top: 4px solid var(--ds-color-brand-700); background: var(--ds-surface-default);
+  transition: background-color .3s ease, color .3s ease, transform .3s ease, box-shadow .3s ease; cursor: default; outline: none;
+}
+.timeline-year { font-size: 32px; line-height: 36px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ds-content-strong); transition: color .3s ease, transform .3s ease; transform-origin: left; }
+.timeline-year.is-next { color: var(--ds-color-brand-700); }
+.timeline-text { font-size: 15px; line-height: 22px; color: var(--ds-content-subtle); transition: color .3s ease; }
+.timeline-item:hover, .timeline-item:focus-visible { background: var(--ds-color-brand-700); transform: translateY(-4px); box-shadow: 0 10px 24px rgb(0 0 0 / .12); }
+.timeline-item:hover .timeline-year, .timeline-item:focus-visible .timeline-year { color: #fff; transform: scale(1.08); }
+.timeline-item:hover .timeline-text, .timeline-item:focus-visible .timeline-text { color: #fff; }
+.timeline-item:focus-visible { outline: 2px solid var(--ds-border-focus); outline-offset: 2px; }
+.timeline { padding-top: 6px; margin-top: -6px; padding-bottom: 12px; margin-bottom: -12px; }
+@media (max-width: 767px) { .timeline-item { width: 72%; } }
+@media (prefers-reduced-motion: reduce) { .timeline-item, .timeline-year { transition: none; transform: none !important; } }
+.tl-arrow { border: 0; cursor: pointer; }
+.tl-arrow:hover svg { transform: none; }
+.tl-arrow:disabled { background: var(--ds-surface-2); color: var(--ds-content-subtle); cursor: default; }

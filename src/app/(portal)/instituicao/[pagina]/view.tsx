@@ -1,8 +1,8 @@
 "use client";
 
-import { ArrowUpRight, Building2, Eye, FileText, Handshake, Landmark, Lightbulb, Network, Play, Scale, ShieldCheck, Users } from "lucide-react";
+import { ArrowUpRight, Building2, ChevronLeft, ChevronRight, Eye, FileText, Handshake, Landmark, Lightbulb, Network, Play, Scale, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, Breadcrumbs, Button, Dialog } from "@/design-system";
 import { photoOf } from "@/data/photos";
 import { usePersonHref } from "@/features/pessoas/parts";
@@ -28,11 +28,44 @@ const VALUES = [
 
 const TIMELINE = [
   { year: "2010", text: "A Constituição da República consagra o Conselho como órgão de gestão e disciplina da magistratura judicial." },
+  { year: "2015", text: "Primeiro plano estratégico do Conselho para a gestão dos tribunais." },
+  { year: "2020", text: "Gestão processual informatizada nos tribunais da Relação." },
   { year: "2024", text: "Arranque do Projecto JURIS 5.0 para a transformação digital dos tribunais." },
   { year: "2025", text: "Tramitação electrónica nas primeiras comarcas." },
   { year: "2026", text: "Nova intranet para todos os tribunais da jurisdição comum." },
   { year: "2027", text: "Plano de formação com módulos de justiça digital." },
 ];
+
+/** Percurso: cartões que reagem ao rato; com mais de 5 anos, desliza com setas. */
+function Timeline() {
+  const ref = useRef<HTMLOListElement>(null);
+  const [edge, setEdge] = useState({ start: true, end: TIMELINE.length <= 5 });
+  const scrollable = TIMELINE.length > 5;
+  const update = () => { const el = ref.current; if (el) setEdge({ start: el.scrollLeft <= 2, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 }); };
+  useEffect(() => { update(); window.addEventListener("resize", update); return () => window.removeEventListener("resize", update); }, []);
+  const move = (dir: 1 | -1) => { const el = ref.current; if (!el) return; const card = el.querySelector("li"); el.scrollBy({ left: dir * ((card?.clientWidth ?? 240) + 4), behavior: "smooth" }); };
+  return (
+    <section aria-labelledby="historia" className="panel flex min-w-0 flex-col gap-6 p-6 md:p-10 xl:col-span-12">
+      <div className="flex items-center justify-between gap-4">
+        <h2 id="historia" className="panel-title">{a.history}</h2>
+        {scrollable && (
+          <div className="flex gap-1">
+            <button type="button" className="sq-arrow tl-arrow" onClick={() => move(-1)} disabled={edge.start} aria-label={a.prev}><ChevronLeft size={20} aria-hidden /></button>
+            <button type="button" className="sq-arrow tl-arrow" onClick={() => move(1)} disabled={edge.end} aria-label={a.next}><ChevronRight size={20} aria-hidden /></button>
+          </div>
+        )}
+      </div>
+      <ol ref={ref} onScroll={update} className="timeline flex snap-x snap-mandatory gap-[var(--gap)] overflow-x-auto" aria-label={a.history}>
+        {TIMELINE.map((x, i) => (
+          <li key={x.year} className="timeline-item group flex-none snap-start" tabIndex={0}>
+            <span className={`timeline-year ${i === TIMELINE.length - 1 ? "is-next" : ""}`}>{x.year}</span>
+            <p className="timeline-text">{x.text}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
 
 const DOCS = [
   ["lei-organica-jc", "Lei Orgânica dos Tribunais da Jurisdição Comum", "Legislação"],
@@ -41,7 +74,7 @@ const DOCS = [
   ["manual-etica", "Manual do módulo de ética e deontologia", "Formação"],
 ] as const;
 
-/** Sobre a instituição em blocos: abertura em fotografia, missão e números, valores, composição e organização, história, vídeo e documentos. */
+/** Sobre a instituição em blocos: cabeçalho, números, missão e visão, valores, composição e organização, história, vídeo e documentos. */
 export function AboutView() {
   const href = usePersonHref();
   const [video, setVideo] = useState(false);
@@ -56,43 +89,40 @@ export function AboutView() {
 
   return (
     <div className="grid grid-cols-1 gap-[var(--gap)] xl:grid-cols-12">
-      {/* Abertura */}
-      <header className="panel relative min-h-[380px] overflow-hidden bg-[var(--ds-content-strong)] text-white md:min-h-[440px] xl:col-span-12">
-        <Img id="n20" className="absolute inset-0 h-full w-full" />
-        <span aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/10" />
-        <div className="relative flex h-full min-h-[inherit] flex-col justify-between gap-10 p-6 md:p-10">
-          <span className="[&_*]:!text-white"><Breadcrumbs items={[{ label: t.peoplePage.title, href: "/pessoas" }, { label: a.title }]} label={t.shell.crumbs} /></span>
-          <div className="flex max-w-[760px] flex-col gap-4">
-            <p className="text-label font-semibold uppercase tracking-[0.08em] text-[var(--ds-accent-gold)]">{a.eyebrow}</p>
-            <h1 className="text-[40px] font-bold leading-[44px] tracking-[-0.02em] !text-white md:text-[56px] md:leading-[60px]">{a.title}</h1>
-            <p className="max-w-[46ch] text-[20px] leading-8 text-white/90 md:text-[24px] md:leading-9">{a.tagline}</p>
-          </div>
-        </div>
+      <header className="panel flex flex-col gap-2 p-6 md:px-10 md:py-8 xl:col-span-12">
+        <Breadcrumbs items={[{ label: t.peoplePage.title, href: "/pessoas" }, { label: a.title }]} label={t.shell.crumbs} />
+        <h1 className="text-page font-bold tracking-[-0.02em]">{a.title}</h1>
+        <p className="max-w-[70ch] text-ui text-subtle">{a.tagline}</p>
       </header>
 
-      {/* Missão + números */}
-      <section aria-labelledby="missao" className="panel flex min-w-0 flex-col gap-5 p-6 md:p-10 xl:col-span-7">
-        <h2 id="missao" className="panel-title">{a.mission}</h2>
-        <p className="border-l-4 border-[var(--ds-color-brand-700)] pl-5 text-[22px] font-semibold leading-8 tracking-[-0.01em] text-ink">O Conselho Superior da Magistratura Judicial é o órgão de gestão e disciplina dos magistrados judiciais.</p>
-        <p className="max-w-[68ch] text-read">Garante as condições para que os tribunais da jurisdição comum funcionem com independência e qualidade: nomeia, coloca, avalia e acompanha os juízes, e define as prioridades de gestão dos tribunais.</p>
-        <p className="max-w-[68ch] text-read">No âmbito do Projecto JURIS 5.0, o Conselho conduz a transformação digital dos tribunais: tramitação electrónica, gestão da informação e comunicação interna.</p>
-        <div className="mt-auto grid gap-[var(--gap)] border-t border-line pt-5 sm:grid-cols-2">
-          <div><h3 className="text-label font-semibold uppercase tracking-[0.06em] text-brand">{a.vision}</h3><p className="mt-2 text-ui text-ink">{a.visionText}</p></div>
-          <div><h3 className="text-label font-semibold uppercase tracking-[0.06em] text-brand">{a.attributions}</h3><p className="mt-2 text-ui text-ink">{a.attributionsText}</p></div>
-        </div>
-      </section>
-      <section aria-labelledby="numeros" className="panel flex min-w-0 flex-col gap-5 p-6 md:p-10 xl:col-span-5">
-        <h2 id="numeros" className="panel-title">{a.numbers}</h2>
-        <ul className="grid flex-1 grid-cols-2 gap-[var(--gap)]">
+      {/* Números: faixa compacta */}
+      <section aria-labelledby="numeros" className="panel flex min-w-0 flex-col gap-4 p-6 md:flex-row md:items-center md:gap-8 md:px-10 xl:col-span-12">
+        <h2 id="numeros" className="panel-title flex-none md:w-40">{a.numbers}</h2>
+        <ul className="grid flex-1 grid-cols-2 gap-[var(--gap)] lg:grid-cols-4">
           {stats.map(({ icon: Icon, n, label, href: h }) => (
             <li key={label}>
-              <Link href={h} className="quick-tile flex h-full min-h-[120px] flex-col justify-between bg-[var(--ds-color-brand-700)] p-4 text-white">
-                <Icon size={22} aria-hidden />
-                <span><span className="block text-[40px] font-semibold leading-[44px] tabular-nums">{n}</span><span className="block text-label font-semibold">{label}</span></span>
+              <Link href={h} className="flex h-full items-center gap-4 bg-[var(--ds-color-brand-700)] px-4 py-3 text-white transition-colors hover:bg-[var(--ds-color-brand-800)]">
+                <span className="text-[30px] font-semibold leading-9 tabular-nums">{n}</span>
+                <span className="min-w-0 flex-1 text-label font-semibold leading-5">{label}</span>
+                <Icon size={20} aria-hidden className="flex-none opacity-80" />
               </Link>
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* Missão + visão, com o mesmo destaque */}
+      <section aria-labelledby="missao" className="panel flex min-w-0 flex-col gap-5 p-6 md:p-10 xl:col-span-6">
+        <h2 id="missao" className="panel-title">{a.mission}</h2>
+        <p className="border-l-4 border-[var(--ds-color-brand-700)] pl-5 text-[22px] font-semibold leading-8 tracking-[-0.01em] text-ink">O Conselho Superior da Magistratura Judicial é o órgão de gestão e disciplina dos magistrados judiciais.</p>
+        <p className="max-w-[68ch] text-read">Garante as condições para que os tribunais da jurisdição comum funcionem com independência e qualidade: nomeia, coloca, avalia e acompanha os juízes, e define as prioridades de gestão dos tribunais.</p>
+        <p className="max-w-[68ch] text-read"><b className="font-semibold text-ink">{a.attributions}:</b> {a.attributionsText.charAt(0).toLowerCase() + a.attributionsText.slice(1)}</p>
+      </section>
+      <section aria-labelledby="visao" className="panel flex min-w-0 flex-col gap-5 p-6 md:p-10 xl:col-span-6">
+        <h2 id="visao" className="panel-title">{a.vision}</h2>
+        <p className="border-l-4 border-[var(--ds-color-brand-700)] pl-5 text-[22px] font-semibold leading-8 tracking-[-0.01em] text-ink">{a.visionText}</p>
+        <p className="max-w-[68ch] text-read">{a.visionMore}</p>
+        <p className="max-w-[68ch] text-read">No âmbito do Projecto JURIS 5.0, o Conselho conduz a transformação digital dos tribunais: tramitação electrónica, gestão da informação e comunicação interna.</p>
       </section>
 
       {/* Valores + fotografia */}
@@ -155,18 +185,8 @@ export function AboutView() {
         </div>
       </section>
 
-      {/* História */}
-      <section aria-labelledby="historia" className="panel flex min-w-0 flex-col gap-6 p-6 md:p-10 xl:col-span-12">
-        <h2 id="historia" className="panel-title">{a.history}</h2>
-        <ol className="grid gap-[var(--gap)] sm:grid-cols-2 lg:grid-cols-5">
-          {TIMELINE.map((x, i) => (
-            <li key={x.year} className="flex flex-col gap-3 border-t-4 border-[var(--ds-color-brand-700)] pt-4">
-              <span className={`text-[32px] font-semibold leading-9 tabular-nums ${i === TIMELINE.length - 1 ? "text-brand" : "text-ink"}`}>{x.year}</span>
-              <p className="text-ui text-subtle">{x.text}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
+      {/* Percurso */}
+      <Timeline />
 
       {/* Vídeo + documentos */}
       <section aria-labelledby="video" className="panel flex min-w-0 flex-col gap-5 p-6 md:p-10 xl:col-span-7">
@@ -192,10 +212,6 @@ export function AboutView() {
             </li>
           ))}
         </ul>
-        <div className="mt-auto border-t border-line pt-5">
-          <p className="text-ui text-subtle">{a.contact}</p>
-          <p className="mt-1 font-semibold text-ink">secretariado@exemplo.ao · +244 222 000 000</p>
-        </div>
       </section>
 
       <Dialog open={video} onClose={() => setVideo(false)} title={a.videoTitle} actions={<Button variant="sec" onClick={() => setVideo(false)}>{t.common.close}</Button>}>

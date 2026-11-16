@@ -70,7 +70,14 @@ ok("órgãos em linhas alinhadas: conselho com números e uma linha por Relaçã
 await p.getByPlaceholder("Procurar órgão ou responsável").fill("Sumbe"); await p.waitForTimeout(200);
 ok("órgãos: pesquisa filtra as comarcas", await p.locator("main [role=row]", { hasText: "Comarca do Sumbe" }).count() === 1 && await p.locator("main [role=row]", { hasText: "Comarca de Belas" }).count() === 0);
 await go("/instituicao/sobre");
-ok("sobre em blocos: abertura, missão, números, valores, composição, organização, percurso, vídeo e documentos", await p.locator("main .panel").count() >= 10 && await p.locator("main .panel #historia").count() === 1);
+ok("sobre em blocos: cabeçalho igual às outras páginas, números, missão, visão, valores, composição, organização, percurso, vídeo e documentos", await p.locator("main .panel").count() >= 10 && await p.locator("main .panel #visao").count() === 1 && await p.locator("main header img").count() === 0);
+ok("sobre: sem contacto do secretariado nos documentos", await p.locator("main").getByText("Contacte o secretariado").count() === 0);
+{ const prev = p.getByRole("button", { name: "Anos anteriores" }), next = p.getByRole("button", { name: "Anos seguintes" });
+  ok("percurso: setas com mais de 5 anos, anterior desactivada no início", await next.count() === 1 && await prev.isDisabled());
+  await next.click(); await p.waitForTimeout(700);
+  ok("percurso: seta avança e activa a anterior", await p.locator(".timeline").evaluate((el) => el.scrollLeft > 0) && !(await prev.isDisabled()));
+  await p.locator(".timeline-item").first().hover(); await p.waitForTimeout(400);
+  ok("percurso: animação ao passar o rato", await p.locator(".timeline-item").first().evaluate((el) => getComputedStyle(el).transform !== "none")); }
 await p.getByRole("button", { name: /Ver vídeo/ }).click(); await p.waitForTimeout(200); ok("sobre: vídeo abre", await p.getByRole("dialog").count() === 1); await p.keyboard.press("Escape");
 await go("/participar/sugestoes");
 ok("sugestões em blocos: caixa à esquerda, implementadas à direita", await p.locator("main .panel #caixa").count() === 1 && await p.locator("main .panel #implementadas").count() === 1);
