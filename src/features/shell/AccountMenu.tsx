@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, CircleHelp, Globe, LayoutDashboard, LogOut, Monitor, Moon, Sun, User } from "lucide-react";
+import { Bell, CircleHelp, Globe, LayoutDashboard, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -8,38 +8,10 @@ import { Avatar, Segmented } from "@/design-system";
 import { t } from "@/i18n";
 import { COOKIE } from "@/lib/cookies";
 import { asset } from "@/lib/assets";
-import { applyDensity, applyTheme, setPrefs } from "./client-api";
+import { setPrefs } from "./client-api";
 import { useShell } from "./ShellContext";
 
 const a = t.shell;
-
-export function ThemeControl() {
-  const { data } = useShell();
-  const [theme, setTheme] = useState(data.theme);
-  return (
-    <Segmented
-      legend={a.theme} value={theme}
-      onChange={(v) => { setTheme(v); applyTheme(v); }}
-      options={[
-        { value: "light", label: a.themeLight, icon: <Sun size={14} aria-hidden /> },
-        { value: "dark", label: a.themeDark, icon: <Moon size={14} aria-hidden /> },
-        { value: "auto", label: a.themeAuto, icon: <Monitor size={14} aria-hidden /> },
-      ]}
-    />
-  );
-}
-
-export function DensityControl() {
-  const { data } = useShell();
-  const [density, setDensity] = useState(data.density);
-  return (
-    <Segmented
-      legend={a.density} value={density}
-      onChange={(v) => { setDensity(v); applyDensity(v); }}
-      options={[{ value: "comfortable", label: a.densityComfortable }, { value: "compact", label: a.densityCompact }]}
-    />
-  );
-}
 
 export function UnitControl({ quiet }: { quiet?: boolean }) {
   const { data } = useShell();
@@ -101,8 +73,6 @@ export function AccountMenu({ placement }: { placement?: "rail" } = {}) {
           <Link className="menu-item" href="/conta?separador=notificacoes" onClick={close}><Bell size={18} aria-hidden />{a.notificationPrefs}</Link>
           <div className="menu-item !cursor-default hover:!bg-transparent"><Globe size={18} aria-hidden /><span className="flex-1">{a.language}</span><span className="text-label text-subtle">{a.languageValue}</span></div>
           <div className="flex flex-col gap-3 px-3 py-2">
-            <div className="flex flex-col gap-1"><span className="text-caption font-medium text-subtle">{a.theme}</span><ThemeControl /></div>
-            <div className="flex flex-col gap-1"><span className="text-caption font-medium text-subtle">{a.density}</span><DensityControl /></div>
           </div>
           <hr className="rule my-1" />
           {data.canUseAdmin && <Link className="menu-item" href="/painel" onClick={close}><LayoutDashboard size={18} aria-hidden />{a.goToAdmin}</Link>}

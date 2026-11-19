@@ -159,8 +159,8 @@ await go("/servicos"); if (OUT) await p.screenshot({ path: `${OUT}/servicos-1440
 await prefs({ csmj_perfil: "gestor-conteudos" }); await go("/painel/noticias"); ok("painel abre", await p.locator("main h1", { hasText: "Notícias" }).count() === 1); await axeRun("painel");
 if (OUT) await p.screenshot({ path: `${OUT}/painel-1440.png` });
 
-/* Escuro */
-await prefs({ csmj_tema: "dark", csmj_perfil: null }); await go("/"); await axeRun("início escuro"); await prefs({ csmj_tema: null });
+/* Só tema claro: mesmo com preferência escura guardada, a página fica clara */
+await prefs({ csmj_tema: "dark", csmj_densidade: "compact", csmj_perfil: null }); await go("/"); ok("só tema claro e densidade confortável", await p.evaluate(() => document.documentElement.dataset.theme === "light" && document.documentElement.dataset.density === "comfortable")); await prefs({ csmj_tema: null, csmj_densidade: null });
 
 /* Telemóvel */
 const m = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });

@@ -35,18 +35,6 @@ export async function setPrefs(set: Partial<Record<(typeof COOKIE)[keyof typeof 
   bump();
 }
 
-export function applyTheme(theme: "light" | "dark" | "auto") {
-  const el = document.documentElement;
-  if (theme === "auto") delete el.dataset.theme;
-  else el.dataset.theme = theme;
-  void setPrefs({ [COOKIE.theme]: theme });
-}
-
-export function applyDensity(density: "comfortable" | "compact") {
-  document.documentElement.dataset.density = density;
-  void setPrefs({ [COOKIE.density]: density });
-}
-
 import { search } from "@/lib/api";
 import { ask } from "@/lib/api-ia";
 import { buildIcs } from "@/lib/handlers";

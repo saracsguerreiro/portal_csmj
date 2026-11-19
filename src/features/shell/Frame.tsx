@@ -10,7 +10,7 @@ import type { MenuSection } from "@/data/types";
 import { Avatar } from "@/design-system";
 import { t } from "@/i18n";
 import { dateLong, weekday } from "@/lib/format";
-import { AccountMenu, DensityControl, signOut, ThemeControl, UnitControl } from "./AccountMenu";
+import { AccountMenu, signOut, UnitControl } from "./AccountMenu";
 import { NoticeBanner } from "./NoticeBanner";
 import { SearchCombobox } from "./SearchCombobox";
 import { useShell } from "./ShellContext";
@@ -76,8 +76,6 @@ function MenuBody({ active, onClose, closeButton }: { active: MenuSection; onClo
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3"><Avatar initials={data.person.initials} /><div><p className="font-semibold text-ink">{data.person.name}</p><p className="text-label text-subtle">{data.person.role}</p></div></div>
               <div className="flex flex-col gap-1"><span className="text-label font-medium text-subtle">{a.activeUnit}</span><UnitControl quiet /></div>
-              <div className="flex flex-col items-start gap-1"><span className="text-label font-medium text-subtle">{a.theme}</span><ThemeControl /></div>
-              <div className="flex flex-col items-start gap-1"><span className="text-label font-medium text-subtle">{a.density}</span><DensityControl /></div>
               <ul>
                 <li><Link className="sm-sub flex items-center gap-2" href="/conta" onClick={onClose}><User size={18} aria-hidden />{a.myAccount}</Link></li>
                 {data.canUseAdmin && <li><Link className="sm-sub flex items-center gap-2" href="/painel" onClick={onClose}><LayoutDashboard size={18} aria-hidden />{a.goToAdmin}</Link></li>}

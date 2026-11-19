@@ -3,7 +3,6 @@
 import { Laptop, Smartphone } from "lucide-react";
 import { useState } from "react";
 import { Avatar, Button, ButtonLink, Dialog, LinkTabs, PageHeader, PasswordField, SelectField, StatusBadge, Switch, TextField, useToast } from "@/design-system";
-import { DensityControl, ThemeControl } from "@/features/shell/AccountMenu";
 import { postAction, setPrefs } from "@/features/shell/client-api";
 import { t } from "@/i18n";
 import { notifPrefs } from "@/lib/api-participar";
@@ -60,8 +59,6 @@ export function AccountView() {
       {tab === "preferencias" && (
         <section className="card flex max-w-[760px] flex-col gap-5">
           <SelectField label={a.language} value="pt-AO" onChange={() => show({ message: a.languages[1].label })} options={a.languages} />
-          <div className="flex flex-col items-start gap-1"><span className="field-label">{t.shell.theme}</span><ThemeControl /></div>
-          <div className="flex flex-col items-start gap-1"><span className="field-label">{t.shell.density}</span><DensityControl /></div>
           <SelectField label={a.defaultUnit} value={s.unit.id} onChange={async (e) => { await setPrefs({ [COOKIE.unit]: e.target.value }); show({ message: a.prefsSaved }); }} options={s.myUnits.map((u) => ({ value: u.id, label: u.short }))} />
         </section>
       )}

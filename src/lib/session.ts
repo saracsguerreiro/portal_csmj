@@ -22,8 +22,8 @@ export function currentSession(): Session {
   const myUnits = [person.unitId, ...(profile.extraUnits ?? []), unit.id].filter((v, i, a) => a.indexOf(v) === i).map((id) => units.find((u) => u.id === id)!);
   return {
     profile, person, unit, homeUnitId: person.unitId, myUnits,
-    theme: (getPref(COOKIE.theme) as Session["theme"]) ?? "auto",
-    density: (getPref(COOKIE.density) as Session["density"]) ?? "comfortable",
+    theme: "light",
+    density: "comfortable",
     failing: getPref(COOKIE.fail) === "1",
     blockingNotice: getPref(COOKIE.blocking) === "1",
     signedOut: getPref(COOKIE.out) === "1",

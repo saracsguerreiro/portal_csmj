@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sheet } from "@/design-system";
 import { t } from "@/i18n";
-import { DensityControl, signOut, ThemeControl, UnitControl } from "./AccountMenu";
+import { signOut, UnitControl } from "./AccountMenu";
 import { NamedIcon } from "./icons";
 import { SearchCombobox } from "./SearchCombobox";
 import { AskConversation } from "@/features/ia/AskConversation";
@@ -103,8 +103,6 @@ export function Drawer() {
         </ul>
         <div className="flex flex-col gap-3 px-3">
           <div className="flex flex-col gap-1"><span className="text-label font-medium text-subtle">{a.activeUnit}</span><UnitControl quiet /></div>
-          <div className="flex flex-col items-start gap-1"><span className="text-label font-medium text-subtle">{a.theme}</span><ThemeControl /></div>
-          <div className="flex flex-col items-start gap-1"><span className="text-label font-medium text-subtle">{a.density}</span><DensityControl /></div>
         </div>
         <button type="button" className="menu-item" onClick={signOut}><LogOut size={20} aria-hidden />{a.signOut}</button>
       </div>

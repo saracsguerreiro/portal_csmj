@@ -18,11 +18,11 @@ export const metadata: Metadata = { title: { default: `${entity.productName} ${e
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 /* Aplica tema e densidade guardados antes da primeira pintura, sem piscar. */
-const prefsScript = `try{var p=JSON.parse(localStorage.getItem("csmj_prefs")||"{}");var d=document.documentElement;if(p.csmj_tema&&p.csmj_tema!=="auto")d.dataset.theme=p.csmj_tema;if(p.csmj_densidade)d.dataset.density=p.csmj_densidade;}catch(e){}`;
+const prefsScript = `try{var p=JSON.parse(localStorage.getItem("csmj_prefs")||"{}");var d=document.documentElement;d.dataset.theme="light";d.dataset.density="comfortable";}catch(e){}`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-AO" data-density="comfortable" className={`${jakarta.variable} ${dmMono.variable}`} suppressHydrationWarning>
+    <html lang="pt-AO" data-theme="light" data-density="comfortable" className={`${jakarta.variable} ${dmMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: prefsScript }} />
         <style dangerouslySetInnerHTML={{ __html: brandStyle() }} />
